@@ -6,6 +6,21 @@ import './Overlay.css'
 
 const pad = (n) => String(n).padStart(2, '0')
 
+function parseAspect(a) {
+  if (typeof a === 'number' && a > 0) return a
+  if (typeof a === 'string') {
+    const parts = a.split('/')
+    if (parts.length === 2) {
+      const w = parseFloat(parts[0])
+      const h = parseFloat(parts[1])
+      if (w > 0 && h > 0) return w / h
+    }
+    const n = parseFloat(a)
+    if (n > 0) return n
+  }
+  return 1.5
+}
+
 function Chevron({ dir }) {
   return (
     <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true">
@@ -146,19 +161,22 @@ export default function Overlay({ items, index, meta, go, next, prev, reduced, a
         )}
       </AnimatePresence>
 
-      <AnimatePresence mode="wait">
-        {item.type === 'browser' && item.url && (
-          <motion.div
-            key={`br-${index}`}
-            className="browser-panel"
-            initial={{ opacity: 0, scale: reduced ? 1 : 0.975 }}
-            animate={{ opacity: 1, scale: 1, transition: { duration: reduced ? 0.2 : 0.7, ease: EASE_SETTLE, delay: reduced ? 0 : 0.12 } }}
-            exit={{ opacity: 0, scale: reduced ? 1 : 0.985, transition: { duration: reduced ? 0.15 : 0.5, ease: EASE_SETTLE } }}
-          >
-            <BrowserFrame url={item.url} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="browser-wrap">
+        <AnimatePresence mode="wait">
+          {item.type === 'browser' && item.url && (
+            <motion.div
+              key={`br-${index}`}
+              className="browser-panel"
+              style={{ '--ar': parseAspect(item.aspect) }}
+              initial={{ opacity: 0, y: reduced ? 0 : 560 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: reduced ? 0.2 : 0.8, ease: EASE_SETTLE } }}
+              exit={{ opacity: 0, y: reduced ? 0 : 560, transition: { duration: reduced ? 0.15 : 0.55, ease: EASE_SETTLE } }}
+            >
+              <BrowserFrame url={item.url} reduced={reduced} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <nav className="controls" aria-label="Slide navigation">
         <ol className="rail">
