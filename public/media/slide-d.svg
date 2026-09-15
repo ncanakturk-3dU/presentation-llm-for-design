@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder image four">
+  <defs>
+    <linearGradient id="d-glow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1fd6a0" stop-opacity="0.85"/>
+      <stop offset="46%" stop-color="#12907a" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0a1512" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#0a1512"/>
+  <rect width="1200" height="800" fill="url(#d-glow)"/>
+  <g stroke="#8ff0cf" stroke-opacity="0.28" stroke-width="2" fill="none">
+    <path d="M120 640 Q 420 300 720 520 T 1120 360"/>
+    <path d="M120 700 Q 420 380 720 580 T 1120 440"/>
+  </g>
+  <text x="64" y="150" fill="#bff3e0" font-family="monospace" font-size="26" letter-spacing="10">PLACEHOLDER</text>
+  <text x="60" y="660" fill="#f1ede2" font-family="sans-serif" font-size="240" font-weight="800">04</text>
+  <text x="64" y="730" fill="#8ff0cf" font-family="monospace" font-size="24" letter-spacing="8">REPLACE IN CONTENT.JSON</text>
+</svg>

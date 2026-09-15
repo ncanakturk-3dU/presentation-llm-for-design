@@ -1,0 +1,127 @@
+{
+  "_allowed": {
+    "note": "Reference only, ignored by the app. Every field below is editable here.",
+    "type": ["category", "point", "slider", "quote", "agenda", "stat", "browser"],
+    "shape": ["sphere", "lattice", "cloud", "torus", "icosahedron", "octahedron", "knot", "helix", "spiral", "burst"]
+  },
+  "meta": {
+    "mark": "Your Deck Name",
+    "source": "Placeholder Subtitle",
+    "hint": "Press → or Space to begin"
+  },
+  "items": [
+    {
+      "type": "category",
+      "id": "cat-1",
+      "chapter": "Part One",
+      "title": "First Category Title",
+      "subtitle": "A short placeholder line that introduces this part of the deck. Edit everything from content.json.",
+      "shape": "sphere",
+      "colorA": "#ffc44d",
+      "colorB": "#ff7d38"
+    },
+    {
+      "type": "agenda",
+      "id": "ag-1",
+      "chapter": "Agenda",
+      "title": "What we’ll cover",
+      "points": [
+        "Placeholder topic one",
+        "Placeholder topic two",
+        "Placeholder topic three",
+        "Placeholder topic four"
+      ],
+      "shape": "icosahedron",
+      "colorA": "#1fd6b0",
+      "colorB": "#54e6ff"
+    },
+    {
+      "type": "point",
+      "id": "pt-1",
+      "chapter": "Model A",
+      "title": "First Point Model",
+      "summary": "Placeholder copy for the first particle model. Swap the text, the shape, and the two colors from content.json.",
+      "shape": "spiral",
+      "colorA": "#ff4db8",
+      "colorB": "#ffd24d"
+    },
+    {
+      "type": "quote",
+      "id": "qt-1",
+      "chapter": "In brief",
+      "quote": "A short, quotable line that lands the whole idea in a single breath.",
+      "attribution": "Placeholder Name, Role",
+      "shape": "sphere",
+      "colorA": "#ffb14d",
+      "colorB": "#ff6a3d"
+    },
+    {
+      "type": "slider",
+      "id": "sl-1",
+      "chapter": "Gallery",
+      "title": "Image Slider",
+      "summary": "A slider item holding two placeholder images. Add, remove, or reorder images in content.json.",
+      "colorA": "#1fd6b0",
+      "colorB": "#54e6ff",
+      "images": [
+        { "src": "media/slide-a.svg", "caption": "First placeholder image" },
+        { "src": "media/slide-b.svg", "caption": "Second placeholder image" }
+      ]
+    },
+    {
+      "type": "point",
+      "id": "pt-2",
+      "chapter": "Model B",
+      "title": "Second Point Model",
+      "summary": "A second particle model, using a different shape and a different color pair to show the range.",
+      "shape": "helix",
+      "colorA": "#22c1ff",
+      "colorB": "#6a8bff"
+    },
+    {
+      "type": "stat",
+      "id": "st-1",
+      "chapter": "Key Numbers",
+      "title": "By the numbers",
+      "stats": [
+        { "value": "98%", "label": "Placeholder metric" },
+        { "value": "3.4x", "label": "Placeholder metric" },
+        { "value": "12k", "label": "Placeholder metric" }
+      ],
+      "shape": "octahedron",
+      "colorA": "#ffd24d",
+      "colorB": "#fff0c0"
+    },
+    {
+      "type": "slider",
+      "id": "sl-2",
+      "chapter": "Second Gallery",
+      "title": "Second Slider",
+      "summary": "A second image item, with its own two placeholder images and its own color pair.",
+      "colorA": "#a24bff",
+      "colorB": "#ff5ecb",
+      "images": [
+        { "src": "media/slide-c.svg", "caption": "Third placeholder image" },
+        { "src": "media/slide-d.svg", "caption": "Fourth placeholder image" }
+      ]
+    },
+    {
+      "type": "browser",
+      "id": "br-1",
+      "chapter": "Live Demo",
+      "url": "https://findexu.github.io/qr-4-seasons/",
+      "colorA": "#1fd6b0",
+      "colorB": "#54e6ff"
+    },
+    {
+      "type": "category",
+      "id": "cat-2",
+      "chapter": "Part Two",
+      "title": "Second Category Title",
+      "subtitle": "Another placeholder subtitle for the second category divider. Duplicate any item to add more.",
+      "shape": "torus",
+      "colorA": "#ff3b47",
+      "colorB": "#ff8a3c"
+    }
+  ]
+}

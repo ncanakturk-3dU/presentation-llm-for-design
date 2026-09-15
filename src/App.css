@@ -1,0 +1,24 @@
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--void);
+}
+
+.canvas {
+  position: absolute !important;
+  inset: 0;
+  display: block;
+}
+
+.app--msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app__msg {
+  margin: 0;
+  padding: 0 var(--inset);
+  color: var(--bone-faint);
+  text-align: center;
+}
