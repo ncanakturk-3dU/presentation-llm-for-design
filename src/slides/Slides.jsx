@@ -1,4 +1,4 @@
-import CoverSphere from '../components/CoverSphere'
+import CoverSphere from '../components/CoverSphere/CoverSphere'
 import { renderAccent, highlightCode, pad, stripAccent } from '../lib/text'
 import './slides.css'
 
@@ -43,7 +43,7 @@ function Head({ kicker, title, note }) {
   )
 }
 
-function Cover({ item, reduced }) {
+function Cover({ item, reduced, still }) {
   return (
     <div className="cover">
       <div className="cover__text">
@@ -51,7 +51,7 @@ function Cover({ item, reduced }) {
         {item.subtitle && <p className="cover__sub">{item.subtitle}</p>}
       </div>
       <div className="cover__art">
-        <CoverSphere reduced={reduced} />
+        <CoverSphere reduced={reduced} still={still} />
       </div>
     </div>
   )
@@ -278,7 +278,7 @@ const MAP = {
   quote: Quote,
 }
 
-export default function Slide({ item, reduced }) {
+export default function Slide({ item, reduced = false, still = false }) {
   const Cmp = MAP[item.type] || Divider
-  return <Cmp item={item} reduced={reduced} />
+  return <Cmp item={item} reduced={reduced} still={still} />
 }

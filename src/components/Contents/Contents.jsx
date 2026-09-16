@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { slideOutline, slideTitle, itemTheme } from '../slides/Slides'
-import { pad, stripAccent } from '../lib/text'
-import { EASE } from '../lib/motion'
+import { slideOutline, slideTitle, itemTheme } from '../../slides/Slides'
+import { pad, stripAccent } from '../../lib/text'
+import { EASE } from '../../lib/motion'
 import './Contents.css'
 
 function TabIcon({ name }) {
@@ -21,18 +21,18 @@ function TabIcon({ name }) {
   )
 }
 
-export default function Contents({ open, items, index, reduced, onSelect, onClose }) {
-  const [tab, setTab] = useState('outline')
-  const [query, setQuery] = useState('')
+export default function Contents({ open, items, index, reduced, onSelect, onClose, initialTab = 'outline', initialQuery = '', still = false }) {
+  const [tab, setTab] = useState(initialTab)
+  const [query, setQuery] = useState(initialQuery)
   const inputRef = useRef(null)
 
   useEffect(() => {
     if (open) {
-      setQuery('')
+      setQuery(initialQuery)
       const t = setTimeout(() => inputRef.current?.focus(), reduced ? 0 : 260)
       return () => clearTimeout(t)
     }
-  }, [open, reduced])
+  }, [open, reduced, initialQuery])
 
   const q = query.trim().toLowerCase()
   const matches = (it) => {
@@ -41,7 +41,7 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
     return hay.includes(q)
   }
 
-  const panelV = reduced
+  const panelV = reduced || still
     ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.16 } }, exit: { opacity: 0, transition: { duration: 0.12 } } }
     : {
         hidden: { x: '-100%' },
@@ -52,7 +52,7 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="toc" data-theme="light" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0.12 : 0.24 }}>
+        <motion.div className="toc" data-theme="light" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced || still ? 0.12 : 0.24 }}>
           <div className="toc__scrim" onClick={onClose} aria-hidden="true" />
           <motion.div className="toc__panel" role="dialog" aria-modal="true" aria-label="Contents" variants={panelV} initial="hidden" animate="show" exit="exit">
             <div className="toc__bar">

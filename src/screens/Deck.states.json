@@ -1,0 +1,174 @@
+{
+  "screen": "deck",
+  "title": "Deck",
+  "group": "Deck",
+  "mood": "capture",
+  "note": "The presented deck. A state pins a content.json item id, not an index, so reordering the deck does not repoint every capture.",
+  "params": [
+    {
+      "id": "slide",
+      "label": "slide",
+      "default": "cover",
+      "options": [
+        {
+          "id": "cover",
+          "label": "cover · cover"
+        },
+        {
+          "id": "section-one",
+          "label": "section-one · divider"
+        },
+        {
+          "id": "key-points",
+          "label": "key-points · keypoints"
+        },
+        {
+          "id": "before-after",
+          "label": "before-after · twocolumn"
+        },
+        {
+          "id": "process",
+          "label": "process · process"
+        },
+        {
+          "id": "code-ui",
+          "label": "code-ui · codeui"
+        },
+        {
+          "id": "table",
+          "label": "table · table"
+        },
+        {
+          "id": "closing",
+          "label": "closing · quote"
+        }
+      ]
+    },
+    {
+      "id": "contents",
+      "label": "contents",
+      "default": "closed",
+      "options": [
+        {
+          "id": "closed",
+          "label": "Closed"
+        },
+        {
+          "id": "outline",
+          "label": "Outline"
+        },
+        {
+          "id": "slides",
+          "label": "Slides"
+        }
+      ]
+    },
+    {
+      "id": "status",
+      "label": "status",
+      "default": "ready",
+      "options": [
+        {
+          "id": "ready",
+          "label": "Ready"
+        },
+        {
+          "id": "empty",
+          "label": "No slides"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "slide-cover",
+      "label": "01 · cover",
+      "note": "The cover archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "cover"
+      }
+    },
+    {
+      "id": "slide-section-one",
+      "label": "02 · divider",
+      "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "section-one"
+      }
+    },
+    {
+      "id": "slide-key-points",
+      "label": "03 · keypoints",
+      "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "key-points"
+      }
+    },
+    {
+      "id": "slide-before-after",
+      "label": "04 · twocolumn",
+      "note": "The twocolumn archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "before-after"
+      }
+    },
+    {
+      "id": "slide-process",
+      "label": "05 · process",
+      "note": "The process archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "process"
+      }
+    },
+    {
+      "id": "slide-code-ui",
+      "label": "06 · codeui",
+      "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "code-ui"
+      }
+    },
+    {
+      "id": "slide-table",
+      "label": "07 · table",
+      "note": "The table archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "table"
+      }
+    },
+    {
+      "id": "slide-closing",
+      "label": "08 · quote",
+      "note": "The quote archetype in the deck shell, with the chrome and page reference around it.",
+      "params": {
+        "slide": "closing"
+      }
+    },
+    {
+      "id": "contents-outline",
+      "label": "Contents · outline",
+      "note": "The contents panel over the cover, on the Outline tab: every slide with its sub-rows.",
+      "params": {
+        "slide": "cover",
+        "contents": "outline"
+      }
+    },
+    {
+      "id": "contents-slides",
+      "label": "Contents · slides",
+      "note": "The same panel on the Slides tab: themed thumbnails, the current one marked.",
+      "params": {
+        "slide": "cover",
+        "contents": "slides"
+      }
+    },
+    {
+      "id": "empty",
+      "label": "No slides",
+      "note": "A deck file with an empty items array. Nothing else can reach this copy.",
+      "params": {
+        "status": "empty"
+      }
+    }
+  ]
+}

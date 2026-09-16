@@ -1,0 +1,28 @@
+{
+  "component": "ErrorBoundary",
+  "title": "Error boundary",
+  "group": "Parts",
+  "order": 3,
+  "mood": "capture",
+  "note": "The last line under the deck. `failed` forces the caught look without throwing, so the state can be captured instead of only ever met when something is broken.",
+  "states": [
+    {
+      "id": "failed",
+      "label": "Caught",
+      "device": "desktop",
+      "note": "What a reader sees when a slide throws.",
+      "props": {
+        "failed": true
+      }
+    },
+    {
+      "id": "phone",
+      "label": "Caught · phone",
+      "device": "iphone",
+      "note": "The same message at 393px, where the line has to wrap.",
+      "props": {
+        "failed": true
+      }
+    }
+  ]
+}
