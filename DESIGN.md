@@ -1,279 +1,229 @@
 ---
-name: The Anti-Slop Framework
-description: A JSON-driven WebGL particle deck where one bloom-lit field takes three modes — model, ambient, and image-slider plane — driven by six item types, and every item carries its own two-tone light.
+name: LLM for Design
+description: A JSON-driven presenter's deck of eight editorial slide archetypes on one grid and one type system, each archetype grounded light or dark, unified by a single terracotta word per slide.
 colors:
-  void: "#141613"
-  scrim: "#0d0f0e"
-  bone: "#f1ede2"
-  bone-soft: "#cdccc0"
-  bone-faint: "#9a9b8f"
-  signal: "#e0592f"
-  hairline: "#f1ede21f"
-  hairline-soft: "#f1ede210"
-  slider-well: "#0a0c0b"
+  signal: "#d9552a"
+  signal-dark: "#ec6b39"
+  signal-ink: "#ffffff"
+  signal-ink-dark: "#12100e"
+  paper: "#f3f2ee"
+  paper-2: "#ebe9e3"
+  ink: "#17181b"
+  ink-soft: "#56575c"
+  ink-faint: "#8c8d92"
+  panel: "#ffffff"
+  panel-2: "#f7f6f2"
+  night: "#0e0f11"
+  night-2: "#16171a"
+  ink-dark: "#f3f2ee"
+  ink-soft-dark: "#a7a8ad"
+  ink-faint-dark: "#6d6f75"
+  panel-dark: "#17181b"
+  panel-2-dark: "#1d1e22"
 typography:
   display:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(48px, 8.2vw, 128px)"
-    fontWeight: 700
-    lineHeight: 0.96
-    letterSpacing: "-0.012em"
-  title:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(38px, 6.6vw, 88px)"
-    fontWeight: 700
-    lineHeight: 0.96
-    letterSpacing: "-0.012em"
-  quote:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(30px, 4.3vw, 66px)"
-    fontWeight: 500
-    lineHeight: 1.12
-    letterSpacing: "-0.005em"
-  stat-value:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(44px, 6vw, 88px)"
-    fontWeight: 700
-    lineHeight: 0.95
-    letterSpacing: "-0.01em"
-  agenda-label:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(20px, 2.6vw, 34px)"
+    fontFamily: "Geist, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(40px, 6vw, 90px)"
     fontWeight: 600
-    lineHeight: 1.1
-    letterSpacing: "0.01em"
-  subtitle:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(16px, 1.9vw, 22px)"
-    fontWeight: 500
-    lineHeight: 1.45
-    letterSpacing: "0.01em"
+    lineHeight: 1.0
+    letterSpacing: "-0.03em"
+  headline:
+    fontFamily: "Geist, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(32px, 4.4vw, 58px)"
+    fontWeight: 600
+    lineHeight: 1.0
+    letterSpacing: "-0.024em"
+  title:
+    fontFamily: "Geist, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(30px, 4vw, 52px)"
+    fontWeight: 600
+    lineHeight: 1.02
+    letterSpacing: "-0.022em"
   body:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(16px, 1.85vw, 21px)"
-    fontWeight: 500
-    lineHeight: 1.46
-    letterSpacing: "0.01em"
-  base:
-    fontFamily: "Big Shoulders Text, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "14px"
+    fontFamily: "Geist, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(15px, 1.15vw, 18px)"
     fontWeight: 400
-    lineHeight: 1.2
-  index:
-    fontFamily: "IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
-    fontSize: "12px"
-    fontWeight: 500
-    lineHeight: 1.2
-    letterSpacing: "0.18em"
-  agenda-num:
-    fontFamily: "IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
-    fontSize: "13px"
-    fontWeight: 500
-    letterSpacing: "0.16em"
+    lineHeight: 1.5
+    letterSpacing: "normal"
   label:
-    fontFamily: "IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontFamily: "Geist Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
     fontSize: "11px"
     fontWeight: 500
-    lineHeight: 1.55
-    letterSpacing: "0.28em"
+    lineHeight: 1.2
+    letterSpacing: "0.14em"
+  numeral:
+    fontFamily: "Geist, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(88px, 13vw, 188px)"
+    fontWeight: 600
+    lineHeight: 0.8
+    letterSpacing: "-0.04em"
 rounded:
-  pill: "999px"
-  tick: "2px"
-  frame: "8px"
+  sm: "6px"
+  md: "10px"
 spacing:
-  sm: "8px"
-  md: "12px"
-  gutter: "16px"
-  inset: "clamp(22px, 4.4vw, 60px)"
+  gap: "clamp(16px, 1.5vw, 24px)"
+  pad-y: "clamp(24px, 3vw, 46px)"
+  pad: "clamp(34px, 4.6vw, 84px)"
 components:
-  arrow:
-    textColor: "{colors.bone}"
-    rounded: "{rounded.pill}"
-    size: "46px"
-  arrow-hover:
-    textColor: "{colors.bone}"
-    backgroundColor: "rgba(241, 237, 226, 0.05)"
-    rounded: "{rounded.pill}"
-  arrow-disabled:
-    textColor: "{colors.bone-faint}"
-    rounded: "{rounded.pill}"
-  rail-tick:
-    backgroundColor: "{colors.bone-faint}"
-    rounded: "{rounded.tick}"
-    width: "16px"
-    height: "2px"
-  rail-tick-current:
-    backgroundColor: "var(--accent)"
-    rounded: "{rounded.tick}"
-    width: "16px"
-    height: "2px"
-  slider-play:
-    textColor: "{colors.bone-soft}"
-    rounded: "{rounded.pill}"
+  accent-word:
+    textColor: "{colors.signal}"
+    typography: "{typography.title}"
+  menu-button:
+    textColor: "{colors.ink}"
+    rounded: "8px"
     size: "34px"
-  slider-dot:
-    backgroundColor: "{colors.bone-faint}"
-    rounded: "{rounded.tick}"
-    width: "18px"
-    height: "2px"
-  slider-dot-current:
-    backgroundColor: "var(--accent)"
-    rounded: "{rounded.tick}"
-    width: "18px"
-    height: "2px"
-  slider-frame:
-    backgroundColor: "{colors.slider-well}"
-    rounded: "{rounded.frame}"
+  keypoint-badge:
+    textColor: "{colors.signal}"
+    rounded: "999px"
+    size: "40px"
+  spec-card:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+    padding: "clamp(14px, 1.4vw, 20px)"
+  chip:
+    backgroundColor: "{colors.panel-2}"
+    textColor: "{colors.ink-soft}"
+    rounded: "999px"
+    padding: "5px 11px"
+  contents-thumb:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
 ---
 
-# Design System: The Anti-Slop Framework
+# Design System: LLM for Design
 
 ## Overview
 
-**Creative North Star: "Instrument."**
+**Creative North Star: "The Well-Set Conference Talk."**
 
-A deep-graphite instrument, never lit and never pure black. The whole stage is one full-bleed WebGL particle field — 80,000 fine vertices — driven entirely from `public/content.json`. There is no hardcoded deck: a `meta` block names the mark, source, and opening hint, and an `items` array of typed entries supplies every slide. Each item declares a `type` — one of six: `category`, `point`, `slider`, `quote`, `agenda`, `stat` — and a saturated two-tone pair (`colorA`/`colorB`) that runs as a gradient across the form and glows through a bloom pass, so each idea arrives in its own light. The interface reads as a precision tool laid over that light: hairline rules, mono micro-labels, and current-state marks that pick up the active item's color.
+One presenter's deck built as a precise editorial system, not a bullet template and not the all-dark WebGL demo that preceded it. Eight distinct slide archetypes — cover, section divider, key-points, before/after two-column, process/workflow, code + UI, table/matrix, and quote/closing — ride a single grid, a single Geist type system, and a single terracotta signal. Each slide states one idea in the layout that idea deserves, and the accent marks the one word that carries it. It reads like a conference talk that was actually art-directed: generous margins, hairline rules, large muted section numerals, numbered structures, and a mono eyebrow labeling each idea.
 
-The one field takes three **modes**, not one per type — `type` maps to a mode in App.jsx (`FIELD_MODE = { slider: 'plane', category: 'ambient', quote: 'ambient' }`, everything else defaults to `'model'`). A **model** mode field (`point`, `agenda`, `stat`) is a full-opacity 3D shape offset right of center. An **ambient** mode field (`category`, `quote`) is a dim (30% opacity) centered shape behind centered copy, used as a divider or a pull-quote backdrop. A **plane** mode field (`slider`) morphs the same cloud into a flat plane sized to the image panel, colored in the item palette, with an edge-alpha falloff so it reads as a tile-map dust halo dissolving from the image edges into the background. The field is continuous across items: group position and scale are lerped every frame and the shape morph, colors, opacity, and plane-mode are GSAP-tweened over 1.9s.
+The stage is a flat, full-viewport frame (`.deck`) with minimal chrome pinned to the top edge only — a menu button (≡) and wordmark upper-left, a page index upper-right — and one live slide beneath, cross-faded by Framer Motion. There is no footer and no chrome eyebrow; the page index is always `NN / NN` (current over total), never per-slide-overridden. Ground is assigned per archetype: cover and key-points sit on near-black night, everything else on warm paper, and any slide can override with its own `theme`. The two themes are one token set (`--accent`, `--ink`, `--ground`, `--panel`…) reassigned under `[data-theme]` on the deck, so a slide flips light↔dark by swapping one attribute and the deck color-transitions across it (420ms). WebGL appears exactly once: a slowly rotating dotted-particle sphere (React Three Fiber) on the cover, and nowhere else.
 
-The world refuses two defaults at once: the bulleted title-card deck, and the generic dashboard-slop the argument names. Contrast is high and typographic, so the type never fights the canvas. Motion is restrained and physical — nothing eases in, everything settles. Because the deck argues for anti-slop craft, its chrome carries none of the slop it describes: no gradient wash as DOM decoration, no card grids, no floating pills, no glass, no bordered container stacks, no outer drop shadows. Color lives in the WebGL field, not in the chrome. Chrome is bone ink laid directly over the canvas through a directional scrim, pinned to the margins.
+The world refuses generic slop and heavy ornament alike. Color lives almost entirely in the neutral ink-on-paper (or ink-on-night) surfaces; the terracotta signal is the only chromatic voice, and it is rationed to a single highlighted word plus the mono structural marks and active state. Depth is tonal and hairline by default; real elevation shadows appear only where the interface genuinely lifts off the page — the Contents drawer that slides in from the left.
 
 **Key Characteristics:**
-- One full-bleed particle field (80,000 vertices), JSON-driven, is the entire stage; chrome lives at the margins.
-- One field, three modes keyed to item `type`: `model` shape, dim `ambient` divider, `slider` image-halo `plane`. Six types fold onto those three modes.
-- Each item owns a saturated `colorA`→`colorB` pair; the field glows it through additive blending and bloom.
-- `--accent` follows the active item's `colorA` onto the current-state marks (and the quote attribution and agenda numbers); the fixed terracotta only backs `::selection`.
-- Bone ink on warm graphite; condensed display type (Big Shoulders Text) against one tracked mono micro-layer (IBM Plex Mono).
-- Hairline, pill, and quiet-block DOM vocabulary only — no glass, no bordered stacks, no decorative surface shadow.
-- Everything settles on `cubic-bezier(0.16, 1, 0.3, 1)`; nothing eases in.
+- Eight editorial archetypes on one grid and one Geist type system; JSON drives every slide from a static import of `content/sample.json` (versioned decks live in `content/`).
+- Ground assigned per archetype via `slideTheme()` (cover + keypoints dark, rest light), overridable per item with `theme`; one token set flipped by `[data-theme]`.
+- Exactly one terracotta word per slide, authored as `**word**` and rendered as `.accent`.
+- Warm neutrals only — paper `#f3f2ee`, night `#0e0f11`, never pure `#000`/`#fff`; ink tinted warm.
+- Geist grotesk carries display and body; Geist Mono carries page index, code, the slide eyebrow, and micro-labels.
+- Flat and hairline by default; elevation shadow only on the floating Contents drawer.
+- Everything settles on `cubic-bezier(0.22, 1, 0.36, 1)`; nothing eases in.
 
 ## Colors
 
-Bone ink on deep graphite for the chrome; a vivid, saturated two-tone pair per item that lives in the WebGL field and, at the current-state marks only, tints the chrome through `--accent`.
+Warm neutral ink on paper by day and on night by archetype, with one terracotta signal as the sole chromatic voice. Every neutral is tinted warm; nothing is pure black or white.
 
 ### Primary
-The palette is per-item and data-driven, not a fixed house set. Each item carries a `colorA` → `colorB` pair in `content.json`. In the field, the shader mixes `colorA` at the base toward `colorB` across the form (by vertical position and per-particle seed, `vMix`) and cross-fades both over the 1.9s morph. `colorA` is also handed to the chrome as `--accent`. The shipped `content.json` is placeholder content; its pairs (gold→ember `#ffc44d`→`#ff7d38`, teal→aqua `#1fd6b0`→`#54e6ff`, magenta→gold `#ff4db8`→`#ffd24d`, amber→ember `#ffb14d`→`#ff6a3d`, cyan→periwinkle `#22c1ff`→`#6a8bff`, gold→cream `#ffd24d`→`#fff0c0`, violet→pink `#a24bff`→`#ff5ecb`, red→orange `#ff3b47`→`#ff8a3c`) are examples of the strategy, not canonized brand colors. The App-level fallback when an item omits color is `#ffc44d` → `#ff7d38`.
+- **Terracotta Signal** (light `#d9552a`, dark `#ec6b39`; `--accent`): the one accent. It marks the single highlighted word per slide, the mono slide eyebrow (`.kicker`), divider/badge numerals and control labels, the current item in the Contents drawer, `::selection`, and the focus ring. It warms slightly in dark theme so it holds against night. The contract named `#DD5C2B`; the build shipped `#d9552a`/`#ec6b39` and the build is canonical.
+- **Signal Ink** (light `#ffffff`, dark `#12100e`; `--accent-ink`): foreground laid on a filled signal (the `::selection` highlight).
 
-### Tertiary
-- **Terracotta Signal** (#e0592f, `--signal`): not a house accent. It backs `::selection` only, and is the CSS fallback for `--accent` before an item color is applied.
+### Neutral (Light — default `:root, [data-theme='light']`)
+- **Paper** (`#f3f2ee`, `--ground`) and **Paper 2** (`#ebe9e3`, `--ground-2`): the warm page and its slightly deeper wash.
+- **Ink** (`#17181b`, `--ink`): titles and primary text. **Ink Soft** (`#56575c`, `--ink-soft`): notes and secondary copy. **Ink Faint** (`#8c8d92`, `--ink-faint`): mono meta, marks, muted cells.
+- **Panel** (`#ffffff`, `--panel`) and **Panel 2** (`#f7f6f2`, `--panel-2`): raised surfaces inside slides (spec cards, code wells, the drawer).
+- **Hairline** (`rgba(19,20,24,0.11)`) / **Hairline Strong** (`rgba(19,20,24,0.18)`) / **Panel Line** (`rgba(19,20,24,0.09)`): the only borders in the system. **Numeral** (`rgba(19,20,24,0.14)`): giant muted section numbers and the quote mark.
 
-### Neutral
-- **Void** (#141613, `--void`): the graphite ground for `html`/`body`/`.app`. Deliberately warm-dark, never pure `#000`.
-- **Scrim** (#0d0f0e): the darkest tone — the Canvas WebGL clear color and the base of the overlay scrim gradients that seat copy over the field.
-- **Slider Well** (#0a0c0b): the near-black backing behind a slider image frame before its image paints.
-- **Bone** (#f1ede2, `--bone`): primary ink — titles, quote text, stat values, agenda labels, and active index number.
-- **Bone Soft** (#cdccc0, `--bone-soft`): secondary ink — summary and subtitle copy, resting slider play glyph.
-- **Bone Faint** (#9a9b8f, `--bone-faint`): tertiary ink — mono meta, source line, position total, captions, stat labels, hint/credit, resting ticks and dots, disabled arrows.
-- **Hairline** (#f1ede21f, ~12% bone) and **Hairline Soft** (#f1ede210, ~6% bone): inset ring strokes for controls; the only "borders" in the system.
+### Neutral (Dark — `[data-theme='dark']`)
+- **Night** (`#0e0f11`, `--ground`) and **Night 2** (`#16171a`, `--ground-2`): the deep-warm ground for cover and key-points.
+- Ink inverts to bone (`#f3f2ee`), soft `#a7a8ad`, faint `#6d6f75`; panels become `#17181b`/`#1d1e22`; hairlines become white at 10–20%.
+
+### Tertiary (in-content specimen palette)
+Slides that depict *other* interfaces carry their own functional colors — process step tones (teal `#2f8f86`, blue `#3768c9`, violet `#7a5af0`, ink `#2b2c31`) mixed at 15% over near-black card fills; the two-column "after" success green (`#2f9e6b`, on its checkmark badge, logomark, and CTA) against a neutral "before"; preview buttons (`#3b6fd4`, `#d64545`); code tokens (string `#2e8b6b`, keyword `#8257e6`); and the severity ramp (P0 `#d0402f`, P1 `#e08a2b`, P2 `#e3c34a`, P3 muted). These are specimen content shown *inside* a slide, not house colors. They never touch the chrome.
 
 ### Named Rules
-**The Accent-Follows-Item Rule.** There is no fixed chrome accent. The active item's `colorA` is set on the overlay as `--accent` (inline style) and appears only on the current-state and item-keyed marks — the current rail tick, the chapter label, the current slider dot, the quote attribution, and the agenda numbers. Everything else in the chrome stays bone and graphite. The accent shifts per item; it is never a surface, never a fill behind copy, never running body text.
+**The One Accent Word Rule.** Each slide highlights exactly one word, authored in content as `**word**` and rendered terracotta by `renderAccent`. Beyond that word the signal serves only structure and state — the mono eyebrow, list numerals, the current slide in Contents, selection, focus. It is never a fill behind running text and never appears twice in one heading. Its rarity is the point.
 
-**The Warm-Dark Rule.** The ground is graphite (#141613 / clear #0d0f0e), never pure black; chrome ink is bone (#f1ede2), never pure white. Neutrals are tinted warm. Item color is saturated on purpose — it lives in the field, where bloom carries it.
+**The Warm-Neutral Rule.** Ground is paper `#f3f2ee` or night `#0e0f11`, never pure black; ink is `#17181b` or bone `#f3f2ee`, never pure white. All neutrals tint warm.
 
 ## Typography
 
-**Display Font:** Big Shoulders Text (with Arial Narrow, Helvetica Neue, Arial fallback) — self-hosted woff2 (latin + latin-ext), variable weight 100–900, `font-display: swap`.
-**Body Font:** Big Shoulders Text — the same condensed face carries copy and the 14px document base (`body` font-size, line-height 1.2).
-**Label/Mono Font:** IBM Plex Mono (with ui-monospace, SFMono-Regular, Menlo fallback) — self-hosted woff2, weight 500 only.
+**Display / Body Font:** Geist (self-hosted woff2, weights 400/500/600; with `system-ui` fallback).
+**Label / Mono Font:** Geist Mono (self-hosted woff2, weights 400/500/600; with `ui-monospace` fallback).
 
-**Character:** A tall, condensed, high-confidence display face doing double duty for titles and copy, cut against a single precise mono micro-layer. The pairing reads as a working instrument's panel, not a marketing page.
+**Character:** A calm, contemporary grotesk doing both headline and body duty, cut against a single tracked monospace micro-layer for the page index, eyebrows, and code. The pairing reads technical but composed — a developer's masterclass, not a marketing page.
 
 ### Hierarchy
-- **Display** (700, `clamp(48px, 8.2vw, 128px)`, line-height 0.96, tracking -0.012em, `max-width: 16ch`, centered): the `category` divider title. Drops to `clamp(40px, 12vw, 76px)` / `max-width: 14ch` below 900px.
-- **Title** (700, `clamp(38px, 6.6vw, 88px)`, line-height 0.96, tracking -0.012em, `text-wrap: balance`): the `point`/`slider`/`agenda`/`stat` slide title, lower-left, with a soft legibility `text-shadow`.
-- **Quote** (500, `clamp(30px, 4.3vw, 66px)`, line-height 1.12, tracking -0.005em, `max-width: 20ch`, centered, `text-wrap: balance`): the `quote` pull-quote (`.quote__text`), wrapped in curly quotes via CSS `::before`/`::after` (`\201C`/`\201D`). Below 900px it pins to `clamp(26px, 7vw, 42px)` / `max-width: 18ch`.
-- **Stat Value** (700, `clamp(44px, 6vw, 88px)`, line-height 0.95, tracking -0.01em, `font-variant-numeric: tabular-nums`): the `stat` figure (`.stat__value`). Below 900px it pins to `clamp(40px, 13vw, 64px)`.
-- **Agenda Label** (600, `clamp(20px, 2.6vw, 34px)`, line-height 1.1, tracking 0.01em): the `agenda` row text (`.agenda__label`). Below 900px it pins to `clamp(19px, 5.4vw, 28px)`.
-- **Subtitle** (500, `clamp(16px, 1.9vw, 22px)`, line-height 1.45, tracking 0.01em, max 52ch): the centered `category` supporting line. Below 900px it pins to 16px / max 40ch.
-- **Body** (500, `clamp(16px, 1.85vw, 21px)`, line-height 1.46, tracking 0.01em, max 42ch): the `point`/`slider` summary copy (46ch below 900px, 16px below 560px).
-- **Index** (Mono 500, 12px, tracking 0.18em): the position readout `01 / 05`, active number in bone, total in bone-faint.
-- **Agenda Number** (Mono 500, 13px, tracking 0.16em, `min-width: 2.4ch`, `--accent`): the numbered prefix on each `agenda` row (`.agenda__num`).
-- **Label** (Mono 500, 11px, line-height 1.55, tracking 0.28em, UPPERCASE — the `--type-micro` token): the single micro-layer — deck mark, source, chapter, credit, hint, slider caption, quote attribution (`.quote__by`, `--accent`), stat label (`.stat__label`, bone-faint), and status messages.
+- **Display** (600, `clamp(40px, 6vw, 90px)`, line-height 1.0, tracking -0.03em, max 13ch): the cover title only.
+- **Headline** (600, `clamp(32px, 4.4vw, 58px)`, line-height 1.0, tracking -0.024em, `text-wrap: balance`): divider and quote titles — the largest per-slide statements.
+- **Title** (600, `clamp(30px, 4vw, 52px)`, line-height 1.02, tracking -0.022em, max 15ch): the shared slide heading (`.shead__title`); key-points push to `clamp(34px, 4.6vw, 62px)`.
+- **Body** (400, `clamp(15px, 1.15vw, 18px)`, line-height 1.5, `--ink-soft`, max ~42ch): slide notes and the cover sub-line (`clamp(16px, 1.35vw, 21px)`). Row and list labels step up to weight 500.
+- **Label** (Geist Mono 500, 11px, tracking 0.14em, UPPERCASE — the `.mono` class): page index (`NN / NN`, tracking 0.1em), the slide eyebrow, code tab, table headers, and divider/badge numbers. Code blocks and the line-number gutter render Geist Mono at `clamp(11px, 0.82vw, 13px)`.
+- **Numeral** (600, `clamp(88px, 13vw, 188px)`, line-height 0.8, tracking -0.04em, color `--numeral`): the giant muted divider section number and the oversized quote mark.
 
 ### Named Rules
-**The One Micro-Layer Rule.** All small text is the same mono treatment: 11px, weight 500, uppercase, tracked 0.28em (`--type-micro` + `--tracking-micro`). Marks, chapters, captions, credits, quote attributions, stat labels, and status copy never diverge from it; color may shift (the chapter label and quote attribution pick up `--accent`, stat labels stay bone-faint) but the treatment holds. Two mono readouts are the deliberate exceptions that step outside the micro-layer: the position index (12px, 0.18em) and the agenda number (13px, 0.16em, `--accent`).
+**The Two-Family Rule.** Geist sans carries everything a reader reads for meaning (titles, notes, labels-of-content); Geist Mono carries everything the machine indexes (page numbers, eyebrows, code, table headers). The families never trade jobs.
 
 ## Layout
 
-Full-viewport fixed stage (`.app`, `inset: 0`, `overflow: hidden`); the canvas is layer 0, the overlay layer 2, and the overlay is `pointer-events: none` except its controls. Chrome pins to the four margins with a shared `--inset` of `clamp(22px, 4.4vw, 60px)`: deck mark top-left, position readout + chapter top-right, controls spanning the bottom.
+A fixed full-viewport column (`.deck`, `position: fixed; inset: 0`) padded by `--pad` (`clamp(34px, 4.6vw, 84px)`) horizontally and `--pad-y` (`clamp(24px, 3vw, 46px)`) vertically: a flex-none top chrome and a flexible `.stage` that clips and cross-fades slides. Chrome is a single space-between row — a brand cluster (menu + wordmark) against the mono page index. There is no bottom chrome.
 
-The stage layout is keyed by item type. The default `.stage` seats a title block lower-left at `bottom: clamp(92px, 15vh, 156px)`, max-width `min(660px, 64vw)` — this carries `point`, `slider`, `agenda`, and `stat`, so the drafted form breathes right of center. The `category` and `quote` stages center instead (shared `.stage--category, .stage--quote` block): `top: 50%` translated, full-width with `padding: 0 clamp(24px, 8vw, 160px)`, text centered, behind a soft radial scrim vignette (`::before`). A `slider` adds a right-hand image panel pinned `top`/`bottom` `clamp(96px, 15vh, 150px)`, `right: var(--inset)`, `width: min(52vw, 780px)`; the particle plane is computed to match this rect via `panelWorldRect`. The `agenda` list is a flex column (gap `clamp(10px, 1.4vh, 18px)`) of `.agenda__row` (mono number + display label, baseline-aligned, `--space-gutter` gap); the `stat` block is a `flex-wrap` row (gap `clamp(28px, 4vw, 64px)`) of `.stat` value/label stacks.
+Each archetype owns its own internal grid: divider is `1.18fr / 0.82fr` (numeral+title against a numbered list), key-points and two-column are `1fr / 1fr`, process is a four-column flow of arrow-linked cards, code+UI is `1.05fr / 0.95fr` (code well beside a live preview), table is a full-width bordered matrix, quote is a centered oversized blockquote with corner closer and byline. Titles cap around 12–15ch; body around 42ch. Spacing runs on `--gap` (`clamp(16px, 1.5vw, 24px)`) with per-block `clamp()` rhythm rather than a fixed step scale.
 
-The spacing rhythm runs on a small fixed scale — 8 / 12 / 16px (`--space-sm`/`--space-md`/`--space-gutter`) — with `--inset` as the responsive page margin. Below 900px the particle group recenters, lifts (`y 0.55`), and shrinks (scale 0.82 for model mode); the source line hides; the scrim flips to a bottom-up gradient; the slider panel spans full width at 40vh above the title; quote, agenda, and stat type step down to their mobile clamps. Below 560px summary type pins to 16px and the chapter clamps to 42vw. Short viewports (`max-height: 560px`) lift the title block. A horizontal swipe over 64px advances/retreats; arrows, space/enter, page keys, and Home/End drive the index.
+Below 940px the multi-column archetypes collapse to a single column, the cover sphere moves inline beneath the text, the process flow drops to a 2-up (connector arrows hidden), and the table scrolls horizontally. Navigation: click (left 28% = prev, else next), Arrow/Space/PageUp-Down/Home/End keys, and a 64px horizontal swipe; `O` toggles Contents; `#N` in the hash deep-links the starting slide and stays in sync with the current index.
 
 ## Elevation & Depth
 
-Two distinct depth models, one per layer. The DOM chrome is flat: no drop shadows on surfaces. Separation there is tonal and atmospheric — the graphite ground, a directional overlay scrim (radial + linear gradients of the ground color) that seats copy over the busiest part of the field, a soft radial vignette behind category and quote copy, and a 1px inset hairline ring on controls. Type over the canvas carries a soft blur `text-shadow` purely for legibility, never for lift.
-
-The WebGL field has its own depth: perspective, `AdditiveBlending`, and a bloom post-process pass (`@react-three/postprocessing` EffectComposer Bloom, intensity 1.15, luminanceThreshold 0.1, luminanceSmoothing 0.9, radius 0.72, mipmapBlur) that lets the saturated item colors glow where particles pile up. This glow belongs to the field only; it is never emulated on a DOM surface.
+Two-tier. Slide chrome and in-slide surfaces are flat and separated tonally — the warm ground, `--panel`/`--panel-2` fills (or, for process cards, a tinted `color-mix` over near-black), and 1px hairline borders. There is no ambient drop-shadow on ordinary slide content; a slide flips ground by swapping `[data-theme]`, and the deck color-transitions the change over 420ms. Real elevation is reserved for the one element that genuinely floats: the Contents drawer slides in from the left over a dimmed, blurred scrim on a large soft edge-shadow, and its thumbnails lift on hover.
 
 ### Shadow Vocabulary
-- **Hairline inset ring** (`box-shadow: inset 0 0 0 1px var(--hairline)`): the resting edge of nav arrows, the slider play button, and the slider image frame; the only "border" device. Hover shifts the ring to `bone-faint`; disabled arrows drop it to `hairline-soft`.
-- **Legibility text-shadow** (`0 2px 34px rgba(13,15,14,0.55)` on titles; `0 2px 30px rgba(13,15,14,0.6)` on quote text; `0 2px 26px rgba(13,15,14,0.55)` on stat values; `0 1px 24px rgba(13,15,14,0.5)` on summaries/subtitles; `0 1px 20px rgba(13,15,14,0.5)` on agenda labels): seats ink over the live field. Not for depth.
+- **Drawer lift** (`box-shadow: 28px 0 80px -30px rgba(8,9,10,0.75)`): the left Contents drawer over its `rgba(8,9,10,0.5)` + `blur(3px)` scrim.
+- **Tab lift** (`box-shadow: 0 1px 2px rgba(19,20,24,0.12)`): the active pill in the drawer's Outline/Slides tab switcher.
+- **Thumb hover** (`translateY(-2px)`; current thumb `0 0 0 2px var(--accent)`): the Slides-tab grid responding to hover and marking the active slide.
+- **Specimen shadow** (`0 16px 34px -22px rgba(19,20,24,0.4)` on the two-column auth mock): belongs to the depicted UI specimen, not the deck chrome.
 
 ### Named Rules
-**The No-Surface-Shadow Rule.** DOM surfaces never cast outer shadows. Separation comes from tone, the scrim, and 1px hairline insets. Any outer `box-shadow` on a container is off-world. Glow is a property of the field, produced by bloom, not of the chrome.
+**The Flat-Chrome Rule.** Deck chrome and slide surfaces separate by tone and hairline, never by shadow. Outer shadows appear only on the Contents drawer and its thumbnails — the parts that literally float above the deck.
 
 ## Shapes
 
-Three DOM radii. Controls are fully round pills (`999px`, `--rounded-pill`) or hairline ticks and dots with a 2px corner (`--rounded-tick`); the slider image frame is the one mid-radius surface at `8px`. Focus rings round at 2px. There are no cards — the DOM vocabulary is hairline, pill, tick, and one framed image well.
-
-The recurring silhouette is the particle form itself: ten mathematical geometries in `shapes.js`, each richer than a bare primitive — a Fibonacci-shell sphere, a cubic lattice grid, a swirled gaussian cloud, a tube torus, faceted polyhedra with edge emphasis (icosahedron ~55% edge samples, octahedron ~60%), a multi-wind torus knot (P=3, Q=7), a DNA double-helix with rungs, a four-arm galaxy spiral with a core bulge, and a supernova burst with a dense core and radial streaks. Each form is fit to a per-shape radius and sampled to the fixed 80,000-vertex `Float32Array` so any form can morph into any other; the registry is structured so external GLTF/GLB vertex data can replace a shape without touching item or state logic. The `slider` type (plane mode) replaces the shape target with a flat plane (`buildPlane`) sized to the image panel, with a 1.26× halo and a per-vertex `aEdge` alpha falloff (`smoothstep` over the outer 20%).
+A soft, restrained radius family: `--r-sm` 6px (outline rows, thumbnails) and `--r-md` 10px (spec cards, code wells, two-column frames, process cards). The menu button rounds at 8px; pills at 999px carry badges, chips, tabs, and the close button; the focus ring rounds at 3px. Borders are uniformly hairline. The recurring geometry is the numbered list row divided by top-and-bottom hairlines, and the small rounded specimen card — the deck's structural motifs are lines and lightly-rounded rectangles, not heavy containers.
 
 ## Components
 
 ### Navigation
-- **Arrows (prev/next):** 46px round pills (`999px`) with a 1px inset hairline ring; bone chevrons drawn as inline stroke SVG (`stroke-width: 1.6`, round caps), 19px. Hover shifts the ring to bone-faint and lays a 5%-bone wash; active nudges down 1px; disabled drops to opacity 0.32 with the soft ring and no wash. Transitions run 160ms (`--dur-quick`) on the settle ease.
-- **Tick rail:** one 16×2px bar per item (2px corner), bone-faint at 0.5 opacity, in a 22×44px button hit target with `aria-current`. Past ticks lift to 0.75; the current tick scales to `scaleX(1.85)`, turns `var(--accent)`, and goes fully opaque. Hover brings a tick to full opacity.
-- **Keyboard/touch:** arrows, space/enter (unless a button is focused), page keys, Home/End drive the index; a 64px horizontal swipe advances.
+- **Menu button:** 34px square, 8px radius, 1px hairline border, ink glyph (three-line SVG); hover fills `--panel-2` and strengthens the border. Opens the Contents drawer (also `O`).
+- **Deck nav:** click zones (left 28% prev / rest next), Arrows/Space/PageUp-Down/Home/End, and a 64px swipe. Slides cross-fade with a 14px rise-in (0.44s) and a 10px fall-out (0.26s) on the house ease.
+- **Page index:** mono `NN / NN` (ink, tracking 0.1em), always current-over-total; no per-slide override, no corner eyebrow.
 
-### Marks & Readouts
-- **Deck mark (top-left):** two stacked mono micro-labels from `meta` — `mark` in bone, `source` in bone-faint (source hides under 900px). `meta.mark` also sets `document.title`.
-- **Position (top-right):** mono index `NN / NN` (active bone, total faint) over a chapter label rendered in `var(--accent)`, cross-faded on item change; falls back to the item `type` when no chapter is set.
+### Badges & Chips
+- **Key-point badge:** 40px round (999px), 1px hairline-strong border, terracotta zero-padded number — one per row, hairline-divided.
+- **Slide eyebrow (`.kicker`):** block mono label above the slide title, terracotta, tracked 0.14em uppercase — the per-slide idea label; part of the editorial archetype, not chrome.
+- **Chip / variant pill:** 999px, `--panel-2` fill, `--panel-line` border, ink-soft mono/label text — used for preview state tags.
 
-### Content Blocks
-- **Quote (`quote` type):** a centered `.quote` blockquote holding `.quote__text` (the Quote ramp, bone, curly-quoted via `::before`/`::after`) and an optional `.quote__by` attribution in the mono micro-layer, `--accent`-colored, 28px below. Field mode is `ambient`, same as `category`.
-- **Agenda (`agenda` type):** a numbered `.agenda` flex column of `.agenda__row`, each a mono `.agenda__num` (13px, 0.16em, `--accent`, zero-padded via `pad()`) plus a display `.agenda__label` (Agenda Label ramp, bone). Reads `points[]` (array of strings). Field mode `model`.
-- **Stat (`stat` type):** a "by the numbers" `.stats` flex-wrap row of `.stat` stacks, each a display `.stat__value` (Stat Value ramp, tabular-nums, bone) over a mono `.stat__label` (micro-layer, bone-faint, max 18ch). Reads `stats[]` (array of `{value, label}`). Field mode `model`.
+### Cards & Frames
+- **Spec / code / two-column frame:** `--panel` (or `--panel-2`) fill, 1px `--panel-line` border, 10px radius, `clamp(14px…20px)` padding, no shadow.
+- **Process step card:** a *tall dark-tinted* filled card (`color-mix(in srgb, var(--tone) 15%, #17181c)`, min-height ~88–108px, 10px radius), a small 7px-radius solid-tone number chip (white numeral), and a light `#f3f2ee` title; the four-up flow links cards with a rotated-corner arrow. Not a white bar.
+- **Code well:** `--panel-2` well with a mono `--panel` tab header, a right-aligned mono **line-number gutter** (`--ink-faint`, 50% opacity), and syntax-highlighted `<pre>` (comment/string/keyword tokens).
+- **Table/matrix:** borderless-outer, hairline row rules, mono uppercase headers, terracotta-free; severity is a filled specimen pill, action is plain colored text.
 
-### Image Slider (`slider` type)
-- **Frame:** an 8px-radius well (`#0a0c0b`) with a 1px inset hairline ring, `object-fit: cover` image cross-fading (Framer, 0.8s settle, slight scale-in). Panel is `pointer-events: none`; only the footer controls take input.
-- **Footer:** a mono caption (bone-faint) plus controls — a 34px round pill **play/pause** button (inline SVG glyph, bone-soft → bone on hover, `aria-pressed`) and a row of **dots** (18×2px ticks in 24×44px targets, bone-faint at 0.5; current is `scaleX(1.6)` in `var(--accent)`, `aria-current`). Autoplay advances every 4400ms; choosing a dot or pausing stops it.
+### Contents Drawer (signature)
+A left side drawer (`min(420px, 88vw)`, full height, `--panel` fill, `--r-*` none — square-edged flush to the viewport, 1px hairline right border, drawer-lift shadow) that slides in from `x: -100%` over a dimmed blurred scrim. A pill tab-switcher toggles **Outline** — a nested numbered text outline (`slideOutline()` expands each archetype into its sub-items) with the current slide marked terracotta — and **Slides** — a 2-column 16:9 thumbnail grid where each thumb miniaturizes the slide's eyebrow/title over its own themed ground and the active one wears a 2px terracotta ring. A search field filters both views. Opened by the menu button or `O`; closed by `Esc`, the close pill, the scrim, or picking a slide.
 
-### Particle Field (signature)
-A single `THREE.Points` cloud of 80,000 vertices on a custom `ShaderMaterial` under `THREE.AdditiveBlending`, `depthWrite`/`depthTest` off, transparent, dpr cap [1, 1.75], camera at z 6.2 / fov 45. `uSize` 4.6; the fragment shader draws a soft round dot, mixes `uColorA`→`uColorB` by `vMix`, applies per-particle brightness (`vBright`, 0.55–1.45) and a slow sine twinkle, and outputs at alpha 0.42 so bloom does the lifting. Per-vertex `uDrift` (0.045) keeps the form breathing.
-
-One field, three modes selected by App.jsx `FIELD_MODE[item.type]` (default `'model'`) and passed as the `mode` prop:
-- **model** (`point`, `agenda`, `stat`): full opacity (`uOpacity` 1), 3D shape, group offset x 1.0 desktop (recentered/lifted/0.82 on narrow), slow y-spin (0.05/s) and damped pointer tilt.
-- **ambient** (`category`, `quote`): dim (`uOpacity` 0.3), centered, scale 1.05, same spin/tilt.
-- **plane** (`slider`): full opacity, the cloud morphs into a flat plane sized to the image panel (`panelWorldRect` from the live viewport), positioned over the panel, spin damped to 0 and tilt off, with the `aEdge` falloff (`uPlaneMode` 1) making the palette dissolve from the image edges.
-
-Item changes retarget the geometry and GSAP-tween `uProgress` 0→1 over 1.9s (`power2.inOut`) while `uColorA`/`uColorB` cross-fade and `uPlaneMode` tweens over the same window; `uOpacity` tweens over 0.9s (`power2.out`); group position and scale lerp every frame at 0.08.
+### Cover Sphere (signature)
+A single React Three Fiber `Canvas` (transparent, dpr `[1, 1.8]`, camera z 4.2 / fov 45), rendering one Fibonacci-distributed `points` cloud of 2,800 vertices (`NormalBlending`, soft round dot shader, depth-faded alpha, paper-colored `#f3f2ee`) on a 1.5-unit sphere, rotating slowly on Y (`0.11/s`) with a gentle X sway. It appears on the cover only, upper-right of the title, and freezes (`frameloop: demand`) under `prefers-reduced-motion`.
 
 ### Named Rules
-**The One-Field-Three-Modes Rule.** There is exactly one particle system. Item `type` selects a mode through `FIELD_MODE` (`model` shape / dim `ambient` divider / `slider` halo-`plane`); six types fold onto those three modes and none spawns a second field or swaps to DOM imagery for the shape. The slider's crisp image is DOM; the field remains the same 80,000-vertex cloud, morphed to a plane.
-
-**The Bloom-Lit Field Rule.** The field renders under `AdditiveBlending` plus a bloom pass, so saturated item colors glow where vertices overlap. Color is a scene property carried as item data (`colorA`/`colorB`) and cross-faded on morph — never a flat DOM fill.
+**The One-Canvas Rule.** WebGL exists solely as the cover sphere. No other slide spawns a canvas; every other archetype is DOM and type. The medium stays quiet so the argument reads.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** drive every slide from `content.json` — a `meta` block and a typed `items` array; keep the field and chrome reading item fields (`type`, `title`, `summary`/`subtitle`, `quote`/`attribution`, `points`, `stats`, `chapter`, `colorA`/`colorB`, `shape`, `images`), never hardcoded slides. `_allowed.type` lists all six types.
-- **Do** map any new item `type` onto one of the three field modes via `FIELD_MODE` (default `model`); never add a fourth field behavior.
-- **Do** drive both the field and the one chrome accent from the active item's pair: `colorA`→`colorB` across the form, `colorA` on the current-state and item-keyed marks via `--accent`.
-- **Do** keep the ground graphite (#141613 / clear #0d0f0e) and chrome ink bone (#f1ede2); never pure `#000`/`#fff`.
-- **Do** render the field under additive blending and bloom so the saturated item color glows; keep glow in the field, not on chrome.
-- **Do** render all small text as the one mono micro-layer: 11px, 500, uppercase, tracked 0.28em; the index (12px/0.18em) and agenda number (13px/0.16em) are the only sanctioned deviations.
-- **Do** separate DOM with tone, the scrim, and 1px hairline insets; use `text-shadow` only for legibility over the field.
-- **Do** settle every transition on `cubic-bezier(0.16, 1, 0.3, 1)` (~160ms controls, ~320ms content, 1.9s morph); animate only transform/opacity.
-- **Do** honor `prefers-reduced-motion` (freeze `uTime` so twinkle/drift stop, kill spin/tilt, snap morphs and text, stop slider autoplay) and `prefers-contrast: more` (lift bone-soft/faint and hairline).
-- **Do** ship the loading, error, empty (`no items`), and render-error (ErrorBoundary) states as centered mono status lines.
+- **Do** drive every slide from `content/sample.json` (static import via `useContent`) — a `meta` block plus a typed `items` array; the eight `type` values map to the eight layout components in `Slides.jsx`. Versioned decks live in `content/`.
+- **Do** highlight exactly one word per slide with `**word**`; let `renderAccent` color it terracotta.
+- **Do** assign ground by archetype through `slideTheme()` (cover + keypoints dark, rest light) and flip themes by swapping `[data-theme]` on the deck; never hardcode a slide's colors outside the token set.
+- **Do** keep chrome minimal and top-only: menu + wordmark upper-left, page index (`NN / NN`) upper-right — no footer, no chrome eyebrow.
+- **Do** keep neutrals warm — paper `#f3f2ee` / night `#0e0f11`, ink `#17181b` / bone `#f3f2ee` — never pure `#000`/`#fff`.
+- **Do** set the page index, code, and table headers in Geist Mono; set everything read for meaning in Geist sans.
+- **Do** separate surfaces with tone and 1px hairlines; reserve the outer shadow for the floating Contents drawer.
+- **Do** settle motion on `cubic-bezier(0.22, 1, 0.36, 1)` (~200ms controls, ~440ms slide-in, ~400ms drawer) and honor `prefers-reduced-motion` (freeze the sphere, shorten transitions).
 
 ### Don't:
-- **Don't** reintroduce a single fixed house accent for the chrome — the state marks follow the active item's hue.
-- **Don't** put item color on a chrome surface or behind running text; its home is the field (accent tints only marks, the quote attribution, and agenda numbers).
-- **Don't** add glass, bordered container stacks, cards, or outer drop shadows on DOM surfaces; the image frame's 8px well is the only framed surface.
-- **Don't** ease anything in; nothing enters with `ease-in`.
-- **Don't** spawn a second particle system or swap the shape for a DOM image — one field, three modes keyed to item `type`.
-- **Don't** reintroduce removed tokens (`--void-lift`, `--signal-deep`, `--scrim`, `--space-xs`, `--space-row`, `--space-margin`, `--space-xl`); document only tokens defined in `tokens.css` now.
+- **Don't** put the terracotta signal on a filled surface behind running text, or use it twice in one heading — it marks one word plus structural marks and active state, nothing else.
+- **Don't** add a second WebGL canvas; the cover sphere is the only one.
+- **Don't** introduce a new archetype without giving it a `type` and a layout component; never render an untyped slide (the fallback is the divider).
+- **Don't** add drop shadows, glass, or bordered container stacks to slide chrome — hairlines and tone carry separation.
+- **Don't** promote a specimen color (process tones, the two-column success green, preview buttons, severity ramp, code tokens) into the house palette; those live inside depicted UI only.

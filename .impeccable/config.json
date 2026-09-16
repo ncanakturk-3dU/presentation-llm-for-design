@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-09-16T12:06:44.766Z",
+        "reason": "Design lead: visual world pinned by the user's reference deck, whose type is a neutral grotesk; Geist is the faithful self-hosted match to that pinned reference (fidelity choice, not a category default)."
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-09-16T12:10:49.148Z",
+        "reason": "Design lead: monospace companion to the pinned-reference grotesk; used only for code, indices, and labels — fidelity choice, same rationale as Geist."
+      }
+    ]
+  }
+}

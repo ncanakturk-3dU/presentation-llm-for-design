@@ -5,4 +5,6 @@ dist-ssr
 *.local
 .env
 .vite
-.claude
+.claude/*.lock
+.impeccable/review/
+.impeccable/hook.cache.json

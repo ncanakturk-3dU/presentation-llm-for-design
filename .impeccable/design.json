@@ -1,191 +1,132 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-15T00:00:00Z",
-  "title": "Design System: The Anti-Slop Framework",
+  "generatedAt": "2026-09-16T00:00:00Z",
+  "title": "Design System: LLM for Design",
   "extensions": {
     "colorMeta": {
-      "void": { "role": "neutral", "displayName": "Void (Warm Graphite)", "canonical": "#141613", "tonalRamp": ["#0a0b09", "#141613", "#1d201c", "#2a2e29", "#3c413a", "#5a6058", "#828a7f", "#b3b9ac", "#e9ece2"] },
-      "scrim": { "role": "neutral", "displayName": "Scrim (Clear Color)", "canonical": "#0d0f0e", "tonalRamp": ["#070807", "#0d0f0e", "#161917", "#232624", "#343a36", "#525a53", "#7c847a", "#aeb4a8", "#e6e9e0"] },
-      "bone": { "role": "neutral", "displayName": "Bone", "canonical": "#f1ede2", "tonalRamp": ["#3a382f", "#565345", "#726e5c", "#8f8a76", "#aca691", "#c7c2ae", "#dcd8c9", "#f1ede2", "#faf8f1"] },
-      "bone-soft": { "role": "neutral", "displayName": "Bone Soft", "canonical": "#cdccc0", "tonalRamp": ["#33332d", "#4c4b43", "#66655a", "#807f71", "#9a9989", "#b3b2a4", "#cdccc0", "#e0dfd6", "#f2f1ea"] },
-      "bone-faint": { "role": "neutral", "displayName": "Bone Faint", "canonical": "#9a9b8f", "tonalRamp": ["#27271f", "#3b3b31", "#4f5044", "#646557", "#7a7b6d", "#9a9b8f", "#b3b4aa", "#cdcec6", "#e8e8e2"] },
-      "slider-well": { "role": "neutral", "displayName": "Slider Well", "canonical": "#0a0c0b", "tonalRamp": ["#050605", "#0a0c0b", "#121513", "#1e221f", "#2f342f", "#4c524b", "#767c73", "#a9afa4", "#e4e7de"] },
-      "signal": { "role": "tertiary", "displayName": "Terracotta Signal", "canonical": "#e0592f", "tonalRamp": ["#3d1409", "#5c1e0d", "#7c2911", "#9c3517", "#bd431e", "#e0592f", "#e97a56", "#f2a184", "#fbcbbb"] }
+      "signal": { "role": "primary", "displayName": "Terracotta Signal", "canonical": "#d9552a", "tonalRamp": ["#3a1608", "#5c220d", "#812f13", "#a63c1a", "#d9552a", "#e57a52", "#eea183", "#f6c8ba"] },
+      "signal-dark": { "role": "primary", "displayName": "Terracotta Signal (Dark)", "canonical": "#ec6b39", "tonalRamp": ["#3f1c0c", "#622c12", "#883c18", "#b04e1f", "#ec6b39", "#f18d63", "#f6b092", "#fbd6c2"] },
+      "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#f3f2ee", "tonalRamp": ["#2b2a26", "#454440", "#605e58", "#8b8981", "#b6b4ab", "#d6d4cc", "#ebe9e3", "#f3f2ee"] },
+      "ink": { "role": "neutral", "displayName": "Warm Ink", "canonical": "#17181b", "tonalRamp": ["#17181b", "#2a2b2f", "#3f4045", "#56575c", "#727378", "#8c8d92", "#bcbdc1", "#e6e6e8"] },
+      "night": { "role": "neutral", "displayName": "Deep-Warm Night", "canonical": "#0e0f11", "tonalRamp": ["#0e0f11", "#16171a", "#202226", "#2c2e33", "#3a3c42", "#6d6f75", "#a7a8ad", "#f3f2ee"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Centered category-divider title; largest type on the stage." },
-      "title": { "displayName": "Title", "purpose": "Lower-left point/slider/agenda/stat slide title, text-wrap balance." },
-      "quote": { "displayName": "Quote", "purpose": "Centered pull-quote text for the quote type; curly-quoted via ::before/::after." },
-      "stat-value": { "displayName": "Stat Value", "purpose": "Large tabular-nums figure in the stat block." },
-      "agenda-label": { "displayName": "Agenda Label", "purpose": "Display row text in the numbered agenda list." },
-      "subtitle": { "displayName": "Subtitle", "purpose": "Centered supporting line under a category title." },
-      "body": { "displayName": "Body", "purpose": "Point/slider summary copy, max 42ch." },
-      "base": { "displayName": "Document Base", "purpose": "The 14px document base on body; condensed display face, line-height 1.2." },
-      "index": { "displayName": "Index", "purpose": "Mono position readout NN / NN, top-right." },
-      "agenda-num": { "displayName": "Agenda Number", "purpose": "Mono accent-colored zero-padded prefix on each agenda row (13px/0.16em)." },
-      "label": { "displayName": "Label (Micro-Layer)", "purpose": "The one mono micro-layer: marks, chapter, caption, hint, quote attribution, stat label, status." }
+      "display": { "displayName": "Display", "purpose": "Cover title only." },
+      "headline": { "displayName": "Headline", "purpose": "Divider and quote titles — largest per-slide statement." },
+      "title": { "displayName": "Title", "purpose": "Shared slide heading across archetypes." },
+      "body": { "displayName": "Body", "purpose": "Notes, sub-lines, secondary copy." },
+      "label": { "displayName": "Mono Label", "purpose": "Page index, slide eyebrow, code, table headers, badge numbers." },
+      "numeral": { "displayName": "Section Numeral", "purpose": "Giant muted divider number and quote mark." }
     },
     "shadows": [
-      { "name": "hairline-ring", "value": "inset 0 0 0 1px var(--hairline)", "purpose": "Resting edge of arrows, slider play button, and image frame; the only border device." },
-      { "name": "hairline-ring-hover", "value": "inset 0 0 0 1px var(--bone-faint)", "purpose": "Hover state of arrow and play button rings." },
-      { "name": "hairline-ring-soft", "value": "inset 0 0 0 1px var(--hairline-soft)", "purpose": "Disabled arrow ring." },
-      { "name": "title-legibility", "value": "0 2px 34px rgba(13,15,14,0.55)", "purpose": "Seats slide/display titles over the live field; not for depth." },
-      { "name": "quote-legibility", "value": "0 2px 30px rgba(13,15,14,0.6)", "purpose": "Seats centered quote text over the field." },
-      { "name": "stat-legibility", "value": "0 2px 26px rgba(13,15,14,0.55)", "purpose": "Seats stat values over the field." },
-      { "name": "agenda-legibility", "value": "0 1px 20px rgba(13,15,14,0.5)", "purpose": "Seats agenda labels over the field." },
-      { "name": "copy-legibility", "value": "0 1px 24px rgba(13,15,14,0.5)", "purpose": "Seats summary and subtitle copy over the field." }
+      { "name": "drawer-lift", "value": "28px 0 80px -30px rgba(8,9,10,0.75)", "purpose": "The left Contents drawer sliding in over its dimmed blurred scrim." },
+      { "name": "tab-lift", "value": "0 1px 2px rgba(19,20,24,0.12)", "purpose": "Active pill in the drawer's Outline/Slides tab switcher." },
+      { "name": "thumb-current", "value": "0 0 0 2px var(--accent)", "purpose": "Terracotta ring marking the active slide in the Slides grid." },
+      { "name": "specimen-mock", "value": "0 16px 34px -22px rgba(19,20,24,0.4)", "purpose": "Depicted auth-UI specimen inside the two-column slide; not deck chrome." }
     ],
     "motion": [
-      { "name": "ease-settle", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Every DOM transition and Framer content move; nothing eases in." },
-      { "name": "dur-quick", "value": "160ms", "purpose": "Control state transitions (arrows, ticks, dots, play)." },
-      { "name": "dur-settle", "value": "320ms", "purpose": "Content-level transitions such as the chapter color cross-fade." },
-      { "name": "morph", "value": "1.9s power2.inOut (GSAP)", "purpose": "Particle uProgress morph, color cross-fade, and uPlaneMode tween." },
-      { "name": "opacity-tween", "value": "0.9s power2.out (GSAP)", "purpose": "Field uOpacity tween between model/plane (1) and ambient (0.3)." },
-      { "name": "group-lerp", "value": "0.08 per frame", "purpose": "Continuous lerp of particle group position and scale between items." },
-      { "name": "slider-autoplay", "value": "4400ms interval", "purpose": "Image rotation cadence; paused by reduced-motion or user control." }
+      { "name": "ease", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "House easing (EASE = [0.22,1,0.36,1] in motion.js); everything settles, nothing eases in." },
+      { "name": "dur", "value": "200ms", "purpose": "Control and hover state transitions." },
+      { "name": "slide-in", "value": "440ms", "purpose": "Slide cross-fade with a 14px rise-in (exit 260ms, 10px fall)." },
+      { "name": "drawer-in", "value": "400ms", "purpose": "Contents drawer slide-in from x:-100% (exit 260ms)." },
+      { "name": "theme-shift", "value": "420ms", "purpose": "Ground/ink color transition when a slide flips light/dark." }
     ],
     "breakpoints": [
-      { "name": "tablet", "value": "900px" },
-      { "name": "mobile", "value": "560px" },
-      { "name": "short", "value": "560px (height)" }
-    ],
-    "scene": {
-      "count": 80000,
-      "dpr": [1, 1.75],
-      "camera": { "position": [0, 0, 6.2], "fov": 45 },
-      "clearColor": "#0d0f0e",
-      "material": { "uSize": 4.6, "uDrift": 0.045, "baseAlpha": 0.42, "blending": "AdditiveBlending", "depthWrite": false, "depthTest": false },
-      "bloom": { "intensity": 1.15, "luminanceThreshold": 0.1, "luminanceSmoothing": 0.9, "radius": 0.72, "mipmapBlur": true },
-      "fieldModeMap": { "point": "model", "agenda": "model", "stat": "model", "category": "ambient", "quote": "ambient", "slider": "plane", "default": "model" },
-      "modes": {
-        "model": { "uOpacity": 1, "offsetX": 1.0, "spin": "0.05/s", "tilt": true, "narrowScale": 0.82 },
-        "ambient": { "uOpacity": 0.3, "centered": true, "scale": 1.05, "spin": "0.05/s", "tilt": true },
-        "plane": { "uOpacity": 1, "uPlaneMode": 1, "plane": "panelWorldRect", "haloScale": 1.26, "edgeFalloff": "smoothstep(0,0.2)", "spin": 0, "tilt": false }
-      },
-      "shapes": ["sphere", "lattice", "cloud", "torus", "icosahedron", "octahedron", "knot", "helix", "spiral", "burst"]
-    },
-    "itemTypes": [
-      { "type": "category", "mode": "ambient", "fields": ["title", "subtitle"], "layout": "centered" },
-      { "type": "point", "mode": "model", "fields": ["title", "summary"], "layout": "lower-left" },
-      { "type": "slider", "mode": "plane", "fields": ["title", "summary", "images"], "layout": "lower-left + right image panel" },
-      { "type": "quote", "mode": "ambient", "fields": ["quote", "attribution"], "layout": "centered" },
-      { "type": "agenda", "mode": "model", "fields": ["title", "points[]"], "layout": "lower-left" },
-      { "type": "stat", "mode": "model", "fields": ["title", "stats[] {value,label}"], "layout": "lower-left" }
+      { "name": "collapse", "value": "940px" }
     ]
   },
   "components": [
     {
-      "name": "Nav Arrow",
-      "kind": "nav",
-      "refersTo": "arrow",
-      "description": "Prev/next round pill with hairline ring and inline chevron.",
-      "html": "<button class=\"ds-arrow\" aria-label=\"Next slide\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" aria-hidden=\"true\"><path d=\"M9.5 5.5 16 12l-6.5 6.5\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
-      "css": ".ds-arrow { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 999px; box-shadow: inset 0 0 0 1px #f1ede21f; color: #f1ede2; transition: box-shadow 160ms cubic-bezier(0.16,1,0.3,1), background-color 160ms cubic-bezier(0.16,1,0.3,1), color 160ms cubic-bezier(0.16,1,0.3,1), transform 160ms cubic-bezier(0.16,1,0.3,1); } .ds-arrow:hover { box-shadow: inset 0 0 0 1px #9a9b8f; background: rgba(241,237,226,0.05); } .ds-arrow:active { transform: translateY(1px); } .ds-arrow:disabled { color: #9a9b8f; opacity: 0.32; box-shadow: inset 0 0 0 1px #f1ede210; background: none; cursor: default; }"
-    },
-    {
-      "name": "Tick Rail Item",
-      "kind": "nav",
-      "refersTo": "rail-tick",
-      "description": "One tick per slide; current tick widens and turns the item accent.",
-      "html": "<button class=\"ds-tick is-current\" aria-current=\"true\" aria-label=\"Go to slide 1\"><span aria-hidden=\"true\"></span></button>",
-      "css": ".ds-tick { --accent: #ffc44d; height: 44px; width: 22px; display: flex; align-items: center; justify-content: center; } .ds-tick > span { display: block; width: 16px; height: 2px; border-radius: 2px; background: #9a9b8f; opacity: 0.5; transform-origin: center; transition: transform 160ms cubic-bezier(0.16,1,0.3,1), background-color 160ms cubic-bezier(0.16,1,0.3,1), opacity 160ms cubic-bezier(0.16,1,0.3,1); } .ds-tick:hover > span { opacity: 1; } .ds-tick.is-past > span { opacity: 0.75; } .ds-tick.is-current > span { transform: scaleX(1.85); background: var(--accent); opacity: 1; }"
-    },
-    {
-      "name": "Slider Play Toggle",
+      "name": "Accent Word",
       "kind": "custom",
-      "refersTo": "slider-play",
-      "description": "Round pill toggling image autoplay; inline play/pause glyph.",
-      "html": "<button class=\"ds-play\" aria-label=\"Pause image rotation\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"13\" height=\"13\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"6\" y=\"5\" width=\"4\" height=\"14\" rx=\"1\"/><rect x=\"14\" y=\"5\" width=\"4\" height=\"14\" rx=\"1\"/></svg></button>",
-      "css": ".ds-play { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 999px; box-shadow: inset 0 0 0 1px #f1ede21f; color: #cdccc0; transition: color 160ms cubic-bezier(0.16,1,0.3,1), box-shadow 160ms cubic-bezier(0.16,1,0.3,1); } .ds-play:hover { color: #f1ede2; box-shadow: inset 0 0 0 1px #9a9b8f; }"
+      "refersTo": "accent-word",
+      "description": "The single terracotta-highlighted word per slide, authored as **word** in content.",
+      "html": "<h2 class=\"ds-title\">Better input leads to <span class=\"ds-accent\">better</span> design output.</h2>",
+      "css": ".ds-title { font-family: Geist, system-ui, sans-serif; font-weight: 600; font-size: clamp(30px, 4vw, 52px); line-height: 1.02; letter-spacing: -0.022em; color: #17181b; max-width: 15ch; text-wrap: balance; margin: 0; } .ds-accent { color: #d9552a; }"
     },
     {
-      "name": "Slider Dot",
+      "name": "Menu Button",
       "kind": "nav",
-      "refersTo": "slider-dot",
-      "description": "Tick-style image selector; current dot widens to the item accent.",
-      "html": "<button class=\"ds-dot is-on\" aria-current=\"true\" aria-label=\"Show image 1 of 2\"><span aria-hidden=\"true\"></span></button>",
-      "css": ".ds-dot { --accent: #1fd6b0; height: 44px; width: 24px; display: flex; align-items: center; justify-content: center; } .ds-dot > span { display: block; width: 18px; height: 2px; border-radius: 2px; background: #9a9b8f; opacity: 0.5; transform-origin: center; transition: transform 160ms cubic-bezier(0.16,1,0.3,1), background-color 160ms cubic-bezier(0.16,1,0.3,1), opacity 160ms cubic-bezier(0.16,1,0.3,1); } .ds-dot:hover > span { opacity: 1; } .ds-dot.is-on > span { transform: scaleX(1.6); background: var(--accent); opacity: 1; }"
+      "refersTo": "menu-button",
+      "description": "Opens the Contents drawer; upper-left of the chrome.",
+      "html": "<button class=\"ds-menu\" aria-label=\"Open contents\"><svg viewBox=\"0 0 24 24\" width=\"17\" height=\"17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\"><path d=\"M4 7h16M4 12h16M4 17h16\"/></svg></button>",
+      "css": ".ds-menu { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; color: #17181b; background: none; border: 1px solid rgba(19,20,24,0.11); transition: background-color 200ms cubic-bezier(0.22,1,0.36,1), border-color 200ms cubic-bezier(0.22,1,0.36,1); } .ds-menu:hover { background: #f7f6f2; border-color: rgba(19,20,24,0.18); } .ds-menu:focus-visible { outline: 2px solid #d9552a; outline-offset: 3px; }"
     },
     {
-      "name": "Slider Image Frame",
+      "name": "Key-Point Badge",
+      "kind": "chip",
+      "refersTo": "keypoint-badge",
+      "description": "Numbered round badge leading each key-point row.",
+      "html": "<span class=\"ds-badge\">01</span>",
+      "css": ".ds-badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(19,20,24,0.18); color: #d9552a; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; }"
+    },
+    {
+      "name": "Process Step Card",
       "kind": "card",
-      "refersTo": "slider-frame",
-      "description": "The one framed surface: an 8px well with a hairline ring holding a cover image.",
-      "html": "<div class=\"ds-frame\"><img class=\"ds-frame__img\" src=\"media/slide-a.svg\" alt=\"First placeholder image\"></div>",
-      "css": ".ds-frame { position: relative; border-radius: 8px; overflow: hidden; box-shadow: inset 0 0 0 1px #f1ede21f; background: #0a0c0b; aspect-ratio: 4 / 3; } .ds-frame__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }"
+      "refersTo": "spec-card",
+      "description": "Tall dark-tinted filled step card: color-mix of a per-step tone over near-black, solid-tone number chip, light title. Used in the four-up process flow.",
+      "html": "<div class=\"ds-step\"><div class=\"ds-step-card\"><span class=\"ds-step-chip\">1</span><span class=\"ds-step-title\">Design system</span></div></div>",
+      "css": ".ds-step-card { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; min-height: 100px; padding: clamp(13px,1.3vw,17px); border-radius: 10px; background: color-mix(in srgb, #2f8f86 15%, #17181c); } .ds-step-chip { align-self: flex-start; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: #fff; background: #2f8f86; } .ds-step-title { font-family: Geist, system-ui, sans-serif; font-weight: 600; font-size: clamp(14px,1.1vw,17px); color: #f3f2ee; line-height: 1.15; }"
     },
     {
-      "name": "Pull Quote",
+      "name": "Code Well",
       "kind": "custom",
-      "refersTo": "quote",
-      "description": "Centered ambient-mode pull-quote with curly quotes and an accent attribution.",
-      "html": "<blockquote class=\"ds-quote\"><p class=\"ds-quote__text\">A short, quotable line that lands the whole idea in a single breath.</p></blockquote><p class=\"ds-quote__by\">Placeholder Name, Role</p>",
-      "css": ".ds-quote { margin: 0; border: 0; } .ds-quote__text { margin: 0; font-family: 'Big Shoulders Text', 'Arial Narrow', sans-serif; font-weight: 500; font-size: clamp(30px, 4.3vw, 66px); line-height: 1.12; letter-spacing: -0.005em; color: #f1ede2; max-width: 20ch; text-wrap: balance; text-shadow: 0 2px 30px rgba(13,15,14,0.6); } .ds-quote__text::before { content: '\\201C'; } .ds-quote__text::after { content: '\\201D'; } .ds-quote__by { --accent: #ffb14d; margin: 28px 0 0; font: 500 11px/1.55 'IBM Plex Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }"
+      "refersTo": "spec-card",
+      "description": "Syntax-highlighted code panel with a mono tab header and a right-aligned line-number gutter.",
+      "html": "<div class=\"ds-code\"><div class=\"ds-code-tab\">Button.tsx</div><div class=\"ds-code-body\"><div class=\"ds-code-gutter\"><span>1</span><span>2</span><span>3</span></div><pre class=\"ds-code-pre\"><code><span class=\"ds-kw\">export function</span> Button() {\n  <span class=\"ds-kw\">return</span> <span class=\"ds-str\">'ok'</span>\n}</code></pre></div></div>",
+      "css": ".ds-code { border-radius: 10px; border: 1px solid rgba(19,20,24,0.09); background: #f7f6f2; overflow: hidden; } .ds-code-tab { padding: 11px 16px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8c8d92; background: #fff; border-bottom: 1px solid rgba(19,20,24,0.09); } .ds-code-body { display: flex; align-items: stretch; } .ds-code-gutter { flex: none; padding: 16px 0 16px 16px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.55; text-align: right; color: #8c8d92; opacity: 0.5; user-select: none; } .ds-code-gutter span { display: block; } .ds-code-pre { margin: 0; padding: 16px 16px 16px 14px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.55; color: #56575c; } .ds-kw { color: #8257e6; } .ds-str { color: #2e8b6b; }"
     },
     {
-      "name": "Agenda List",
-      "kind": "custom",
-      "refersTo": "agenda-label",
-      "description": "Numbered list: mono accent number plus a display label per row.",
-      "html": "<ol class=\"ds-agenda\"><li class=\"ds-agenda__row\"><span class=\"ds-agenda__num\">01</span><span class=\"ds-agenda__label\">Placeholder topic one</span></li></ol>",
-      "css": ".ds-agenda { --accent: #1fd6b0; list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-direction: column; gap: clamp(10px, 1.4vh, 18px); } .ds-agenda__row { display: flex; align-items: baseline; gap: 16px; } .ds-agenda__num { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 500; font-size: 13px; letter-spacing: 0.16em; color: var(--accent); min-width: 2.4ch; } .ds-agenda__label { font-family: 'Big Shoulders Text', 'Arial Narrow', sans-serif; font-weight: 600; font-size: clamp(20px, 2.6vw, 34px); line-height: 1.1; letter-spacing: 0.01em; color: #f1ede2; text-shadow: 0 1px 20px rgba(13,15,14,0.5); }"
+      "name": "Variant Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pill tag for preview states inside the code+UI slide.",
+      "html": "<span class=\"ds-pill\">Default</span>",
+      "css": ".ds-pill { display: inline-block; padding: 5px 11px; border-radius: 999px; border: 1px solid rgba(19,20,24,0.09); background: #f7f6f2; font-family: Geist, system-ui, sans-serif; font-size: 12px; color: #56575c; }"
     },
     {
-      "name": "Stat Block",
+      "name": "Contents Thumbnail",
       "kind": "custom",
-      "refersTo": "stat-value",
-      "description": "By-the-numbers row: large tabular figure over a mono micro-label.",
-      "html": "<div class=\"ds-stats\"><div class=\"ds-stat\"><span class=\"ds-stat__value\">98%</span><span class=\"ds-stat__label\">Placeholder metric</span></div></div>",
-      "css": ".ds-stats { margin: 30px 0 0; display: flex; flex-wrap: wrap; gap: clamp(28px, 4vw, 64px); } .ds-stat { display: flex; flex-direction: column; gap: 6px; } .ds-stat__value { font-family: 'Big Shoulders Text', 'Arial Narrow', sans-serif; font-weight: 700; font-size: clamp(44px, 6vw, 88px); line-height: 0.95; letter-spacing: -0.01em; color: #f1ede2; font-variant-numeric: tabular-nums; text-shadow: 0 2px 26px rgba(13,15,14,0.55); } .ds-stat__label { max-width: 18ch; font: 500 11px/1.55 'IBM Plex Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.28em; text-transform: uppercase; color: #9a9b8f; }"
-    },
-    {
-      "name": "Position Readout",
-      "kind": "custom",
-      "refersTo": "index",
-      "description": "Top-right mono index over an accent-tinted chapter label.",
-      "html": "<div class=\"ds-pos\"><div class=\"ds-pos__index\"><span class=\"ds-pos__num\">01</span><span class=\"ds-pos__total\">/ 05</span></div><span class=\"ds-pos__chapter\">Part One</span></div>",
-      "css": ".ds-pos { --accent: #ffc44d; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; } .ds-pos__index { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 500; font-size: 12px; letter-spacing: 0.18em; display: flex; align-items: baseline; gap: 6px; } .ds-pos__num { color: #f1ede2; } .ds-pos__total { color: #9a9b8f; } .ds-pos__chapter { font: 500 11px/1.55 'IBM Plex Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }"
+      "refersTo": "contents-thumb",
+      "description": "16:9 slide miniature in the drawer's Slides grid; the active one wears a terracotta ring.",
+      "html": "<button class=\"ds-thumb is-current\"><span class=\"ds-thumb-frame\"><span class=\"ds-thumb-kicker\">KEY TAKEAWAY</span><span class=\"ds-thumb-title\">Better input leads to better design output.</span></span><span class=\"ds-thumb-foot\"><span class=\"ds-thumb-n\">03</span><span class=\"ds-thumb-type\">keypoints</span></span></button>",
+      "css": ".ds-thumb { display: flex; flex-direction: column; gap: 8px; text-align: left; background: none; border: 0; } .ds-thumb-frame { display: flex; flex-direction: column; gap: 6px; aspect-ratio: 16 / 9; border-radius: 6px; border: 1px solid rgba(19,20,24,0.11); background: #f3f2ee; color: #17181b; padding: 12px; overflow: hidden; transition: box-shadow 200ms cubic-bezier(0.22,1,0.36,1), transform 200ms cubic-bezier(0.22,1,0.36,1); } .ds-thumb:hover .ds-thumb-frame { transform: translateY(-2px); } .ds-thumb.is-current .ds-thumb-frame { box-shadow: 0 0 0 2px #d9552a; border-color: transparent; } .ds-thumb-kicker { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: #d9552a; } .ds-thumb-title { font-family: Geist, system-ui, sans-serif; font-weight: 600; font-size: 13px; line-height: 1.1; letter-spacing: -0.01em; } .ds-thumb-foot { display: flex; justify-content: space-between; } .ds-thumb-n { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; } .ds-thumb-type { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; color: #8c8d92; }"
     }
   ],
   "narrative": {
-    "northStar": "Instrument.",
-    "overview": "A deep-graphite instrument, never lit and never pure black. The whole stage is one full-bleed WebGL particle field of 80,000 fine vertices, driven entirely from public/content.json: a meta block names the mark, source, and hint, and an items array of typed entries supplies every slide. Each item declares a type — one of six: category, point, slider, quote, agenda, stat — and a saturated two-tone pair (colorA/colorB) that runs across the form and glows through bloom, so each idea arrives in its own light. The one field takes three modes, not one per type: App.jsx FIELD_MODE maps type to mode (slider->plane, category/quote->ambient, everything else->model). A model field (point, agenda, stat) is a full-opacity 3D shape offset right; an ambient field (category, quote) is a dim centered divider/quote backdrop; a plane field (slider) morphs the same cloud into a flat plane sized to the image panel, with an edge-alpha falloff so it reads as a tile-map dust halo dissolving from the image edges. The field is continuous across items: group position and scale lerp every frame while the shape morph, colors, opacity, and plane-mode are GSAP-tweened over 1.9s. Because the deck argues for anti-slop craft, its chrome carries none of the slop it describes: no gradient wash as decoration, no card grids, no floating pills, no glass, no bordered stacks, no outer drop shadows. Color lives in the field, not the chrome.",
+    "northStar": "The Well-Set Conference Talk",
+    "overview": "One presenter's deck built as a precise editorial system, not a bullet template and not the all-dark WebGL demo that preceded it. Eight distinct slide archetypes ride a single grid, a single Geist type system, and a single terracotta signal; each slide states one idea in the layout it deserves, and the accent marks the one word that carries it. The stage is a flat full-viewport frame with minimal top-only chrome — menu + wordmark upper-left, page index upper-right — and one live slide cross-faded beneath it; there is no footer. Ground is assigned per archetype: cover and key-points on near-black night, the rest on warm paper, overridable per item; the two themes are one token set reassigned under [data-theme]. WebGL appears exactly once, as a slowly rotating dotted sphere on the cover. Color lives in the neutral ink-on-paper surfaces; the terracotta signal is rationed to a single word plus structural marks and active state; depth is tonal and hairline except the Contents drawer that slides in from the left.",
     "keyCharacteristics": [
-      "One full-bleed particle field (80,000 vertices), JSON-driven, is the entire stage; chrome lives at the margins.",
-      "One field, three modes keyed to item type: model shape, dim ambient divider, slider image-halo plane. Six types fold onto those three modes.",
-      "Each item owns a saturated colorA -> colorB pair; the field glows it through additive blending and bloom.",
-      "--accent follows the active item's colorA onto the current-state marks, the quote attribution, and the agenda numbers; the fixed terracotta only backs ::selection.",
-      "Bone ink on warm graphite; condensed display type (Big Shoulders Text) against one tracked mono micro-layer (IBM Plex Mono).",
-      "Hairline, pill, and quiet-block DOM vocabulary only — no glass, no bordered stacks, no decorative surface shadow.",
-      "Everything settles on cubic-bezier(0.16, 1, 0.3, 1); nothing eases in."
+      "Eight editorial archetypes on one grid and one Geist type system; JSON drives every slide from a static import of content/sample.json (versioned decks in content/).",
+      "Ground assigned per archetype via slideTheme() (cover + keypoints dark, rest light), overridable per item with theme; one token set flipped by [data-theme].",
+      "Exactly one terracotta word per slide, authored as **word** and rendered as .accent.",
+      "Warm neutrals only — paper #f3f2ee, night #0e0f11, never pure #000/#fff; ink tinted warm.",
+      "Geist grotesk carries display and body; Geist Mono carries page index, code, the slide eyebrow, and micro-labels.",
+      "Flat and hairline by default; elevation shadow only on the floating Contents drawer.",
+      "Everything settles on cubic-bezier(0.22, 1, 0.36, 1); nothing eases in."
     ],
     "rules": [
-      { "name": "The Accent-Follows-Item Rule", "body": "There is no fixed chrome accent. The active item's colorA is set on the overlay as --accent and appears only on the current-state and item-keyed marks — the current rail tick, the chapter label, the current slider dot, the quote attribution, and the agenda numbers. Everything else stays bone and graphite; the accent is never a surface, fill, or running text.", "section": "colors" },
-      { "name": "The Warm-Dark Rule", "body": "The ground is graphite (#141613 / clear #0d0f0e), never pure black; chrome ink is bone (#f1ede2), never pure white. Item color is saturated on purpose — it lives in the field, where bloom carries it.", "section": "colors" },
-      { "name": "The One Micro-Layer Rule", "body": "All small text is the same mono treatment: 11px, weight 500, uppercase, tracked 0.28em. Marks, chapters, captions, credits, quote attributions, stat labels, and status copy never diverge; color may shift (chapter and quote attribution pick up --accent, stat labels stay bone-faint) but the treatment holds. The position index (12px, 0.18em) and the agenda number (13px, 0.16em) are the only sanctioned deviations.", "section": "typography" },
-      { "name": "The No-Surface-Shadow Rule", "body": "DOM surfaces never cast outer shadows. Separation comes from tone, the scrim, and 1px hairline insets. Glow is a property of the field, produced by bloom, not of the chrome.", "section": "elevation" },
-      { "name": "The One-Field-Three-Modes Rule", "body": "There is exactly one particle system. Item type selects a mode through FIELD_MODE (model shape / dim ambient divider / slider halo-plane); six types fold onto those three modes and none spawns a second field or swaps to DOM imagery for the shape. The slider's crisp image is DOM; the field remains the same 80,000-vertex cloud, morphed to a plane.", "section": "elevation" },
-      { "name": "The Bloom-Lit Field Rule", "body": "The field renders under AdditiveBlending plus a bloom pass, so saturated item colors glow where vertices overlap. Color is a scene property carried as item data (colorA/colorB) and cross-faded on morph — never a flat DOM fill.", "section": "elevation" }
+      { "name": "The One Accent Word Rule", "body": "Each slide highlights exactly one word, authored as **word** and rendered terracotta by renderAccent. Beyond that word the signal serves only structure and state — the mono eyebrow, list numerals, the current slide in Contents, selection, focus. It is never a fill behind running text and never appears twice in one heading. Its rarity is the point.", "section": "colors" },
+      { "name": "The Warm-Neutral Rule", "body": "Ground is paper #f3f2ee or night #0e0f11, never pure black; ink is #17181b or bone #f3f2ee, never pure white. All neutrals tint warm.", "section": "colors" },
+      { "name": "The Two-Family Rule", "body": "Geist sans carries everything a reader reads for meaning; Geist Mono carries everything the machine indexes (page numbers, eyebrows, code, table headers). The families never trade jobs.", "section": "typography" },
+      { "name": "The Flat-Chrome Rule", "body": "Deck chrome and slide surfaces separate by tone and hairline, never by shadow. Outer shadows appear only on the Contents drawer and its thumbnails — the parts that literally float above the deck.", "section": "elevation" }
     ],
     "dos": [
-      "Do drive every slide from content.json — a meta block and a typed items array; keep the field and chrome reading item fields (type, title, summary/subtitle, quote/attribution, points, stats, chapter, colorA/colorB, shape, images), never hardcoded slides. _allowed.type lists all six types.",
-      "Do map any new item type onto one of the three field modes via FIELD_MODE (default model); never add a fourth field behavior.",
-      "Do drive both the field and the one chrome accent from the active item's pair: colorA -> colorB across the form, colorA on the current-state and item-keyed marks via --accent.",
-      "Do keep the ground graphite (#141613 / clear #0d0f0e) and chrome ink bone (#f1ede2); never pure #000/#fff.",
-      "Do render the field under additive blending and bloom so the saturated item color glows; keep glow in the field, not on chrome.",
-      "Do render all small text as the one mono micro-layer: 11px, 500, uppercase, tracked 0.28em; the index (12px/0.18em) and agenda number (13px/0.16em) are the only sanctioned deviations.",
-      "Do separate DOM with tone, the scrim, and 1px hairline insets; use text-shadow only for legibility over the field.",
-      "Do settle every transition on cubic-bezier(0.16, 1, 0.3, 1) (~160ms controls, ~320ms content, 1.9s morph); animate only transform/opacity.",
-      "Do honor prefers-reduced-motion (freeze uTime so twinkle/drift stop, kill spin/tilt, snap morphs and text, stop slider autoplay) and prefers-contrast: more (lift bone-soft/faint and hairline).",
-      "Do ship the loading, error, empty (no items), and render-error (ErrorBoundary) states as centered mono status lines."
+      "Do drive every slide from content/sample.json (static import via useContent) — a meta block plus a typed items array; the eight type values map to the eight layout components in Slides.jsx. Versioned decks live in content/.",
+      "Do highlight exactly one word per slide with **word**; let renderAccent color it terracotta.",
+      "Do assign ground by archetype through slideTheme() (cover + keypoints dark, rest light) and flip themes by swapping [data-theme] on the deck; never hardcode a slide's colors outside the token set.",
+      "Do keep chrome minimal and top-only: menu + wordmark upper-left, page index (NN / NN) upper-right — no footer, no chrome eyebrow.",
+      "Do keep neutrals warm — paper #f3f2ee / night #0e0f11, ink #17181b / bone #f3f2ee — never pure #000/#fff.",
+      "Do set the page index, code, and table headers in Geist Mono; set everything read for meaning in Geist sans.",
+      "Do separate surfaces with tone and 1px hairlines; reserve the outer shadow for the floating Contents drawer.",
+      "Do settle motion on cubic-bezier(0.22, 1, 0.36, 1) (~200ms controls, ~440ms slide-in, ~400ms drawer) and honor prefers-reduced-motion."
     ],
     "donts": [
-      "Don't reintroduce a single fixed house accent for the chrome — the state marks follow the active item's hue.",
-      "Don't put item color on a chrome surface or behind running text; its home is the field (accent tints only marks, the quote attribution, and agenda numbers).",
-      "Don't add glass, bordered container stacks, cards, or outer drop shadows on DOM surfaces; the image frame's 8px well is the only framed surface.",
-      "Don't ease anything in; nothing enters with ease-in.",
-      "Don't spawn a second particle system or swap the shape for a DOM image — one field, three modes keyed to item type.",
-      "Don't reintroduce removed tokens (--void-lift, --signal-deep, --scrim, --space-xs, --space-row, --space-margin, --space-xl); document only tokens defined in tokens.css now."
+      "Don't put the terracotta signal on a filled surface behind running text, or use it twice in one heading — it marks one word plus structural marks and active state, nothing else.",
+      "Don't add a second WebGL canvas; the cover sphere is the only one.",
+      "Don't introduce a new archetype without giving it a type and a layout component; never render an untyped slide (the fallback is the divider).",
+      "Don't add drop shadows, glass, or bordered container stacks to slide chrome — hairlines and tone carry separation.",
+      "Don't promote a specimen color (process tones, the two-column success green, preview buttons, severity ramp, code tokens) into the house palette; those live inside depicted UI only."
     ]
   }
 }

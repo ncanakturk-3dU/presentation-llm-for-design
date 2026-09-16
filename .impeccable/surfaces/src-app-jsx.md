@@ -7,31 +7,31 @@ related_targets: []
 
 ## Scope & mode
 
-Whole surface: the entire presentation app (single continuous WebGL deck). Mode: Experience with a persuasive spine — the morphing particle artifact leads from the first viewport, in service of an argument the presenter narrates live.
+Whole surface: the entire presentation app, rebuilt as a JSON-driven typed-slide deck. Mode: Experience with a Read backbone — the presenter drives; each slide is one idea in its own editorial layout, and the audience follows a masterclass arc.
 
 ## Audience & job
 
-Primary: the presenter driving the talk live (stage / screen-share), stepping through slides while speaking. Secondary: the room watching a projected 1080p+ screen. Job: follow the anti-slop argument and feel its craft. Action = advance (→ / space / click); wayfinding = a position index + tick rail.
+Primary: the presenter delivering the talk live (stage / screen-share). Secondary: the room watching a projected 1080p+ screen. Job: follow the argument slide by slide and jump anywhere via a left-side Contents drawer (Outline + Slides tabs). Action = advance (→ / space / click); wayfinding = page index + the Contents drawer.
 
 ## Direction contract
 
-THESIS: An argument by demonstration — a talk about anti-slop frontend craft that itself refuses slide-template slop. One full-screen particle field is the whole stage; each idea is a distinct 3D form it fluidly morphs into. It refuses two defaults at once: the bulleted title-card deck, and the neon-dust-on-black WebGL demo.
+THESIS: A presenter's deck as a precise editorial system — eight distinct slide archetypes (cover, section divider, key-points, before/after two-column, process/workflow diagram, code + UI, table/matrix, quote/closing) unified by one grid, one type system, and a single warm signal. It refuses both the generic bullet-template deck and the all-dark WebGL demo the prior world was; it reads like a well-set conference talk.
 
-OWN-WORLD: "Instrument." Deep graphite ground, never pure black. Particles read as fine bone-white vertices — a form being drafted, not a swarm — lightly seasoned per section by one low-chroma OKLCH tone carried as scene data. Chrome is bone ink plus a single terracotta signal (#d84b2c) used only as a state mark: never a surface, never running text, no second accent. Type: Big Shoulders Text (condensed, 600–800) for titles and copy; IBM Plex Mono 500 uppercase tracked 0.28em for the one micro layer. Vocabulary is hairline, pill, and quiet block only — no glass, no bordered container stacks, no decorative shadow. Motion settles on cubic-bezier(0.16, 1, 0.3, 1).
+OWN-WORLD: Mixed grounds assigned per archetype — warm paper (#F5F4F1) light and near-black (#0E0F11) dark; near-black / bone ink; one terracotta signal (#DD5C2B) used only on the one key word and active marks. Geist grotesk for display + body; Geist Mono for eyebrows, page indices, and code. Hairline rules, generous margins, large muted section numerals, numbered structures. Chrome is header-only — menu + wordmark top-left, automatic `{current} / {total}` page index top-right; no footer, no corner kicker. One slowly rotating dotted-particle sphere (R3F) appears only on the cover.
 
-STORY: The audience follows the arc — monoculture → why it happens → process not prompt → three disciplines → ban the clichés → motion with intent → color as architecture → failure blocks delivery → the point — each beat anchored by one morph, and leaves believing anti-slop is craft discipline, not a coat of paint.
+STORY: The audience follows a masterclass arc across archetypes; each slide states one idea in its own layout, the accent marks the single word that carries it, and a left-side Contents drawer (Outline for reading the deck as a document; Slides for a PowerPoint-style thumbnail grid) lets the presenter jump anywhere.
 
-FIRST VIEWPORT: Full-bleed graphite canvas; a bone particle sphere breathing slightly right of center. Lower-left text block: the title "Beyond 'Make It Beautiful'" large in Big Shoulders, one mono subline, and the credit to Mohamed Elkholy. Top-left margin: mono deck mark and position "01 / 10". Bottom-right: discreet prev/next arrows over a tick rail whose current tick is terracotta. Primary action is to advance.
+FIRST VIEWPORT (cover): dark ground; large left heading "Turn ideas into better products with AI." with "better" in terracotta; a quiet sub-line beneath; a slowly rotating dotted sphere upper-right; top-left menu + "LLM for Design", top-right page index "01 / NN"; no footer. Primary action: advance.
 
-FORM: A presenter-driven WebGL particle deck (THREE.Points + BufferGeometry, GPU vertex morph tweened by GSAP, Framer Motion text overlay). Brief-pinned world — the concept roll was not run because the user pinned the world and named `qr-4-seasons` as the taste bar; the visual identity is derived from that system's rules (one brand color + one signal, tinted neutrals, Big Shoulders + Plex Mono, expo settle). No seed key (roll not run); list position n/a (pinned).
+FORM: JSON-driven typed-slide deck (React + Vite, Framer Motion transitions, R3F/three ONLY for the cover sphere). Eight item types map to eight layout components; a two-tab left-side Contents drawer (Outline / Slides) slides in over them. New types can be added on request (see `.claude/commands/new-deck.md`). World pinned by the user's supplied 8-slide reference image — the concept roll was not run because the user pinned the world. No seed key (roll not run); list position n/a (pinned).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 ## Memorable moment
 
-The morph itself: a recognizable form (a uniform lattice for "monoculture", a tangled knot for "ban the clichés", a crystal for the quality gate) dissolving and reassembling into the next, in one continuous breath, as the presenter speaks.
+The cover's slowly rotating dotted sphere resolving over the dark ground as the title sets; then the editorial rhythm — a huge muted "01" section number, a two-column before/after, a four-box workflow — each archetype arriving in its own decisive layout, tied together by the one terracotta word per slide.
 
 ## Unresolved / to confirm later
 
-- Slide copy is a distilled paraphrase of the article (sample content, per the brief); the presenter may refine wording.
-- Per-section OKLCH scene tones kept deliberately low-chroma; final intensity tuned in the inspection round.
+- Decks live in `content/`; the active deck is a static import in `src/lib/useContent.js` (default `content/sample.json`, one of every type with placeholder copy). Author new decks — and new slide types — via `/new-deck`.
+- Exact Geist weights and the accent hue tuned in the inspection round.
