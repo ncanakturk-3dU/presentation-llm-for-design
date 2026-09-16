@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-// Same curve as --ease-settle in tokens.css; keep the two in sync.
-export const EASE_SETTLE = [0.16, 1, 0.3, 1]
+export const EASE = [0.22, 1, 0.36, 1]
 
 const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
 

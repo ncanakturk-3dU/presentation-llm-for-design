@@ -1,31 +1,49 @@
 :root {
+  --font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --pad: clamp(34px, 4.6vw, 84px);
+  --pad-y: clamp(24px, 3vw, 46px);
+  --gap: clamp(16px, 1.5vw, 24px);
+
+  --r-sm: 6px;
+  --r-md: 10px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 200ms;
+}
+
+:root,
+[data-theme='light'] {
+  --accent: #d9552a;
+  --accent-ink: #ffffff;
+  --ground: #f3f2ee;
+  --ground-2: #ebe9e3;
+  --ink: #17181b;
+  --ink-soft: #56575c;
+  --ink-faint: #8c8d92;
+  --hairline: rgba(19, 20, 24, 0.11);
+  --hairline-strong: rgba(19, 20, 24, 0.18);
+  --panel: #ffffff;
+  --panel-2: #f7f6f2;
+  --panel-line: rgba(19, 20, 24, 0.09);
+  --numeral: rgba(19, 20, 24, 0.14);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --accent: #ec6b39;
+  --accent-ink: #12100e;
+  --ground: #0e0f11;
+  --ground-2: #16171a;
+  --ink: #f3f2ee;
+  --ink-soft: #a7a8ad;
+  --ink-faint: #6d6f75;
+  --hairline: rgba(255, 255, 255, 0.12);
+  --hairline-strong: rgba(255, 255, 255, 0.2);
+  --panel: #17181b;
+  --panel-2: #1d1e22;
+  --panel-line: rgba(255, 255, 255, 0.1);
+  --numeral: rgba(255, 255, 255, 0.15);
   color-scheme: dark;
-
-  --void-rgb: 13 15 14;
-  --void: rgb(var(--void-rgb));
-  --bone: #f1ede2;
-  --bone-soft: #cdccc0;
-  --bone-faint: #9a9b8f;
-  --signal: #e0592f;
-
-  --hairline: #f1ede21f;
-  --hairline-soft: #f1ede210;
-
-  --font-display: 'Big Shoulders Text', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  --type-micro: 500 11px/1.55 var(--font-mono);
-  --tracking-micro: 0.28em;
-
-  --space-sm: 8px;
-  --space-md: 12px;
-  --space-gutter: 16px;
-  --inset: clamp(22px, 4.4vw, 60px);
-
-  --rounded-pill: 999px;
-  --rounded-tick: 2px;
-
-  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-quick: 160ms;
-  --dur-settle: 320ms;
 }

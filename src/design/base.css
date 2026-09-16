@@ -1,11 +1,11 @@
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; padding: 0; width: 100%; height: 100%; }
-html { background: var(--void); }
+html { background: #0e0f11; }
 body {
-  background: var(--void);
-  color: var(--bone);
-  font-family: var(--font-display);
-  font-size: 14px;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
   line-height: 1.2;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -15,13 +15,17 @@ body {
   touch-action: manipulation;
 }
 
-::selection { background: var(--signal); color: var(--void); }
+::selection { background: var(--accent); color: var(--accent-ink); }
 
-.micro {
-  font: var(--type-micro);
-  letter-spacing: var(--tracking-micro);
+.mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+
+.accent { color: var(--accent); }
 
 button {
   font: inherit;
@@ -35,17 +39,9 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--bone);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
-}
-
-@media (prefers-contrast: more) {
-  :root {
-    --bone-soft: #e7e5da;
-    --bone-faint: #c2c3b6;
-    --hairline: #f1ede240;
-  }
+  border-radius: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
