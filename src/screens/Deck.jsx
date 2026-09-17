@@ -6,6 +6,7 @@ import { useContent } from '../lib/useContent'
 import { useReducedMotion, EASE } from '../lib/motion'
 import { pad } from '../lib/text'
 import { indexOfSlide, isLab, pickContents, pickMotion, pickStatus } from '../lib/lab'
+import { DEFAULT_DECK } from '../lib/decks'
 import './Deck.css'
 
 function MenuIcon() {
@@ -24,12 +25,19 @@ function MenuIcon() {
  * click. A designlab state passes a `preset` of its own and pins the same three
  * things as params instead (`slide`, `contents`, `status`), because a capture
  * has nobody to press a key. Everything below that split is the same code.
+ *
+ * Which deck is shown is **not** a shared axis. The app always presents
+ * `DEFAULT_DECK`, because a published presentation shows one deck and a way to
+ * switch decks mid-talk is a way to open the wrong one on stage. Walking the
+ * others is a review job, so `deck` is a designlab param and nothing else
+ * reads it.
  */
-export default function Deck({ preset, motion: motionKnob, slide, contents, status }) {
+export default function Deck({ preset, motion: motionKnob, deck: deckParam, slide, contents, status }) {
   const lab = isLab(preset)
   const still = lab && pickMotion(motionKnob) === 'still'
 
-  const { data } = useContent()
+  const deckId = (lab && deckParam) || DEFAULT_DECK
+  const { data, deck } = useContent(deckId)
   const reducedPref = useReducedMotion()
   const reduced = reducedPref || still
 
@@ -39,6 +47,7 @@ export default function Deck({ preset, motion: motionKnob, slide, contents, stat
   const items = lab && pickStatus(status) === 'empty' ? [] : all
   const total = items.length
   const meta = data?.meta || {}
+  const mark = meta.mark || deck?.label
 
   const [appIndex, setAppIndex] = useState(() => {
     const n = parseInt(typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '', 10)
@@ -51,8 +60,8 @@ export default function Deck({ preset, motion: motionKnob, slide, contents, stat
   const contentsOpen = lab ? labContents !== 'closed' : appContentsOpen
 
   useEffect(() => {
-    if (!lab && meta.mark) document.title = meta.mark
-  }, [lab, meta.mark])
+    if (!lab && mark) document.title = mark
+  }, [lab, mark])
 
   useEffect(() => {
     if (!lab && total && appIndex > total - 1) setAppIndex(total - 1)
@@ -125,7 +134,7 @@ export default function Deck({ preset, motion: motionKnob, slide, contents, stat
             <button className="brand__menu" aria-label="Open contents (O)" aria-haspopup="dialog" onClick={() => setAppContentsOpen(true)}>
               <MenuIcon />
             </button>
-            {meta.mark && <span className="brand__name">{meta.mark}</span>}
+            {mark && <span className="brand__name">{mark}</span>}
           </div>
           <div className="pageref">
             <span className="mono pageref__index">{pageLabel}</span>
