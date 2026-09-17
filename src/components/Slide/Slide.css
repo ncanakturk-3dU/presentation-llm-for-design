@@ -1,0 +1,22 @@
+/* The stand-in for the deck shell, on the component stage only.
+
+   Every archetype root is `height: 100%`, and on the deck that height comes
+   from `.stage` inside the fixed `.deck`. designlab centres a shrink-to-fit box
+   and does not size a component, so with no box of its own a slide would
+   collapse to nothing. This gives it one, with the deck's own ground, ink and
+   padding, and sizes it off the viewport so the same variant holds up in the
+   desktop frame and the iPhone one. */
+.slidestage {
+  width: var(--slide-width, min(1280px, 94vw));
+  height: var(--slide-height, min(680px, 86vh));
+  display: flex;
+  flex-direction: column;
+  padding: var(--pad-y) var(--pad);
+  background: var(--ground);
+  color: var(--ink);
+  overflow: hidden;
+}
+.slidestage > * {
+  flex: 1;
+  min-height: 0;
+}

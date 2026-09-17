@@ -1,10 +1,29 @@
+# Build output and dependencies
 node_modules
 dist
 dist-ssr
-.DS_Store
-*.local
-.env
 .vite
+
+# OS
+.DS_Store
+
+# Secrets and environment. `*.local` already covers .env.local; this covers the
+# rest (.env.production and friends) while leaving a committed example alone.
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+source.local/
+
+# Per-machine tool wiring. None of this describes the project — it points at
+# servers and paths that only exist on one machine, so it is never shared.
+.mcp.json
+.claude/settings.local.json
 .claude/*.lock
+.impeccable/config.local.json
+
+# Generated review artifacts: large, regenerable, and specific to one run.
 .impeccable/review/
 .impeccable/hook.cache.json

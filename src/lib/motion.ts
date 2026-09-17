@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const EASE = [0.22, 1, 0.36, 1]
+export const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
 

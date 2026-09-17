@@ -1,6 +1,8 @@
 import { useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { seededRandom } from '../../lib/lab'
+import './CoverSphere.css'
 
 const vertex = /* glsl */ `
   uniform float uSize;
@@ -32,9 +34,12 @@ const fragment = /* glsl */ `
   }
 `
 
-function Dots({ reduced }) {
-  const ref = useRef()
+function Dots({ reduced, still }: { reduced: boolean; still: boolean }) {
+  const ref = useRef<THREE.Points>(null)
+  // Under `still` the per-dot sizes come from a fixed seed, so two captures of
+  // one state are the same sphere and a diff between them is a real change.
   const geometry = useMemo(() => {
+    const rnd = still ? seededRandom(0x5eed) : Math.random
     const N = 2800
     const pos = new Float32Array(N * 3)
     const rand = new Float32Array(N)
@@ -46,13 +51,13 @@ function Dots({ reduced }) {
       pos[i * 3] = Math.cos(theta) * r * R
       pos[i * 3 + 1] = y * R
       pos[i * 3 + 2] = Math.sin(theta) * r * R
-      rand[i] = Math.random()
+      rand[i] = rnd()
     }
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
     g.setAttribute('aRand', new THREE.BufferAttribute(rand, 1))
     return g
-  }, [])
+  }, [still])
 
   const uniforms = useMemo(
     () => ({
@@ -64,7 +69,7 @@ function Dots({ reduced }) {
   )
 
   useFrame((state, delta) => {
-    if (!ref.current || reduced) return
+    if (!ref.current || reduced || still) return
     ref.current.rotation.y += delta * 0.11
     ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.14) * 0.09
   })
@@ -83,16 +88,28 @@ function Dots({ reduced }) {
   )
 }
 
-export default function CoverSphere({ reduced }) {
+/**
+ * The dot sphere behind the cover.
+ *
+ * `standalone` is for the component stage only. On a slide the sphere sits in
+ * `.cover__art`, which gives it both its box and the dark ground its bone dots
+ * need; on its own it has neither, and a white sphere on the light ground is an
+ * invisible component. The flag asks for that missing context and nothing else,
+ * so the app never passes it.
+ */
+export default function CoverSphere({ reduced = false, still = false, standalone = false }) {
+  const frozen = reduced || still
   return (
+    <div className={`coversphere ${standalone ? 'coversphere--standalone' : ''}`} data-theme={standalone ? 'dark' : undefined}>
     <Canvas
       className="cover__canvas"
-      frameloop={reduced ? 'demand' : 'always'}
+      frameloop={frozen ? 'demand' : 'always'}
       camera={{ position: [0, 0, 4.2], fov: 45 }}
       dpr={[1, 1.8]}
       gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
     >
-      <Dots reduced={reduced} />
+      <Dots reduced={reduced} still={still} />
     </Canvas>
+    </div>
   )
 }

@@ -27,6 +27,31 @@ body {
 
 .accent { color: var(--accent); }
 
+/* Inline Markdown, as the deck reads it: `code`, *emphasis*, [links](href).
+   Sized in `em` and tinted from `--ink` by color-mix, so one rule holds on a
+   62px title, in a 13px list row, and on either ground. */
+.icode {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  /* Geist Mono runs wide next to Geist; the negative tracking keeps a command
+     inside a list row from pushing it onto a second line. */
+  letter-spacing: -0.01em;
+  padding: 0.12em 0.34em;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: inherit;
+}
+em { font-style: italic; }
+.ilink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1.5px;
+  transition: color var(--dur) var(--ease);
+}
+.ilink:hover { color: var(--accent); }
+
 button {
   font: inherit;
   color: inherit;

@@ -1,0 +1,1224 @@
+{
+  "component": "Contents",
+  "title": "Contents",
+  "group": "Parts",
+  "order": 1,
+  "mood": "capture",
+  "note": "The slide-in contents panel. The tab and the search box are internal state, so `initialTab` and `initialQuery` are what make each look declarable.",
+  "states": [
+    {
+      "id": "outline",
+      "label": "Outline",
+      "device": "desktop",
+      "note": "At rest on the Outline tab, current slide marked.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 0,
+        "still": true,
+        "initialTab": "outline"
+      }
+    },
+    {
+      "id": "outline-deep",
+      "label": "Outline · mid-deck",
+      "device": "desktop",
+      "note": "Current row further down, where the sub-rows above it are already expanded.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 4,
+        "still": true,
+        "initialTab": "outline"
+      }
+    },
+    {
+      "id": "slides",
+      "label": "Slides",
+      "device": "desktop",
+      "note": "The thumbnail grid. Each frame carries its own slide theme, so the dark archetypes read dark here too.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 2,
+        "still": true,
+        "initialTab": "slides"
+      }
+    },
+    {
+      "id": "search-hit",
+      "label": "Search · matches",
+      "device": "desktop",
+      "note": "A query that narrows the list. Matching is over title, kicker, chapter and every outline row.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 0,
+        "still": true,
+        "initialTab": "outline",
+        "initialQuery": "code"
+      }
+    },
+    {
+      "id": "search-empty",
+      "label": "Search · no matches",
+      "device": "desktop",
+      "note": "A query nothing matches. The body empties with no message — worth a look, it may read as broken.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 0,
+        "still": true,
+        "initialTab": "outline",
+        "initialQuery": "zzzzz"
+      }
+    },
+    {
+      "id": "phone",
+      "label": "Phone",
+      "device": "iphone",
+      "note": "At 393px the panel takes nearly the whole width.",
+      "props": {
+        "open": true,
+        "items": [
+          {
+            "type": "cover",
+            "id": "cover",
+            "chapter": "Cover",
+            "title": "Your **headline** goes here.",
+            "subtitle": "A short supporting line for your talk."
+          },
+          {
+            "type": "divider",
+            "id": "section-one",
+            "chapter": "Section one",
+            "number": "01",
+            "title": "Section title",
+            "note": "A short description of what this section covers.",
+            "list": [
+              "First topic",
+              "Second topic",
+              "Third topic",
+              "Fourth topic"
+            ]
+          },
+          {
+            "type": "keypoints",
+            "id": "key-points",
+            "chapter": "Key points",
+            "kicker": "KEY POINTS",
+            "title": "Your main **takeaway** in one line.",
+            "points": [
+              "First point goes here",
+              "Second point goes here",
+              "Third point goes here",
+              "Fourth point goes here"
+            ]
+          },
+          {
+            "type": "twocolumn",
+            "id": "before-after",
+            "chapter": "Before / after",
+            "kicker": "BEFORE / AFTER",
+            "title": "From one thing to **another**.",
+            "note": "A short line comparing the two states.",
+            "columns": [
+              {
+                "variant": "plain",
+                "label": "Before",
+                "caption": "First state",
+                "note": "Describe the before state here."
+              },
+              {
+                "variant": "brand",
+                "label": "After",
+                "caption": "Second state",
+                "note": "Describe the after state here."
+              }
+            ]
+          },
+          {
+            "type": "process",
+            "id": "process",
+            "chapter": "The process",
+            "kicker": "THE PROCESS",
+            "title": "From start to **finish**.",
+            "steps": [
+              {
+                "n": "1",
+                "tone": "teal",
+                "title": "Step one",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "2",
+                "tone": "blue",
+                "title": "Step two",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "3",
+                "tone": "violet",
+                "title": "Step three",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              },
+              {
+                "n": "4",
+                "tone": "ink",
+                "title": "Step four",
+                "points": [
+                  "Detail",
+                  "Detail",
+                  "Detail"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "codeui",
+            "id": "code-ui",
+            "chapter": "Code + preview",
+            "kicker": "CODE + UI",
+            "title": "Code and its **result**.",
+            "code": "export function Button({\n  variant = \"primary\",\n  ...props\n}) {\n  return (\n    <button\n      className={variants[variant]}\n      {...props}\n    />\n  )\n}",
+            "preview": {
+              "title": "Preview",
+              "buttons": [
+                {
+                  "label": "Primary button",
+                  "variant": "primary"
+                },
+                {
+                  "label": "Secondary button",
+                  "variant": "secondary"
+                },
+                {
+                  "label": "Danger button",
+                  "variant": "danger"
+                }
+              ],
+              "states": [
+                "Default",
+                "Hover",
+                "Disabled"
+              ]
+            },
+            "note": "A short caption describing the code and its preview."
+          },
+          {
+            "type": "table",
+            "id": "table",
+            "chapter": "Comparison",
+            "kicker": "COMPARISON",
+            "title": "A **table** of options.",
+            "note": "A short caption for the table.",
+            "columns": [
+              "Level",
+              "Meaning",
+              "Example",
+              "Action"
+            ],
+            "rows": [
+              {
+                "severity": "P0",
+                "tone": "red",
+                "meaning": "Highest",
+                "examples": "Example text goes here",
+                "action": "Do first"
+              },
+              {
+                "severity": "P1",
+                "tone": "orange",
+                "meaning": "High",
+                "examples": "Example text goes here",
+                "action": "Do soon"
+              },
+              {
+                "severity": "P2",
+                "tone": "yellow",
+                "meaning": "Medium",
+                "examples": "Example text goes here",
+                "action": "Consider"
+              },
+              {
+                "severity": "P3",
+                "tone": "muted",
+                "meaning": "Low",
+                "examples": "Example text goes here",
+                "action": "Optional"
+              }
+            ]
+          },
+          {
+            "type": "quote",
+            "id": "closing",
+            "chapter": "Closing",
+            "quote": "A memorable **closing** line goes here.",
+            "closer": "Thank you.",
+            "byline": "Your name — Your talk title."
+          }
+        ],
+        "index": 0,
+        "still": true,
+        "initialTab": "outline"
+      }
+    }
+  ]
+}
