@@ -35,17 +35,50 @@
    the chrome onto two rows and shoving the stage down. */
 .brand__name { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.pageref { display: flex; align-items: center; flex: none; white-space: nowrap; }
-.pageref__index { color: var(--ink); letter-spacing: 0.1em; }
+/* The running section header, top-right: a mono tag over the part's short name.
+   Monochrome by rule — the slide spends this deck's one terracotta word on its
+   own content, so the chrome stays out of that count and earns its prominence
+   from weight and the labelled block instead. */
+.partref { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; min-width: 0; text-align: right; }
+.partref__tag { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); line-height: 1; }
+.partref__name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; color: var(--ink); line-height: 1.15; max-width: 44ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The page number, moved out of the top corner to sit quietly bottom-right. */
+.chrome--bottom { justify-content: flex-end; align-items: flex-end; }
+.pageref__index { color: var(--ink-soft); letter-spacing: 0.1em; white-space: nowrap; }
 
 .stage {
   flex: 1;
   min-height: 0;
   position: relative;
   margin: clamp(14px, 2.2vh, 32px) 0;
-  overflow: hidden;
+  /* A slide taller than the frame scrolls within the stage rather than being
+     clipped, so a wide-but-short desktop window gets the same read as a phone
+     — the header and page number stay put, the content moves between them. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-strong) transparent;
+  /* Scroll dissolves instead of cutting, the desktop echo of the phone's fading
+     header. The fade on each edge is raised by DeckView.tsx only when content is
+     hidden past it, so a fitting slide keeps crisp edges and a scrolled slide's
+     top line is never dimmed at rest — the two vars default to no fade. */
+  --stage-fade: clamp(28px, 4vh, 54px);
+  --fade-top: 0px;
+  --fade-bottom: 0px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
 }
-.slidewrap { position: absolute; inset: 0; }
+/* In-flow, not absolute: the archetype fills the stage and centres when it fits
+   (`justify-content` still has room), and grows past it — scrolling the stage —
+   when it does not. */
+.slidewrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.slidewrap > * { flex: 1 0 auto; height: auto; min-height: 0; }
 
 .deck--msg {
   position: fixed;
@@ -76,6 +109,9 @@
        a sliver that scrolls. */
     --chrome-fade: clamp(22px, 7vw, 38px);
     --chrome-h: calc(var(--pad-y) + 34px + var(--chrome-fade));
+    /* Room under the last line for the page-number pill fixed at bottom-right,
+       subtracted from the fill below so a short slide still does not scroll. */
+    --page-clear: 32px;
   }
 
   .chrome--top {
@@ -94,28 +130,46 @@
     );
   }
 
+  /* The deck itself scrolls here, not the stage: the header sticks to the deck,
+     so the stage hands its scrolling back and just holds the slide's height. */
   .stage {
     flex: none;
     display: block;
     margin: 0;
-    padding: 0 var(--pad) var(--pad-y);
+    padding: 0 var(--pad) calc(var(--pad-y) + var(--page-clear));
     overflow: visible;
+    /* The deck scrolls here and the header does the fading, so the stage drops
+       its own edge mask. */
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
+  /* Same in-flow slidewrap as desktop; only the fill it is measured against
+     changes, because here the deck is the scroll and the header is inside it. */
   .slidewrap {
-    position: relative;
-    inset: auto;
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100dvh - var(--chrome-h) - var(--pad-y));
+    min-height: calc(100dvh - var(--chrome-h) - var(--pad-y) - var(--page-clear));
   }
-  /* The archetype root drops its full-height assumption: it fills the room a
-     short slide leaves (so `justify-content: center` still centres it) but is
-     free to grow past the viewport and let the deck scroll when it must. */
-  .slidewrap > * {
-    flex: 1 0 auto;
-    height: auto;
-    min-height: 0;
+
+  /* The part label shares the header row with the deck name, so it gives back
+     size and width here and lets the name ellipsise beside it. */
+  .partref__tag { font-size: 10px; }
+  .partref__name { font-size: 12px; max-width: 42vw; }
+
+  /* The page number leaves the flow and pins to the corner, on a ground-tinted
+     pill so it stays legible over whatever scrolls beneath it. */
+  .chrome--bottom {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 6;
+    padding: 0 var(--pad) max(var(--pad-y), env(safe-area-inset-bottom, 0px));
+  }
+  .chrome--bottom .pageref__index {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ground) 76%, transparent);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
   }
 }
 

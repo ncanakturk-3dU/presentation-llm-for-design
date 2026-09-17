@@ -36,6 +36,23 @@ export function slideTitle(item: SlideItem): string {
   return stripMarks(named || item.chapter || item.type)
 }
 
+/**
+ * The part a slide sits in: the nearest `divider` at or before it, whose
+ * `number` and short `chapter` name the section. A `standalone` slide belongs
+ * to no part — that is what the field is for, and it is how the closing lines
+ * stay out of Part 5. A slide before the first divider (the cover, the intro)
+ * has none either.
+ */
+export function partOf(items: SlideItem[], index: number): { number?: string; label: string } | null {
+  const item = items[index]
+  if (!item || item.standalone) return null
+  for (let i = index; i >= 0; i--) {
+    const it = items[i]
+    if (it.type === 'divider') return { number: it.number, label: it.chapter ?? stripMarks(it.title) }
+  }
+  return null
+}
+
 export function slideOutline(item: SlideItem): string[] {
   switch (item.type) {
     case 'divider':

@@ -98,8 +98,15 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
                   {items.map((it, i) => {
                     if (!matches(it)) return null
                     const subs = slideOutline(it)
+                    // A divider opens a part: it gets a rule and a Part tag above
+                    // it, so the outline reads as sections rather than one long
+                    // run of slides.
+                    const isPart = it.type === 'divider'
                     return (
-                      <div key={it.id || i} className={`ol ${i === index ? 'is-current' : ''}`}>
+                      <div key={it.id || i} className={`ol ${isPart ? 'ol--part' : ''} ${i === index ? 'is-current' : ''}`}>
+                        {it.type === 'divider' && it.number && (
+                          <span className="ol__parttag mono">Part {it.number}</span>
+                        )}
                         <button className="ol__row" onClick={() => onSelect(i)}>
                           <span className="ol__num mono">{pad(i + 1)}</span>
                           <span className="ol__title">{slideTitle(it)}</span>

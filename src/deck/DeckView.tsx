@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import Slide, { itemTheme } from '../slides/Slides'
+import Slide, { itemTheme, partOf } from '../slides/Slides'
 import Contents from '../components/Contents/Contents'
 import { useContent } from '../lib/useContent'
 import { useReducedMotion, EASE } from '../lib/motion'
@@ -112,10 +112,36 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     if (!lab && total) window.location.hash = String(index + 1)
   }, [lab, index, total])
 
-  // A phone scrolls the deck, so a new slide has to arrive at its own top
-  // rather than wherever the last one was read down to.
+  // A new slide arrives at its own top rather than wherever the last one was
+  // read down to. The scroll lives on the deck on a phone and on the stage on
+  // the desktop, so reset both.
   const deckRef = useRef<HTMLDivElement>(null)
-  useEffect(() => { deckRef.current?.scrollTo(0, 0) }, [index])
+  const stageRef = useRef<HTMLElement>(null)
+
+  // The desktop stage dissolves at whichever edge still hides content instead
+  // of cutting it — the fade itself is a mask in CSS, and this only raises it
+  // on a side that is actually clipped, so a slide that fits keeps crisp edges
+  // and a scrolled slide's first line is never dimmed while it sits at the top.
+  const syncStageFade = useCallback(() => {
+    const el = stageRef.current
+    if (!el) return
+    el.style.setProperty('--fade-top', el.scrollTop > 1 ? 'var(--stage-fade)' : '0px')
+    el.style.setProperty('--fade-bottom', el.scrollTop + el.clientHeight < el.scrollHeight - 1 ? 'var(--stage-fade)' : '0px')
+  }, [])
+
+  useEffect(() => {
+    deckRef.current?.scrollTo(0, 0)
+    stageRef.current?.scrollTo(0, 0)
+    // Crisp through the change; the entering slide recomputes its fades once
+    // its real height has settled (onAnimationComplete on the slidewrap).
+    stageRef.current?.style.setProperty('--fade-top', '0px')
+    stageRef.current?.style.setProperty('--fade-bottom', '0px')
+  }, [index])
+
+  useEffect(() => {
+    window.addEventListener('resize', syncStageFade)
+    return () => window.removeEventListener('resize', syncStageFade)
+  }, [syncStageFade])
 
   const go = useCallback((i: number) => { if (total) setIndex(Math.max(0, Math.min(total - 1, i))) }, [total])
   const next = useCallback(() => { if (total) setIndex((i) => Math.min(total - 1, i + 1)) }, [total])
@@ -187,6 +213,9 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
   const item = lab ? withLabOverrides(items[index], { marker, split }) : items[index]
   const theme = itemTheme(item)
   const pageLabel = `${pad(index + 1)} / ${pad(total)}`
+  // The running section header. Not on a `divider`: that slide is the part's
+  // own full title card, so a label repeating it in the corner is noise.
+  const part = item.type === 'divider' ? null : partOf(items, index)
 
   return (
     <>
@@ -198,12 +227,15 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
             </button>
             {mark && <span className="brand__name">{mark}</span>}
           </div>
-          <div className="pageref">
-            <span className="mono pageref__index">{pageLabel}</span>
-          </div>
+          {part && (
+            <div className="partref">
+              {part.number && <span className="mono partref__tag">Part {part.number}</span>}
+              <span className="partref__name">{part.label}</span>
+            </div>
+          )}
         </header>
 
-        <section className="stage" aria-live="polite" onClick={onStageClick}>
+        <section className="stage" ref={stageRef} aria-live="polite" onScroll={syncStageFade} onClick={onStageClick}>
           <AnimatePresence mode="wait">
             <motion.div
               key={index}
@@ -212,11 +244,16 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
               initial={{ opacity: 0, y: reduced ? 0 : 14 }}
               animate={{ opacity: 1, y: 0, transition: { duration: reduced ? 0.15 : 0.44, ease: EASE } }}
               exit={{ opacity: 0, y: reduced ? 0 : -10, transition: { duration: reduced ? 0.12 : 0.26, ease: EASE } }}
+              onAnimationComplete={syncStageFade}
             >
               <Slide item={item} reduced={reduced} still={still} />
             </motion.div>
           </AnimatePresence>
         </section>
+
+        <footer className="chrome chrome--bottom">
+          <span className="mono pageref__index">{pageLabel}</span>
+        </footer>
       </div>
 
       <Contents
