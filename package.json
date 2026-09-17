@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "An interactive 3D particle presentation, driven entirely by content.json.",
+  "description": "A JSON-free presentation deck: typed decks in content/, rendered by React.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview",
-    "lab:states": "node scripts/lab-states.mjs"
+    "typecheck": "tsc --noEmit",
+    "lab:states": "tsx scripts/lab-states.ts"
   },
   "dependencies": {
     "@react-three/fiber": "^8.17.10",
@@ -21,7 +22,13 @@
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@types/node": "^22.20.3",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/three": "^0.170.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3",
     "vite": "^5.4.11"
   }
 }

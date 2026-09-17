@@ -5,9 +5,27 @@ import Contents from '../components/Contents/Contents'
 import { useContent } from '../lib/useContent'
 import { useReducedMotion, EASE } from '../lib/motion'
 import { pad } from '../lib/text'
-import { indexOfSlide, isLab, pickContents, pickMotion, pickStatus } from '../lib/lab'
+import { indexOfSlide, isLab, pickContents, pickMotion, pickStatus, withLabOverrides } from '../lib/lab'
 import { DEFAULT_DECK } from '../lib/decks'
 import './DeckView.css'
+
+/**
+ * What designlab hands a screen: `preset` names the state (`'app'` for the
+ * real thing), and every knob and param arrives as a prop of its own id. They
+ * are all optional and all `unknown`-ish, because a states file is JSON and
+ * nothing guarantees a given key is in it — `pick()` is what turns each one
+ * into a value this component can reason about.
+ */
+type DeckViewProps = {
+  preset?: string
+  motion?: string
+  deck?: string
+  slide?: string
+  contents?: string
+  status?: string
+  marker?: string
+  split?: string
+}
 
 function MenuIcon() {
   return (
@@ -30,13 +48,18 @@ function MenuIcon() {
  * things as params instead (`slide`, `contents`, `status`), because a capture
  * has nobody to press a key. Everything below that split is the same code.
  *
+ * Two more params, `marker` and `split`, override the current `divider`'s or
+ * `keypoints`' own fields so its row marker and column proportion can be tried
+ * without an edit. They are for looking: whatever you settle on has to be
+ * written into the deck module, because nothing outside the studio reads them.
+ *
  * Which deck is shown is **not** a shared axis. The app always presents
  * `DEFAULT_DECK`, because a published presentation shows one deck and a way to
  * switch decks mid-talk is a way to open the wrong one on stage. Walking the
  * others is a review job, so `deck` is a designlab param and nothing else
  * reads it.
  */
-export default function DeckView({ preset, motion: motionKnob, deck: deckParam, slide, contents, status }) {
+export default function DeckView({ preset, motion: motionKnob, deck: deckParam, slide, contents, status, marker, split }: DeckViewProps) {
   const lab = isLab(preset)
   const still = lab && pickMotion(motionKnob) === 'still'
 
@@ -50,8 +73,7 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
   // shipped deck always has items, so nothing else would ever render it.
   const items = lab && pickStatus(status) === 'empty' ? [] : all
   const total = items.length
-  const meta = data?.meta || {}
-  const mark = meta.mark || deck?.label
+  const mark = data?.meta?.mark || deck?.label
 
   const labContents = pickContents(contents)
   // What the state pins is where the deck *starts*, not where it is stuck. A
@@ -90,13 +112,13 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     if (!lab && total) window.location.hash = String(index + 1)
   }, [lab, index, total])
 
-  const go = useCallback((i) => { if (total) setIndex(Math.max(0, Math.min(total - 1, i))) }, [total])
+  const go = useCallback((i: number) => { if (total) setIndex(Math.max(0, Math.min(total - 1, i))) }, [total])
   const next = useCallback(() => { if (total) setIndex((i) => Math.min(total - 1, i + 1)) }, [total])
   const prev = useCallback(() => { if (total) setIndex((i) => Math.max(0, i - 1)) }, [total])
-  const choose = useCallback((i) => { go(i); setContentsOpen(false) }, [go])
+  const choose = useCallback((i: number) => { go(i); setContentsOpen(false) }, [go])
 
   useEffect(() => {
-    const onKey = (e) => {
+    const onKey = (e: KeyboardEvent) => {
       const tag = document.activeElement?.tagName
       const typing = tag === 'INPUT' || tag === 'TEXTAREA'
       if (e.key === 'Escape') {
@@ -121,16 +143,20 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     return () => window.removeEventListener('keydown', onKey)
   }, [contentsOpen, next, prev, go, total])
 
-  const touchX = useRef(null)
-  const onTouchStart = (e) => { touchX.current = e.changedTouches[0].clientX }
-  const onTouchEnd = (e) => {
+  const touchX = useRef<number | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => { touchX.current = e.changedTouches[0].clientX }
+  const onTouchEnd = (e: React.TouchEvent) => {
     if (touchX.current == null) return
     const dx = e.changedTouches[0].clientX - touchX.current
     if (!contentsOpen && Math.abs(dx) > 64) (dx < 0 ? next() : prev())
     touchX.current = null
   }
-  const onStageClick = (e) => {
+  const onStageClick = (e: React.MouseEvent) => {
     if (contentsOpen) return
+    // A slide may carry a real link — a card's reference page, a codeui tab
+    // pointing at the file on GitHub. Without this the click opens the page
+    // *and* advances the deck, so the presenter comes back to the wrong slide.
+    if ((e.target as HTMLElement).closest('a')) return
     if (e.clientX < window.innerWidth * 0.28) prev()
     else next()
   }
@@ -139,7 +165,8 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     return <div className="deck deck--msg"><p className="deck__msg mono">This deck has no slides.</p></div>
   }
 
-  const item = items[index]
+  // The divider params are studio-only: the app renders the deck as written.
+  const item = lab ? withLabOverrides(items[index], { marker, split }) : items[index]
   const theme = itemTheme(item)
   const pageLabel = `${pad(index + 1)} / ${pad(total)}`
 

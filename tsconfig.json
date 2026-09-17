@@ -5,13 +5,18 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "types": ["vite/client"]
+    "verbatimModuleSyntax": true,
+    "types": ["vite/client", "node"]
   },
-  "include": ["src", "lab.config.js", "vite.config.js"]
+  "include": ["src", "content", "scripts", "lab.config.js", "vite.config.js"]
 }

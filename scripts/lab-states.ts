@@ -1,9 +1,9 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 /**
  * Regenerate the designlab states files from the decks in `content/`.
  *
  * The deck screen renders whichever deck is asked for, and its states pin a
- * content.json item **id**. So the moment content changes — a new deck, a
+ * deck item **id**. So the moment content changes — a new deck, a
  * renamed item, a slide dropped — those ids name content that is not there any
  * more, `indexOfSlide` quietly falls back to the first slide, and every capture
  * of "the table slide" is a picture of the cover. Nothing errors. That is the
@@ -14,83 +14,92 @@
  * carry one of every archetype, so the `Slide` component's variants come from
  * it — archetype coverage is then complete by construction rather than by
  * whatever the current talk happens to use. Both ids are read from
- * `src/lib/decks.js` so this is not a second place to state them.
+ * `src/lib/deck-ids.ts` so this is not a second place to state them.
+ *
+ * It runs under `tsx`, so it imports the decks rather than parsing them: the
+ * same modules the app imports, checked by the same contract. A deck that does
+ * not typecheck never gets this far.
  *
  *   npm run lab:states              rewrite the states files
  *   npm run lab:states -- --check   exit 1 if they are stale (no writes)
  */
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import type { Deck, SlideItem, SlideType } from '../content/types'
+import { DEFAULT_DECK, REFERENCE_DECK } from '../src/lib/deck-ids'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const check = process.argv.includes('--check')
 
-/** Read a named const out of src/lib/decks.js, so ids live in one place. */
-function deckConst(name) {
-  const src = readFileSync(resolve(root, 'src/lib/decks.js'), 'utf8')
-  const m = src.match(new RegExp(`export const ${name}\\s*=\\s*'([^']+)'`))
-  if (!m) throw new Error(`src/lib/decks.js does not export a ${name} string`)
-  return m[1]
-}
-
-const DEFAULT_DECK = deckConst('DEFAULT_DECK')
-const REFERENCE_DECK = deckConst('REFERENCE_DECK')
-
-// decks.js states the presented deck twice — once as a static import so every
-// build carries it, once as DEFAULT_DECK. Two statements of one fact drift, and
-// the drift is quiet: the app would present one deck while the lab captured
-// another. Catch it here rather than in a screenshot nobody re-reads.
+// decks.ts states the presented deck twice — once as a static import so every
+// build carries it, once by naming DEFAULT_DECK. Two statements of one fact
+// drift, and the drift is quiet: the app would present one deck while the lab
+// captured another. Catch it here rather than in a screenshot nobody re-reads.
 {
-  const src = readFileSync(resolve(root, 'src/lib/decks.js'), 'utf8')
-  const m = src.match(/^import\s+presented\s+from\s+'.*?\/([^/']+)\.json'/m)
-  if (!m) throw new Error("src/lib/decks.js has no `import presented from '.../<deck>.json'` line")
+  const src = readFileSync(resolve(root, 'src/lib/decks.ts'), 'utf8')
+  const m = src.match(/^import\s+presented\s+from\s+'.*?\/([^/']+)'/m)
+  if (!m) throw new Error("src/lib/decks.ts has no `import presented from '.../<deck>'` line")
   if (m[1] !== DEFAULT_DECK) {
     throw new Error(
-      `src/lib/decks.js disagrees with itself: it imports '${m[1]}.json' but DEFAULT_DECK is ` +
+      `src/lib/decks.ts disagrees with itself: it imports '${m[1]}' but DEFAULT_DECK is ` +
         `'${DEFAULT_DECK}'. The app would present ${m[1]} while the lab captured ${DEFAULT_DECK}.`,
     )
   }
 }
 
+type LoadedDeck = { id: string; label: string; items: SlideItem[] }
+
 const contentDir = resolve(root, 'content')
-const decks = readdirSync(contentDir)
-  .filter((f) => f.endsWith('.json'))
+const deckFiles = readdirSync(contentDir)
+  .filter((f) => f.endsWith('.ts') && f !== 'types.ts')
   .sort()
-  .map((f) => {
-    const id = f.replace(/\.json$/, '')
-    const data = JSON.parse(readFileSync(join(contentDir, f), 'utf8'))
+
+const decks: LoadedDeck[] = await Promise.all(
+  deckFiles.map(async (f) => {
+    const id = f.replace(/\.ts$/, '')
+    const mod = (await import(resolve(contentDir, f))) as { default: Deck }
+    const data = mod.default
     return { id, label: data?.meta?.mark || id.replace(/[-_]+/g, ' '), items: data?.items || [] }
-  })
+  }),
+)
 
 if (decks.length === 0) throw new Error('no decks in content/')
 
 for (const d of decks) {
-  if (d.items.length === 0) throw new Error(`content/${d.id}.json declares no items`)
+  if (d.items.length === 0) throw new Error(`content/${d.id}.ts declares no items`)
   const missing = d.items.filter((it) => !it.id)
   if (missing.length) {
     throw new Error(
-      `content/${d.id}.json: every item needs an \`id\` — a state pins ids, not indexes. ` +
+      `content/${d.id}.ts: every item needs an \`id\` — a state pins ids, not indexes. ` +
         `${missing.length} without one (types: ${[...new Set(missing.map((i) => i.type))].join(', ')})`,
     )
   }
   const dupes = d.items.map((i) => i.id).filter((id, i, a) => a.indexOf(id) !== i)
   if (dupes.length) {
-    throw new Error(`content/${d.id}.json: duplicate item ids (${[...new Set(dupes)].join(', ')})`)
+    throw new Error(`content/${d.id}.ts: duplicate item ids (${[...new Set(dupes)].join(', ')})`)
   }
 }
 
-const pick = (id) => decks.find((d) => d.id === id)
+const pick = (id: string) => decks.find((d) => d.id === id)
 const active = pick(DEFAULT_DECK)
+if (!active) throw new Error(`DEFAULT_DECK '${DEFAULT_DECK}' has no content/${DEFAULT_DECK}.ts`)
 const reference = pick(REFERENCE_DECK) || active
-if (!active) throw new Error(`DEFAULT_DECK '${DEFAULT_DECK}' has no content/${DEFAULT_DECK}.json`)
 
-const ARCHETYPES = {
+const ARCHETYPES: Partial<Record<SlideType, [string, string]>> = {
   cover: ['Cover', 'Dark. Headline with the accent word, over the dot sphere.'],
   divider: ['Section divider', 'Light. Big numeral, section title, and the numbered list of what is in it.'],
   keypoints: ['Key points', 'Dark. Title on the left, numbered rows hairline-separated on the right.'],
+  callouts: [
+    'Callouts',
+    'Dark. The numbered list on the left and one screenshot on the right, pinned with the same numbers. A point with no `pin` keeps its number in the list and marks nothing on the picture, which is the case for a failing a still cannot show.',
+  ],
   twocolumn: ['Two column', 'Light. Two mock screens side by side, each under its own caption.'],
   process: ['Process', 'Light. Tone-coded step cards in a row, each over its own points.'],
+  cards: [
+    'Cards',
+    'Light. Parallel specimen cards — a title on the same dark band `process` gives its steps, over the list or paragraph that supports it. No numerals and no connectors, which is what separates it from the process row.',
+  ],
   codeui: ['Code and UI', 'Light. Highlighted source in a tabbed pane beside the rendered result.'],
   table: ['Table', 'Light. A matrix with tone-coded severity and action columns.'],
   quote: ['Quote', 'Light. Oversized quote mark, the line itself, and the closer beside it.'],
@@ -107,23 +116,37 @@ const ARCHETYPES = {
 // deck is flipping one axis, not visiting 34 unrelated screens.
 
 /** `version_1` → `Version1` (a module name), `sample` → `Sample`. */
-const pascal = (id) => id.split(/[-_]+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join('')
+const pascal = (id: string) => id.split(/[-_]+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join('')
 
 /** `version_1` → `version-1` (a screen id), `sample` → `sample`. */
-const kebab = (id) => id.replace(/_+/g, '-').toLowerCase()
+const kebab = (id: string) => id.replace(/_+/g, '-').toLowerCase()
 
 /** `version_1` → `Version 1`. The tree names decks by file, not by the talk's
  *  title: a deck's `meta.mark` is the presentation's name and changes as it is
  *  written, while the file is how you pick a version. */
-const titleOf = (id) => id.split(/[-_]+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
+const titleOf = (id: string) => id.split(/[-_]+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
 
 const screens = decks.map((d) => {
-  const states = d.items.map((it, n) => ({
-    id: `slide-${it.id}`,
-    label: `${String(n + 1).padStart(2, '0')} · ${it.type}`,
-    note: `The ${it.type} archetype in the deck shell, with the chrome and page reference around it.`,
-    params: { slide: it.id },
-  }))
+  // A deck is navigated the way its table of contents reads: position first,
+  // then which part you are in, then which slide of that part. So the label is
+  // index · part · slide, taking the part from the last `divider` passed and
+  // the slide from the item's own `chapter`. The archetype is not in the label
+  // — it is what the slide is made of, not where it sits — and stays on the
+  // `slide` param, which is the list you use when you want "the table one".
+  let section: string | null = null
+  type State = { id: string; label: string; note?: string; device?: string; params?: Record<string, string> }
+  const states: State[] = d.items.map((it, n) => {
+    if (it.type === 'divider') section = it.chapter || null
+    const crumbs = [String(n + 1).padStart(2, '0')]
+    if (section) crumbs.push(section)
+    if (it.chapter && it.chapter !== section) crumbs.push(it.chapter)
+    return {
+      id: `slide-${it.id}`,
+      label: crumbs.join(' · '),
+      note: `The ${it.type} archetype in the deck shell, with the chrome and page reference around it.`,
+      params: { slide: it.id },
+    }
+  })
 
   states.push(
     {
@@ -158,9 +181,9 @@ const screens = decks.map((d) => {
     order: d.id === DEFAULT_DECK ? 1 : 2,
     mood: 'capture',
     note:
-      `content/${d.id}.json — "${d.label}", ${d.items.length} slides (${roles.join('; ')}). ` +
+      `content/${d.id}.ts — "${d.label}", ${d.items.length} slides (${roles.join('; ')}). ` +
       'A state pins an item id, never an index, so reordering the deck does not repoint every ' +
-      'capture. Generated by scripts/lab-states.mjs — run `npm run lab:states` after changing content.',
+      'capture. Generated by scripts/lab-states.ts — run `npm run lab:states` after changing content.',
     params: [
       { id: 'slide', label: 'slide', default: d.items[0].id, options: d.items.map((it) => ({ id: it.id, label: `${it.id} · ${it.type}` })) },
       {
@@ -182,34 +205,62 @@ const screens = decks.map((d) => {
           { id: 'empty', label: 'No slides' },
         ],
       },
+      // `divider` and `keypoints` only, and overrides rather than authoring:
+      // `Deck` renders the item as written, the rest try a value on it. Settle
+      // on one here, then write it into the deck module as `marker` / `split` —
+      // nothing outside the studio reads a param. On the other nine archetypes
+      // they do nothing.
+      {
+        id: 'marker',
+        label: 'marker',
+        default: 'deck',
+        options: [
+          { id: 'deck', label: 'As written' },
+          { id: 'number', label: 'Numbers' },
+          { id: 'bullet', label: 'Bullets' },
+          { id: 'none', label: 'None' },
+        ],
+      },
+      {
+        id: 'split',
+        label: 'split',
+        default: 'deck',
+        options: [
+          { id: 'deck', label: 'As written' },
+          { id: 'golden', label: 'Golden · 62 : 38' },
+          { id: 'even', label: 'Even · 50 : 50' },
+          { id: 'golden-flip', label: 'Golden flipped · 38 : 62' },
+        ],
+      },
     ],
     states,
   }
 
-  const module = `import DeckView from '../deck/DeckView'
+  const module = `import type { ComponentProps } from 'react'
+import DeckView from '../deck/DeckView'
 
 /**
- * ${titleOf(d.id)} — \`content/${d.id}.json\`${d.id === DEFAULT_DECK ? ', the deck that gets presented and published' : ', review only; it is not what the app shows'}.
+ * ${titleOf(d.id)} — \`content/${d.id}.ts\`${d.id === DEFAULT_DECK ? ', the deck that gets presented and published' : ', review only; it is not what the app shows'}.
  *
- * Generated by scripts/lab-states.mjs. One screen per deck is what puts the
+ * Generated by scripts/lab-states.ts. One screen per deck is what puts the
  * decks in the studio tree by name; the deck is fixed here so no state can
  * point this screen at a different one.
  */
-export default function ${pascal(d.id)}(props) {
+export default function ${pascal(d.id)}(props: ComponentProps<typeof DeckView>) {
   return <DeckView {...props} deck="${d.id}" />
 }
 `
 
-  return { deck: d, doc, module, moduleRel: `src/screens/${pascal(d.id)}.jsx`, statesRel: `src/screens/${pascal(d.id)}.states.json` }
+  return { deck: d, doc, module, moduleRel: `src/screens/${pascal(d.id)}.tsx`, statesRel: `src/screens/${pascal(d.id)}.states.json` }
 })
 
 // ------------------------------------------------------------ slide archetypes
 // From the reference deck: it is the one that carries every archetype, so
 // coverage does not depend on what the current talk happens to use.
-const byType = new Map()
+const byType = new Map<SlideType, SlideItem>()
 for (const it of reference.items) if (!byType.has(it.type)) byType.set(it.type, it)
 
-const missingTypes = Object.keys(ARCHETYPES).filter((t) => !byType.has(t))
+const missingTypes = (Object.keys(ARCHETYPES) as SlideType[]).filter((t) => !byType.has(t))
 if (missingTypes.length) {
   console.warn(
     `  warning     content/${reference.id}.json has no ${missingTypes.join(', ')} slide — ` +
@@ -217,9 +268,10 @@ if (missingTypes.length) {
   )
 }
 
-const slideStates = []
+type SlideState = { id: string; label: string; device: string; note: string; props: Record<string, unknown> }
+const slideStates: SlideState[] = []
 for (const [type, it] of byType) {
-  const [label, note] = ARCHETYPES[type] || [type, `The ${type} archetype.`]
+  const [label, note] = ARCHETYPES[type] ?? [type, `The ${type} archetype.`]
   slideStates.push({ id: type, label, device: 'desktop', note, props: { item: it, still: true } })
 }
 
@@ -234,12 +286,13 @@ slideStates.push({
 })
 
 // The narrow check, for the archetypes whose multi-column grid a phone breaks.
-for (const type of ['cover', 'keypoints', 'twocolumn', 'process', 'table', 'showcase']) {
+const PHONE_TYPES: SlideType[] = ['cover', 'keypoints', 'callouts', 'twocolumn', 'process', 'cards', 'table', 'showcase']
+for (const type of PHONE_TYPES) {
   const it = byType.get(type)
   if (!it) continue
   slideStates.push({
     id: `${type}-phone`,
-    label: `${(ARCHETYPES[type] || [type])[0]} · phone`,
+    label: `${(ARCHETYPES[type] ?? [type])[0]} · phone`,
     device: 'iphone',
     note: 'The same archetype at 393px, where its grid has to give.',
     props: { item: it, still: true },
@@ -254,14 +307,14 @@ const slideDoc = {
   mood: 'capture',
   note:
     `The archetypes a deck is built from. Props are real items from the reference deck ` +
-    `(content/${reference.id}.json), so a variant shows what an author actually gets and every ` +
-    `archetype has one whatever the current talk uses. Generated by scripts/lab-states.mjs.`,
+    `(content/${reference.id}.ts), so a variant shows what an author actually gets and every ` +
+    `archetype has one whatever the current talk uses. Generated by scripts/lab-states.ts.`,
   states: slideStates,
 }
 
 // ------------------------------------------------------------------- write out
-const targets = [
-  ...screens.flatMap((sc) => [
+const targets: Array<[string, string | object]> = [
+  ...screens.flatMap((sc): Array<[string, string | object]> => [
     [sc.moduleRel, sc.module],
     [sc.statesRel, sc.doc],
   ]),
@@ -298,7 +351,7 @@ console.log(
     screens
       .map((sc) => `${sc.doc.title} (${sc.deck.items.length} slides${sc.deck.id === DEFAULT_DECK ? ', presented' : ''})`)
       .join(', ') +
-    `\n${byType.size} archetypes from the reference deck (content/${reference.id}.json)`,
+    `\n${byType.size} archetypes from the reference deck (content/${reference.id}.ts)`,
 )
 
 if (check && stale) {

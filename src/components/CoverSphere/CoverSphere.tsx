@@ -34,8 +34,8 @@ const fragment = /* glsl */ `
   }
 `
 
-function Dots({ reduced, still }) {
-  const ref = useRef()
+function Dots({ reduced, still }: { reduced: boolean; still: boolean }) {
+  const ref = useRef<THREE.Points>(null)
   // Under `still` the per-dot sizes come from a fixed seed, so two captures of
   // one state are the same sphere and a diff between them is a real change.
   const geometry = useMemo(() => {

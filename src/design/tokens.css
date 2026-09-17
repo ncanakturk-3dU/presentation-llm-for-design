@@ -6,6 +6,11 @@
   --pad-y: clamp(24px, 3vw, 46px);
   --gap: clamp(16px, 1.5vw, 24px);
 
+  /* The golden ratio, as a grid fraction: `var(--phi) 1fr` is 61.8 : 38.2.
+     A token rather than a literal because more than one layout divides by it,
+     and 1.618 scattered through a stylesheet reads as a magic number. */
+  --phi: 1.618fr;
+
   --r-sm: 6px;
   --r-md: 10px;
 

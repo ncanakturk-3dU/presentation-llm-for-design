@@ -1,6 +1,16 @@
 ---
 name: LLM for Design
-description: A JSON-driven presenter's deck of eight editorial slide archetypes on one grid and one type system, each archetype grounded light or dark, unified by a single terracotta word per slide.
+description: A TypeScript-driven presenter's deck of eleven editorial slide archetypes on one grid and one type system, each archetype grounded light or dark, unified by a single terracotta word per slide.
+read:
+  mode: brand
+  audience: The presenter delivering the talk live, and the room watching a projected 1080p+ screen behind them.
+  style: A well-set conference talk — editorial, warm-neutral, hairline-ruled, one terracotta word per slide; Geist against Geist Mono.
+  banned: Bullet-template slides, the same layout twice in a row, gradients, glass, drop shadows on slide content, stock iconography, a second WebGL canvas, more than one accent per slide.
+  feel: Art-directed and composed — the audience should believe the deck was designed by someone with a point of view, and read it from the back of the room.
+dials:
+  variance: 7
+  motion: 3
+  density: 4
 colors:
   signal: "#d9552a"
   signal-dark: "#ec6b39"
@@ -86,6 +96,18 @@ components:
     textColor: "{colors.ink-soft}"
     rounded: "999px"
     padding: "5px 11px"
+  card-subtitle:
+    textColor: "{colors.ink-soft}"
+    typography: "{typography.body}"
+  prompt-card:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+    padding: "clamp(16px, 1.6vw, 24px)"
+  showcase-frame:
+    backgroundColor: "{colors.panel}"
+    rounded: "{rounded.md}"
+    height: "clamp(180px, 38vh, 410px)"
   contents-thumb:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
@@ -98,15 +120,16 @@ components:
 
 **Creative North Star: "The Well-Set Conference Talk."**
 
-One presenter's deck built as a precise editorial system, not a bullet template and not the all-dark WebGL demo that preceded it. Eight distinct slide archetypes — cover, section divider, key-points, before/after two-column, process/workflow, code + UI, table/matrix, and quote/closing — ride a single grid, a single Geist type system, and a single terracotta signal. Each slide states one idea in the layout that idea deserves, and the accent marks the one word that carries it. It reads like a conference talk that was actually art-directed: generous margins, hairline rules, large muted section numerals, numbered structures, and a mono eyebrow labeling each idea.
+One presenter's deck built as a precise editorial system, not a bullet template and not the all-dark WebGL demo that preceded it. Eleven distinct slide archetypes — cover, section divider, key-points, pinned callouts, before/after two-column, process/workflow, parallel cards, code + UI, table/matrix, quote/closing, and showcase — ride a single grid, a single Geist type system, and a single terracotta signal. Each slide states one idea in the layout that idea deserves, and the accent marks the one word that carries it. It reads like a conference talk that was actually art-directed: generous margins, hairline rules, large muted section numerals, numbered structures, and a mono eyebrow labeling each idea.
 
-The stage is a flat, full-viewport frame (`.deck`) with minimal chrome pinned to the top edge only — a menu button (≡) and wordmark upper-left, a page index upper-right — and one live slide beneath, cross-faded by Framer Motion. There is no footer and no chrome eyebrow; the page index is always `NN / NN` (current over total), never per-slide-overridden. Ground is assigned per archetype: cover and key-points sit on near-black night, everything else on warm paper, and any slide can override with its own `theme`. The two themes are one token set (`--accent`, `--ink`, `--ground`, `--panel`…) reassigned under `[data-theme]` on the deck, so a slide flips light↔dark by swapping one attribute and the deck color-transitions across it (420ms). WebGL appears exactly once: a slowly rotating dotted-particle sphere (React Three Fiber) on the cover, and nowhere else.
+The stage is a flat, full-viewport frame (`.deck`) with minimal chrome pinned to the top edge only — a menu button (≡) and wordmark upper-left, a page index upper-right — and one live slide beneath, cross-faded by Framer Motion. There is no footer and no chrome eyebrow; the page index is always `NN / NN` (current over total), never per-slide-overridden. Ground is assigned per archetype: cover, key-points and callouts sit on near-black night, everything else on warm paper, and any slide can override with its own `theme`. The two themes are one token set (`--accent`, `--ink`, `--ground`, `--panel`…) reassigned under `[data-theme]` on the deck, so a slide flips light↔dark by swapping one attribute and the deck color-transitions across it (420ms). WebGL appears exactly once: a slowly rotating dotted-particle sphere (React Three Fiber) on the cover, and nowhere else.
 
 The world refuses generic slop and heavy ornament alike. Color lives almost entirely in the neutral ink-on-paper (or ink-on-night) surfaces; the terracotta signal is the only chromatic voice, and it is rationed to a single highlighted word plus the mono structural marks and active state. Depth is tonal and hairline by default; real elevation shadows appear only where the interface genuinely lifts off the page — the Contents drawer that slides in from the left.
 
 **Key Characteristics:**
-- Eight editorial archetypes on one grid and one Geist type system; JSON drives every slide from a static import of `content/sample.json` (versioned decks live in `content/`).
-- Ground assigned per archetype via `slideTheme()` (cover + keypoints dark, rest light), overridable per item with `theme`; one token set flipped by `[data-theme]`.
+- Eleven editorial archetypes on one grid and one Geist type system; typed TypeScript deck modules in `content/` drive every slide, and `content/types.ts` is the contract that makes a wrong archetype a compile error.
+- One deck is presented: `DEFAULT_DECK` in `src/lib/deck-ids.ts`. `content/sample.ts` is the reference deck — one slide of every archetype — and is never what ships on stage.
+- Ground assigned per archetype via `slideTheme()` (cover + keypoints + callouts dark, rest light), overridable per item with `theme`; one token set flipped by `[data-theme]`.
 - Exactly one terracotta word per slide, authored as `**word**` and rendered as `.accent`.
 - Warm neutrals only — paper `#f3f2ee`, night `#0e0f11`, never pure `#000`/`#fff`; ink tinted warm.
 - Geist grotesk carries display and body; Geist Mono carries page index, code, the slide eyebrow, and micro-labels.
@@ -123,7 +146,7 @@ Warm neutral ink on paper by day and on night by archetype, with one terracotta 
 
 ### Neutral (Light — default `:root, [data-theme='light']`)
 - **Paper** (`#f3f2ee`, `--ground`) and **Paper 2** (`#ebe9e3`, `--ground-2`): the warm page and its slightly deeper wash.
-- **Ink** (`#17181b`, `--ink`): titles and primary text. **Ink Soft** (`#56575c`, `--ink-soft`): notes and secondary copy. **Ink Faint** (`#8c8d92`, `--ink-faint`): mono meta, marks, muted cells.
+- **Ink** (`#17181b`, `--ink`): titles and primary text. **Ink Soft** (`#56575c`, `--ink-soft`): notes and secondary copy. **Ink Faint** (`#8c8d92`, `--ink-faint`): decoration only — bullet marks, the aria-hidden code gutter, the empty-deck message.
 - **Panel** (`#ffffff`, `--panel`) and **Panel 2** (`#f7f6f2`, `--panel-2`): raised surfaces inside slides (spec cards, code wells, the drawer).
 - **Hairline** (`rgba(19,20,24,0.11)`) / **Hairline Strong** (`rgba(19,20,24,0.18)`) / **Panel Line** (`rgba(19,20,24,0.09)`): the only borders in the system. **Numeral** (`rgba(19,20,24,0.14)`): giant muted section numbers and the quote mark.
 
@@ -135,9 +158,11 @@ Warm neutral ink on paper by day and on night by archetype, with one terracotta 
 Slides that depict *other* interfaces carry their own functional colors — process step tones (teal `#2f8f86`, blue `#3768c9`, violet `#7a5af0`, ink `#2b2c31`) mixed at 15% over near-black card fills; the two-column "after" success green (`#2f9e6b`, on its checkmark badge, logomark, and CTA) against a neutral "before"; preview buttons (`#3b6fd4`, `#d64545`); code tokens (string `#2e8b6b`, keyword `#8257e6`); and the severity ramp (P0 `#d0402f`, P1 `#e08a2b`, P2 `#e3c34a`, P3 muted). These are specimen content shown *inside* a slide, not house colors. They never touch the chrome.
 
 ### Named Rules
-**The One Accent Word Rule.** Each slide highlights exactly one word, authored in content as `**word**` and rendered terracotta by `renderAccent`. Beyond that word the signal serves only structure and state — the mono eyebrow, list numerals, the current slide in Contents, selection, focus. It is never a fill behind running text and never appears twice in one heading. Its rarity is the point.
+**The One Accent Word Rule.** Each slide highlights exactly one word, authored in content as `**word**` and rendered terracotta by `renderInline`. Beyond that word the signal serves only structure and state — the mono eyebrow, list numerals, the current slide in Contents, selection, focus. It is never a fill behind running text and never appears twice in one heading. Its rarity is the point.
 
 **The Warm-Neutral Rule.** Ground is paper `#f3f2ee` or night `#0e0f11`, never pure black; ink is `#17181b` or bone `#f3f2ee`, never pure white. All neutrals tint warm.
+
+**The Faint-Is-Not-Text Rule.** `--ink-faint` measures 3.31:1 on a white panel and 2.95:1 on paper, so it never carries a word the reader has to get. Any label that names what it sits over — a table header, a card's `WHY IT FAILS` line, a code tab, a showcase caption — is content and takes `--ink-soft`. A deck that teaches the 4.5:1 rule does not break it in its own margins.
 
 ## Typography
 
@@ -157,13 +182,17 @@ Slides that depict *other* interfaces carry their own functional colors — proc
 ### Named Rules
 **The Two-Family Rule.** Geist sans carries everything a reader reads for meaning (titles, notes, labels-of-content); Geist Mono carries everything the machine indexes (page numbers, eyebrows, code, table headers). The families never trade jobs.
 
+**The Inline-Mark Rule.** Slide prose is inline Markdown and nothing more: `` `code` `` sets a mono chip (0.88em, `--r-sm`, an 8% ink wash that works on either ground), `*emphasis*` is a true italic, `[text](href)` underlines in terracotta, and `**word**` renders as the accent word rather than bold weight — the accent *is* this deck's strong. Block Markdown has no rendering: a heading or a list inside a slide string is a slide that wanted a different archetype.
+
 ## Layout
 
 A fixed full-viewport column (`.deck`, `position: fixed; inset: 0`) padded by `--pad` (`clamp(34px, 4.6vw, 84px)`) horizontally and `--pad-y` (`clamp(24px, 3vw, 46px)`) vertically: a flex-none top chrome and a flexible `.stage` that clips and cross-fades slides. Chrome is a single space-between row — a brand cluster (menu + wordmark) against the mono page index. There is no bottom chrome.
 
-Each archetype owns its own internal grid: divider is `1.18fr / 0.82fr` (numeral+title against a numbered list), key-points and two-column are `1fr / 1fr`, process is a four-column flow of arrow-linked cards, code+UI is `1.05fr / 0.95fr` (code well beside a live preview), table is a full-width bordered matrix, quote is a centered oversized blockquote with corner closer and byline. Titles cap around 12–15ch; body around 42ch. Spacing runs on `--gap` (`clamp(16px, 1.5vw, 24px)`) with per-block `clamp()` rhythm rather than a fixed step scale.
+Each archetype owns its own internal grid: divider divides by the golden ratio (`--phi: 1.618fr` against `1fr`, 61.8 : 38.2 — numeral and title against a numbered list), key-points and two-column are `1fr / 1fr`, process is a four-column flow of arrow-linked cards, prompt-cards is one column per card, code+UI is `1.05fr / 0.95fr` (code well beside a live preview), table is a full-width bordered matrix, quote is a centered oversized blockquote with corner closer and byline, and showcase is one or two image frames over a caption row. Titles cap around 12–15ch; body around 42ch. Spacing runs on `--gap` (`clamp(16px, 1.5vw, 24px)`) with per-block `clamp()` rhythm rather than a fixed step scale.
 
-Below 940px the multi-column archetypes collapse to a single column, the cover sphere moves inline beneath the text, the process flow drops to a 2-up (connector arrows hidden), and the table scrolls horizontally. Navigation: click (left 28% = prev, else next), Arrow/Space/PageUp-Down/Home/End keys, and a 64px horizontal swipe; `O` toggles Contents; `#N` in the hash deep-links the starting slide and stays in sync with the current index.
+A divider may deviate from φ in two named steps and no more — `even` (`1fr 1fr`, two things of equal weight) and `golden-flip` (`1fr var(--phi)`, for a section whose list is the substance and whose title is the label on it) — and a divider with no list renders solo on the same grid at a larger title. Both the deviation and the row marker (`number` / `bullet` / `none`) are authorable fields and designlab params, so a proportion is tried before it is written in.
+
+Below 940px the multi-column archetypes collapse to a single column, the cover sphere moves inline beneath the text, the process flow drops to a 2-up (connector arrows hidden), the prompt cards stack on tightened padding and leave subgrid for ordinary flow, the showcase frames shorten to `clamp(120px, 21vh, 210px)`, and the table scrolls horizontally. Navigation: click (left 28% = prev, else next), Arrow/Space/PageUp-Down/Home/End keys, and a 64px horizontal swipe; `O` toggles Contents; `#N` in the hash deep-links the starting slide and stays in sync with the current index.
 
 ## Elevation & Depth
 
@@ -198,7 +227,9 @@ A soft, restrained radius family: `--r-sm` 6px (outline rows, thumbnails) and `-
 - **Spec / code / two-column frame:** `--panel` (or `--panel-2`) fill, 1px `--panel-line` border, 10px radius, `clamp(14px…20px)` padding, no shadow.
 - **Process step card:** a *tall dark-tinted* filled card (`color-mix(in srgb, var(--tone) 15%, #17181c)`, min-height ~88–108px, 10px radius), a small 7px-radius solid-tone number chip (white numeral), and a light `#f3f2ee` title; the four-up flow links cards with a rotated-corner arrow. Not a white bar.
 - **Code well:** `--panel-2` well with a mono `--panel` tab header, a right-aligned mono **line-number gutter** (`--ink-faint`, 50% opacity), and syntax-highlighted `<pre>` (comment/string/keyword tokens).
-- **Table/matrix:** borderless-outer, hairline row rules, mono uppercase headers, terracotta-free; severity is a filled specimen pill, action is plain colored text.
+- **Table/matrix:** borderless-outer, hairline row rules, mono uppercase headers, terracotta-free; severity is a filled specimen pill, action is plain colored text. Exactly four columns — the layout has four and the contract enforces it.
+- **Prompt card:** `--panel` fill, hairline border, 10px radius, `clamp(16px…24px)` padding, holding three parts in fixed order — a title, a `--ink-soft` subtitle saying what the card holds, and content that is either a bulleted list or one paragraph, separated from the title block by a hairline. The card is generic on purpose: the title is a prompt, a filename or a name, and the slide's `quoted` flag decides whether every title is wrapped in quotation marks by the element itself (`<q>`) or set plain (`<h3>`) — an author never types the marks, so there is never a second set. The row of cards is one grid: each card is a **subgrid spanning three of the parent's rows**, so the hairlines and the content align across cards because the titles measured the same, not because a min-height guessed at two lines. A card with no subtitle keeps the empty row. The parent carries a column gap only; a row gap would open *inside* a card.
+- **Showcase frame:** the only archetype that renders a real image — `--panel` fill, hairline border, 10px radius, `clamp(180px, 38vh, 410px)` tall (halved under 940px), image `object-fit: contain` over it, `--ink-soft` caption beneath. An image with no `src` draws its alt text inside a dashed frame, so a missing screenshot stays visibly a placeholder instead of an empty box.
 
 ### Contents Drawer (signature)
 A left side drawer (`min(420px, 88vw)`, full height, `--panel` fill, `--r-*` none — square-edged flush to the viewport, 1px hairline right border, drawer-lift shadow) that slides in from `x: -100%` over a dimmed blurred scrim. A pill tab-switcher toggles **Outline** — a nested numbered text outline (`slideOutline()` expands each archetype into its sub-items) with the current slide marked terracotta — and **Slides** — a 2-column 16:9 thumbnail grid where each thumb miniaturizes the slide's eyebrow/title over its own themed ground and the active one wears a 2px terracotta ring. A search field filters both views. Opened by the menu button or `O`; closed by `Esc`, the close pill, the scrim, or picking a slide.
@@ -209,16 +240,21 @@ A single React Three Fiber `Canvas` (transparent, dpr `[1, 1.8]`, camera z 4.2 /
 ### Named Rules
 **The One-Canvas Rule.** WebGL exists solely as the cover sphere. No other slide spawns a canvas; every other archetype is DOM and type. The medium stays quiet so the argument reads.
 
+**The Measured-Alignment Rule.** When parts of sibling cards must line up, they line up because a shared grid measured them — subgrid rows, not a `min-height` in ems. A guessed height is right for one content length and leaves a band of empty card for every other.
+
 ## Do's and Don'ts
 
 ### Do:
-- **Do** drive every slide from `content/sample.json` (static import via `useContent`) — a `meta` block plus a typed `items` array; the eight `type` values map to the eight layout components in `Slides.jsx`. Versioned decks live in `content/`.
-- **Do** highlight exactly one word per slide with `**word**`; let `renderAccent` color it terracotta.
-- **Do** assign ground by archetype through `slideTheme()` (cover + keypoints dark, rest light) and flip themes by swapping `[data-theme]` on the deck; never hardcode a slide's colors outside the token set.
+- **Do** drive every slide from a typed deck module in `content/` — a `meta` block plus an `items` array, `satisfies Deck` against `content/types.ts`; each `type` value maps to one layout component in `Slides.tsx`. `DEFAULT_DECK` in `src/lib/deck-ids.ts` names the one deck that is presented and published.
+- **Do** highlight exactly one word per slide with `**word**`; let `renderInline` color it terracotta.
+- **Do** write commands, filenames and token names as `` `code` `` in slide prose; the mono chip is what marks them, not quotation marks or capitals.
+- **Do** assign ground by archetype through `slideTheme()` (cover + keypoints + callouts dark, rest light) and flip themes by swapping `[data-theme]` on the deck; never hardcode a slide's colors outside the token set.
 - **Do** keep chrome minimal and top-only: menu + wordmark upper-left, page index (`NN / NN`) upper-right — no footer, no chrome eyebrow.
 - **Do** keep neutrals warm — paper `#f3f2ee` / night `#0e0f11`, ink `#17181b` / bone `#f3f2ee` — never pure `#000`/`#fff`.
 - **Do** set the page index, code, and table headers in Geist Mono; set everything read for meaning in Geist sans.
 - **Do** separate surfaces with tone and 1px hairlines; reserve the outer shadow for the floating Contents drawer.
+- **Do** give any label that names what it sits over `--ink-soft`, and keep `--ink-faint` for decoration only; re-run `audit_a11y` before calling a contrast fix done.
+- **Do** align parts across sibling cards with a shared grid (subgrid rows), not a `min-height` guess.
 - **Do** settle motion on `cubic-bezier(0.22, 1, 0.36, 1)` (~200ms controls, ~440ms slide-in, ~400ms drawer) and honor `prefers-reduced-motion` (freeze the sphere, shorten transitions).
 
 ### Don't:
@@ -226,4 +262,6 @@ A single React Three Fiber `Canvas` (transparent, dpr `[1, 1.8]`, camera z 4.2 /
 - **Don't** add a second WebGL canvas; the cover sphere is the only one.
 - **Don't** introduce a new archetype without giving it a `type` and a layout component; never render an untyped slide (the fallback is the divider).
 - **Don't** add drop shadows, glass, or bordered container stacks to slide chrome — hairlines and tone carry separation.
+- **Don't** put a second deck in the published build or add a way to switch decks on stage — one deck is presented, and `content/` drafts are dev-only.
+- **Don't** repeat an archetype on consecutive slides when a different one states the idea better; eleven layouts exist so that no two adjacent slides read alike.
 - **Don't** promote a specimen color (process tones, the two-column success green, preview buttons, severity ramp, code tokens) into the house palette; those live inside depicted UI only.

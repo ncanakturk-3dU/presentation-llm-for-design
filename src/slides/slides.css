@@ -61,10 +61,37 @@
 .divider {
   height: 100%;
   display: grid;
-  grid-template-columns: 1.18fr 0.82fr;
+  /* φ : 1. The whole divider scale is this ratio, its inverse, or an even
+     split — see `ListSplit`. Unset lands here, so a divider nobody has had
+     an opinion about still has a proportion. */
+  grid-template-columns: var(--phi) 1fr;
   gap: clamp(30px, 5vw, 96px);
   align-items: center;
 }
+/* No list: the second column has nothing to hold, so the text takes two
+   thirds of the stage and grows into it. The measures widen with the column —
+   at the list-mode 13ch the bigger column would just add more empty space to
+   the right of the same wrap. */
+.divider--solo { grid-template-columns: var(--phi) 1fr; }
+/* The scale. `golden` restates the default, for a divider that says so out
+   loud; the other two are the deviations from it. */
+.divider[data-split='golden'] { grid-template-columns: var(--phi) 1fr; }
+.divider[data-split='even'] { grid-template-columns: 1fr 1fr; }
+.divider[data-split='golden-flip'] { grid-template-columns: 1fr var(--phi); }
+/* No `max-width` on the title: the 2fr column is the measure. With the
+   list-mode 13ch cap the title kept its old wrap and the widened column just
+   added empty space beside it, which is the thing this mode exists to remove.
+   The note keeps a cap, because prose still has to stay readable. */
+.divider--solo .divider__title {
+  max-width: none;
+  font-size: clamp(34px, 5.6vw, 76px);
+  /* `balance` shortens every line to even them out, which in a column this
+     wide leaves the title stopping well short of its own edge — the same void,
+     moved. `pretty` only guards the last line against a widow. */
+  text-wrap: pretty;
+}
+.divider--solo .divider__note { max-width: 52ch; }
+
 .divider__num {
   font-weight: 600;
   font-size: clamp(88px, 13vw, 188px);
@@ -89,13 +116,35 @@
   line-height: 1.5;
   color: var(--ink-soft);
 }
-.divider__list { list-style: none; margin: 0; padding: 0; }
+.divider__list { list-style: none; margin: 0; padding: 0; --rows: 4; }
 .divider__row {
   display: flex;
   align-items: baseline;
   gap: clamp(14px, 1.4vw, 22px);
-  padding: clamp(13px, 1.5vw, 20px) 0;
+  /* The row's own comfortable padding, but never more than the rows can
+     afford: `48vh / rows` is the height each row may take, halved because the
+     padding is on both sides. Four rows keep the full 20px; nine rows tighten
+     themselves rather than growing the list past the stage. */
+  padding: min(clamp(11px, 1.5vw, 20px), calc(48vh / var(--rows) / 2)) 0;
   border-bottom: 1px solid var(--hairline);
+}
+/* The two markers that are not numerals share the numeral's own gap handling:
+   nothing sits in the flex row, and the indent moves onto the label, so a
+   numbered divider and these line their text up the same way. */
+.divider__list--bullet .divider__row,
+.divider__list--none .divider__row { gap: 0; }
+.divider__list--bullet .divider__label { position: relative; padding-left: 18px; }
+/* A drawn dot rather than a bullet glyph: the row aligns on the baseline, and
+   Geist's own bullet then sits under the first word instead of beside it. */
+.divider__list--bullet .divider__label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.42em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
 }
 .divider__row:first-child { border-top: 1px solid var(--hairline); }
 .divider__n { color: var(--accent); font-size: 12px; }
@@ -108,11 +157,26 @@
 .keypoints {
   height: 100%;
   display: grid;
+  /* Even, and the one archetype where that is the unset case rather than a
+     deviation: a claim and the list that carries it have argued at equal width
+     here since before `split` existed, and an existing deck must not move
+     because the field arrived. The scale below is the same three steps the
+     divider takes — see `ListSplit`. */
   grid-template-columns: 1fr 1fr;
   gap: clamp(30px, 5vw, 90px);
   align-items: center;
 }
+/* `even` restates the default out loud; the other two are the deviations. */
+.keypoints[data-split='even'] { grid-template-columns: 1fr 1fr; }
+.keypoints[data-split='golden'] { grid-template-columns: var(--phi) 1fr; }
+.keypoints[data-split='golden-flip'] { grid-template-columns: 1fr var(--phi); }
+/* The title's measure is the column, so it has to widen with it: at the even
+   split's 12ch cap a golden-flip title kept its old wrap and the extra width
+   became empty space beside it, which is the thing the proportion was changed
+   to remove. */
 .keypoints .shead__title { font-size: clamp(34px, 4.6vw, 62px); max-width: 12ch; }
+.keypoints[data-split='golden'] .shead__title { max-width: 16ch; }
+.keypoints[data-split='golden-flip'] .shead__title { max-width: 9ch; }
 .keypoints__list { list-style: none; margin: 0; padding: 0; }
 .keypoints__row {
   display: flex;
@@ -120,6 +184,24 @@
   gap: clamp(16px, 1.6vw, 24px);
   padding: clamp(15px, 1.7vw, 24px) 0;
   border-bottom: 1px solid var(--hairline);
+}
+/* The two markers that are not numerals carry no element in the flex row, so
+   the indent moves onto the text and a numbered list and these line their
+   first word up the same way — the divider's own handling. */
+.keypoints__list--bullet .keypoints__row,
+.keypoints__list--none .keypoints__row { gap: 0; }
+.keypoints__list--bullet .keypoints__text { position: relative; padding-left: 22px; }
+/* A drawn dot rather than a bullet glyph: a row centres on its box, and Geist's
+   own bullet then sits low against text this size. */
+.keypoints__list--bullet .keypoints__text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
 }
 .keypoints__row:first-child { border-top: 1px solid var(--hairline); }
 .keypoints__badge {
@@ -140,6 +222,115 @@
   line-height: 1.3;
   color: var(--ink);
 }
+
+/* The list and the evidence, side by side. The list column is the narrower
+   one on purpose: the picture is what the claims are being checked against,
+   so it gets the room. Same golden ratio the divider uses. */
+.callouts {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 38.2fr 61.8fr;
+  gap: clamp(26px, 4vw, 64px);
+  align-items: center;
+  min-height: 0;
+}
+.callouts__side { min-width: 0; }
+.callouts .shead__title { font-size: clamp(28px, 3.4vw, 46px); max-width: 14ch; }
+.callouts__list { list-style: none; margin: clamp(18px, 2.2vw, 30px) 0 0; padding: 0; }
+.callouts__row {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.2vw, 18px);
+  padding: clamp(9px, 1.05vw, 15px) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.callouts__row:first-child { border-top: 1px solid var(--hairline); }
+.callouts__badge {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-strong);
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+/* A failing with nothing to point at. The number still counts, but the badge
+   stops claiming there is a pin waiting on the picture for it. */
+.callouts__row--unpinned .callouts__badge { color: var(--ink-faint); border-style: dashed; }
+.callouts__text {
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.callouts__fig { margin: 0; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+/* The frame is only the mat around the picture: it centres whatever size the
+   image comes out at rather than imposing one, so an archetype written for a
+   10:9 screenshot also holds a 16:9 one. */
+.callouts__frame {
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-md);
+  border: 1px solid var(--panel-line);
+  background: var(--panel-2);
+  padding: clamp(8px, 0.8vw, 14px);
+  min-height: 0;
+}
+/* Shrink-wrapped to the picture, and the pins' coordinate space. The cap is in
+   vh rather than a percentage on purpose: a percentage height resolves against
+   this box, which is sized by its contents, so it would not resolve at all and
+   the image would render at natural size and overflow the slide. */
+.callouts__stage { position: relative; display: inline-block; max-width: 100%; line-height: 0; }
+.callouts__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(72vh, 660px);
+}
+.callouts__placeholder {
+  display: grid;
+  place-items: center;
+  width: min(52vw, 620px);
+  height: min(46vh, 420px);
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--r-sm);
+  color: var(--ink-soft);
+  line-height: 1.4;
+  text-align: center;
+}
+/* Centred on its coordinate, not hung below and right of it: a pin names a
+   spot, and half a badge of offset is enough to point at the wrong card. */
+.callouts__pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--paper);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  /* The specimen is a light screenshot and the pins sit on top of it. The ring
+     is what keeps a pin legible where it lands on white. */
+  box-shadow: 0 0 0 3px var(--panel-2);
+}
+.callouts__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: clamp(10px, 1.2vw, 18px);
+  margin-top: clamp(10px, 1.2vw, 16px);
+}
+.callouts__cap { color: var(--ink-soft); }
+.callouts__status { color: var(--ink); }
 
 .twocol { height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .twocol__grid {
@@ -230,7 +421,10 @@
   margin: clamp(28px, 3.2vw, 48px) 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* One column per step, not a fixed four: a three-step flow would otherwise
+     leave a dead column and a five-step flow would wrap one card onto its own
+     row. The phone rule below still collapses it to two. */
+  grid-template-columns: repeat(var(--steps, 4), minmax(0, 1fr));
   gap: clamp(14px, 1.6vw, 26px);
 }
 .process__step { position: relative; }
@@ -293,13 +487,130 @@
   background: var(--tone, var(--ink-faint));
 }
 
+.cards { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.cards__grid {
+  list-style: none;
+  margin: clamp(28px, 3.2vw, 48px) 0 0;
+  padding: 0;
+  display: grid;
+  /* One column per card, like the process flow: three specimens should not
+     leave a dead fourth column. */
+  grid-template-columns: repeat(var(--cards, 3), minmax(0, 1fr));
+  /* Column gap only: the cards below are subgrids spanning three of this
+     grid's rows, so a row gap would open between a card's own prompt, label
+     and points rather than between cards. */
+  column-gap: clamp(14px, 1.6vw, 26px);
+  row-gap: 0;
+}
+.cards__card {
+  /* Subgrid, not flex: the three parts of a card — title, subtitle, content —
+     take their heights from rows the whole row of cards shares, so the header
+     bands line up across cards because the titles actually measured the same,
+     not because a min-height guessed at two lines and left a one-line title
+     sitting over a band of empty card. A card with no subtitle keeps an empty
+     middle row rather than pulling its content out of line. Stacked at phone
+     width each card gets its own three rows, so nothing is padded out to
+     match a sibling. */
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  /* No padding on the card: the header band has to reach its edges, so each
+     of the three rows carries its own. */
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  /* The band's corners are the card's corners. */
+  overflow: hidden;
+  background: var(--panel);
+}
+@supports not (grid-template-rows: subgrid) {
+  .cards__card { display: flex; flex-direction: column; }
+  /* The old alignment: two lines' worth in the title's own em. */
+  .cards__title { min-height: 2.44em; }
+}
+/* The header band, read off `process`.
+   A title in --ink over a body in --ink-soft is two greys a row apart, and on
+   a white card the card itself was doing the separating. Here the title sits
+   on the same near-black `process` gives its step cards, so which line is the
+   claim and which lines support it is legible from the back of the room.
+   Title and subtitle are two adjacent rows of the card's subgrid, with no row
+   gap between them, so one background across both reads as a single band —
+   and the rows still measure across the row of cards, which a wrapper element
+   would have broken. */
+.cards__title,
+.cards__sub {
+  background: color-mix(in srgb, #2b2c31 15%, #17181c);
+}
+.cards__title {
+  margin: 0;
+  padding: clamp(14px, 1.5vw, 20px) clamp(16px, 1.6vw, 24px) 0;
+  font-weight: 600;
+  font-size: clamp(16px, 1.5vw, 22px);
+  line-height: 1.22;
+  letter-spacing: -0.012em;
+  /* The same near-white `process` puts on its step titles, not --ink: the
+     band is dark in both grounds, so the token would invert under it. */
+  color: #f3f2ee;
+}
+/* Only the quoted form carries marks, and it carries its own — an author never
+   types them, so there is never a second set. */
+q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
+.cards__sub {
+  /* Padding, not margin: a margin between the two rows would open a gap in
+     the band and show the card through it. */
+  margin: 0;
+  padding: clamp(6px, 0.7vw, 9px) clamp(16px, 1.6vw, 24px) clamp(14px, 1.5vw, 20px);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.4;
+  /* The subtitle names what the card holds, so it is content and needs AA on
+     the band: near-white at 72% measures about 8:1 on it. */
+  color: color-mix(in srgb, #f3f2ee 72%, transparent);
+}
+/* No rule above the list any more: the band's own edge is what separates the
+   claim from what supports it. */
+.cards__points,
+.cards__text {
+  margin: 0;
+  padding: clamp(14px, 1.5vw, 20px) clamp(16px, 1.6vw, 24px);
+}
+.cards__text {
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.cards__points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cards__points li {
+  position: relative;
+  padding-left: 16px;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.cards__points li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.6em;
+  width: 5px; height: 5px;
+  border-radius: 999px;
+  background: var(--ink-faint);
+}
+
 .codeui { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+/* A filename title (`PRODUCT.md anatomy`) runs past the 15ch default and
+   wraps after the extension; these slides get the room to stay on one line. */
+.codeui .shead__title { max-width: 20ch; }
 .codeui__grid {
   margin-top: clamp(20px, 2.2vw, 34px);
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   gap: clamp(20px, 2.4vw, 40px);
-  align-items: start;
+  /* The two panes are one pair, so they share a height: whichever of the code
+     and the preview is taller sets it, and the other fills to match. */
+  align-items: stretch;
 }
 .codeui__code {
   border-radius: var(--r-md);
@@ -309,10 +620,17 @@
 }
 .codeui__tab {
   padding: 11px 16px;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
   border-bottom: 1px solid var(--panel-line);
   background: var(--panel);
 }
+/* With an `href` the tab label is the way to the real file. It keeps the tab's
+   own colour and earns the accent only under the pointer, so a slide at rest
+   still spends its one accent on the title. */
+.codeui__file { color: inherit; text-decoration: none; }
+.codeui__file::after { content: ' \2197'; opacity: 0.6; }
+.codeui__file:hover,
+.codeui__file:focus-visible { color: var(--accent); text-decoration: underline; }
 .codeui__body { display: flex; align-items: stretch; }
 .codeui__gutter {
   flex: none;
@@ -336,6 +654,7 @@
   color: var(--ink-soft);
 }
 .tok-comment { color: var(--ink-faint); font-style: italic; }
+.tok-head { color: var(--ink); font-weight: 600; }
 .tok-str { color: #2e8b6b; }
 .tok-kw { color: #8257e6; }
 
@@ -343,12 +662,12 @@
   border-radius: var(--r-md);
   border: 1px solid var(--panel-line);
   background: var(--panel);
-  padding: clamp(18px, 2vw, 28px);
+  padding: clamp(14px, min(2vw, 2.6vh), 28px);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(8px, 1.6vh, 14px);
 }
-.codeui__pvhead { color: var(--ink-faint); }
+.codeui__pvhead { color: var(--ink-soft); }
 .codeui__buttons { display: flex; flex-direction: column; gap: 10px; }
 .pvbtn {
   height: 40px;
@@ -362,8 +681,25 @@
 .pvbtn--secondary { background: var(--panel-2); color: var(--ink); border: 1px solid var(--panel-line); }
 .pvbtn--danger { background: #d64545; color: #fff; }
 .codeui__variants { margin-top: 4px; }
-.codeui__vlabel { color: var(--ink-faint); display: block; margin-bottom: 8px; }
+.codeui__vlabel { color: var(--ink-soft); display: block; margin-bottom: 8px; }
 .codeui__vrow { display: flex; gap: 8px; flex-wrap: wrap; }
+.pvtable { width: 100%; border-collapse: collapse; }
+/* A row table can run to eleven rows, and the slide is clipped, not scrolled:
+   in a short window the overflow eats the title off the top. Both the padding
+   and the type shrink with the viewport height so the pane stays inside it. */
+.pvtable th,
+.pvtable td {
+  text-align: left;
+  vertical-align: top;
+  padding: clamp(4px, 0.85vh, 8px) 0;
+  border-top: 1px solid var(--panel-line);
+  font-size: clamp(10px, min(0.85vw, 1.55vh), 13px);
+  line-height: 1.45;
+}
+.pvtable tr:first-child th,
+.pvtable tr:first-child td { border-top: 0; padding-top: 0; }
+.pvtable th { font-weight: 600; color: var(--ink); white-space: nowrap; padding-right: 14px; width: 1%; }
+.pvtable td { color: var(--ink-soft); }
 .pvchip {
   padding: 5px 11px;
   border-radius: 999px;
@@ -384,7 +720,9 @@
 .matrix th {
   text-align: left;
   padding: 0 18px 12px 0;
-  color: var(--ink-faint);
+  /* --ink-soft: a column header names what the column holds, so it is content.
+     --ink-faint measures 2.95:1 here, which axe reports as a serious failure. */
+  color: var(--ink-soft);
   border-bottom: 1px solid var(--hairline-strong);
 }
 .matrix td {
@@ -409,14 +747,26 @@
 .sev--orange { background: #e08a2b; color: #221607; }
 .sev--yellow { background: #e3c34a; color: #241d05; }
 .sev--muted { background: var(--ground-2); color: var(--ink-soft); }
+/* `ink` is the tone for a table that is not a severity ladder: a matrix, a
+   reference list. `muted` uses --ink-faint, which measures 3.31:1 on paper and
+   so cannot carry information a reader has to get. */
+.sev--ink { background: var(--ground-2); color: var(--ink); }
 .act { background: transparent; padding-left: 0; padding-right: 0; font-weight: 500; letter-spacing: 0.01em; text-transform: none; font-family: var(--font-sans); }
 .act--red { color: #c33b2b; }
 .act--orange { color: #b9701f; }
 .act--yellow { color: #9a7d18; }
-.act--muted { color: var(--ink-faint); }
+/* --ink-soft: an action cell says what to do about a finding, and --ink-faint
+   measures 3.31:1 on paper. A slide that teaches the 4.5:1 rule cannot break
+   it in its own last column. */
+.act--muted { color: var(--ink-soft); }
+.act--ink { color: var(--ink-soft); }
 
 .quoteslide { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-.quoteslide__main { display: flex; gap: clamp(10px, 1.4vw, 22px); max-width: 24ch; }
+/* The measure belongs on the text, not on this wrapper. `ch` resolves against
+   the element's own font size, and this wrapper inherits the ~15px body size,
+   so `max-width: 24ch` here was about 350px and a six-word quote broke onto
+   six lines. On .quoteslide__text it resolves against the display size. */
+.quoteslide__main { display: flex; gap: clamp(10px, 1.4vw, 22px); }
 .quoteslide__mark {
   font-weight: 600;
   font-size: clamp(60px, 8vw, 120px);
@@ -431,6 +781,7 @@
   letter-spacing: -0.024em;
   color: var(--ink);
   text-wrap: balance;
+  max-width: 17ch;
 }
 .quoteslide__side {
   position: absolute;
@@ -447,14 +798,122 @@
   color: var(--ink-soft);
 }
 
+.showcase { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.showcase__grid {
+  margin-top: clamp(18px, 2.2vw, 32px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(18px, 2vw, 32px);
+  min-height: 0;
+}
+.showcase__grid[data-count='2'] { grid-template-columns: 1fr 1fr; }
+.showcase__fig { margin: 0; display: flex; flex-direction: column; min-height: 0; }
+/* The frame owns the height, not the image. When the image carried a
+   max-height, a grid row stretched by its taller sibling left the frame
+   shorter than the picture inside it and `overflow: hidden` cropped the
+   bottom off. A fixed frame height also makes a two-up comparison line up. */
+.showcase__frame {
+  height: clamp(200px, 44vh, 470px);
+  border-radius: var(--r-md);
+  border: 1px solid var(--panel-line);
+  background: var(--panel-2);
+  padding: clamp(10px, 1vw, 16px);
+  /* flex, not grid: a percentage height on a grid item resolves against its
+     grid area, and an auto-sized row is indefinite, so `height: 100%` fell
+     back to the image's natural height and the frame clipped it. Against a
+     flex container with a definite height the percentage resolves. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.showcase__grid[data-count='2'] .showcase__frame { height: clamp(180px, 38vh, 410px); }
+/* Fill the frame and let `contain` letterbox inside it, rather than capping
+   with a percentage max-height: on a grid item in an auto-sized row that
+   percentage does not resolve, and the picture renders at natural height and
+   is clipped by the frame. Measured: 849px tall in a 394px frame. */
+.showcase__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.showcase__placeholder {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  height: 100%;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--r-sm);
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 0 16px;
+}
+.showcase__cap { margin-top: clamp(10px, 1.1vw, 14px); color: var(--ink-soft); }
+.showcase__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-top: clamp(14px, 1.6vw, 22px);
+}
+/* Not the accent: the title already spends this slide's one accent word, and
+   two marked things on one slide is the rule this deck is built on. */
+.showcase__status { color: var(--ink); }
+/* `anywhere`, not `break-all`: a long URL still breaks, but a line of prose
+   breaks at its spaces instead of splitting the last word in half. */
+.showcase__link { color: var(--ink-soft); overflow-wrap: anywhere; }
+
 @media (max-width: 940px) {
-  .divider, .keypoints { grid-template-columns: 1fr; gap: clamp(22px, 4vw, 40px); align-content: center; }
+  .divider, .divider[data-split], .keypoints, .callouts { grid-template-columns: 1fr; gap: clamp(22px, 4vw, 40px); align-content: center; }
+  /* Stacked, the picture is under the list rather than beside it, so its
+     height comes out of the same column the list already spent. Left at the
+     wide cap the foot ran off the bottom of the slide. */
+  .callouts__row { padding: 8px 0; }
+  .callouts__img { max-height: min(34vh, 300px); }
+  /* Width, not only height, is what binds a portrait-ish specimen here: at
+     full column width the picture alone was taller than the room left under
+     six rows, and the foot ran off the slide. */
+  .callouts__frame { max-width: 82%; margin-inline: auto; }
+  .callouts__pin { width: 20px; height: 20px; font-size: 9px; box-shadow: 0 0 0 2px var(--panel-2); }
   .cover__text { max-width: 100%; }
   .cover__art { position: relative; top: auto; right: auto; transform: none; width: clamp(200px, 46vw, 320px); margin-top: 20px; }
   .cover { justify-content: center; }
   .twocol__grid { grid-template-columns: 1fr; }
   .process__flow { grid-template-columns: 1fr 1fr; }
   .process__step:not(:last-child)::after { display: none; }
-  .codeui__grid { grid-template-columns: 1fr; }
+  /* Three cards stacked have to clear the header and the intro on a 852px
+     phone, so the card spends less on padding and more on its text. */
+  /* Stacked, there is no row of cards left to align across, so the card drops
+     back to flow layout and the grid's row gap can separate cards again. */
+  .cards__grid { grid-template-columns: 1fr; margin-top: clamp(16px, 3vw, 28px); row-gap: 10px; }
+  .cards__card { display: flex; flex-direction: column; grid-row: auto; }
+  .cards__title { font-size: 16px; padding: 11px 15px 0; }
+  .cards__sub { padding: 5px 15px 11px; }
+  .cards__points,
+  .cards__text { padding: 11px 15px; }
+  .cards__points { gap: 5px; }
+  @supports not (grid-template-rows: subgrid) {
+    .cards__title { min-height: 0; }
+  }
+  /* Stacked, the two panes spend one column's height each on top of the
+     other, and the slide is clipped rather than scrolled: a folded .md pane of
+     sixteen lines over eleven rows ran the title off the top. Both panes give
+     back their line height and padding here. */
+  .codeui__grid { grid-template-columns: 1fr; gap: 12px; margin-top: clamp(12px, 2.4vw, 20px); }
+  .codeui__tab { padding: 8px 14px; }
+  .codeui__gutter { padding: 12px 0 12px 12px; font-size: 10px; line-height: 1.42; }
+  .codeui__pre { padding: 12px 12px 12px 10px; font-size: 10px; line-height: 1.42; }
+  .codeui__preview { padding: 14px; gap: 10px; }
+  .pvtable th,
+  .pvtable td { padding: 4px 0; font-size: 10px; line-height: 1.4; }
+  /* A long heading ('Capabilities and Constraints') cannot hold one line in a
+     phone-wide column without touching its own detail, so it wraps here. */
+  .pvtable th { white-space: normal; padding-right: 10px; width: 40%; }
+  .codeui .shead__title { font-size: clamp(22px, 6.6vw, 30px); max-width: 100%; }
+  .codeui__note { margin-top: 10px; font-size: 12px; }
   .matrix { display: block; overflow-x: auto; white-space: nowrap; }
+  .showcase__grid[data-count='2'] { grid-template-columns: 1fr; }
+  .showcase__frame,
+  .showcase__grid[data-count='2'] .showcase__frame { height: clamp(120px, 21vh, 210px); }
 }

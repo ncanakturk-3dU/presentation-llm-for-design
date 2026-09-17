@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { slideOutline, slideTitle, itemTheme } from '../../slides/Slides'
-import { pad, stripAccent } from '../../lib/text'
+import { pad, stripMarks } from '../../lib/text'
 import { EASE } from '../../lib/motion'
+import type { SlideItem } from '../../../content/types'
 import './Contents.css'
 
-function TabIcon({ name }) {
+function TabIcon({ name }: { name: 'outline' | 'slides' }) {
   if (name === 'outline') {
     return (
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
@@ -21,10 +22,22 @@ function TabIcon({ name }) {
   )
 }
 
-export default function Contents({ open, items, index, reduced, onSelect, onClose, initialTab = 'outline', initialQuery = '', still = false }) {
+type ContentsProps = {
+  open: boolean
+  items: SlideItem[]
+  index: number
+  reduced: boolean
+  onSelect: (index: number) => void
+  onClose: () => void
+  initialTab?: 'outline' | 'slides'
+  initialQuery?: string
+  still?: boolean
+}
+
+export default function Contents({ open, items, index, reduced, onSelect, onClose, initialTab = 'outline', initialQuery = '', still = false }: ContentsProps) {
   const [tab, setTab] = useState(initialTab)
   const [query, setQuery] = useState(initialQuery)
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (open) {
@@ -35,9 +48,10 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
   }, [open, reduced, initialQuery])
 
   const q = query.trim().toLowerCase()
-  const matches = (it) => {
+  const matches = (it: SlideItem) => {
     if (!q) return true
-    const hay = [slideTitle(it), it.kicker, it.chapter, ...slideOutline(it)].filter(Boolean).join(' ').toLowerCase()
+    const kicker = 'kicker' in it ? it.kicker : undefined
+    const hay = [slideTitle(it), kicker, it.chapter, ...slideOutline(it)].filter(Boolean).join(' ').toLowerCase()
     return hay.includes(q)
   }
 
@@ -97,7 +111,7 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
                               <li key={j}>
                                 <button className="ol__sub" onClick={() => onSelect(i)}>
                                   <span className="ol__subn mono">{i + 1}.{j + 1}</span>
-                                  <span className="ol__subt">{stripAccent(s)}</span>
+                                  <span className="ol__subt">{stripMarks(s)}</span>
                                 </button>
                               </li>
                             ))}
@@ -114,7 +128,7 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
                     return (
                       <button key={it.id || i} className={`thumb ${i === index ? 'is-current' : ''}`} onClick={() => onSelect(i)}>
                         <span className="thumb__frame" data-theme={itemTheme(it)}>
-                          <span className="thumb__kicker mono">{it.kicker || it.type}</span>
+                          <span className="thumb__kicker mono">{('kicker' in it && it.kicker) || it.type}</span>
                           <span className="thumb__title">{slideTitle(it)}</span>
                         </span>
                         <span className="thumb__foot">

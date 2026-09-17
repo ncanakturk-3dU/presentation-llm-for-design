@@ -1,4 +1,6 @@
-import presented from '../../content/version_1.json'
+import type { Deck, SlideItem } from '../../content/types'
+import { DEFAULT_DECK } from './deck-ids'
+import presented from '../../content/version_1'
 
 /**
  * The decks in `content/`, and which one gets presented.
@@ -20,17 +22,28 @@ import presented from '../../content/version_1.json'
  * `DEFAULT_DECK` must name the file imported above. `npm run lab:states`
  * fails if the two ever drift, and in dev the mismatch throws on load.
  */
-export const DEFAULT_DECK = 'version_1'
+export { DEFAULT_DECK, REFERENCE_DECK } from './deck-ids'
 
-/** The reference deck: one slide of every archetype, and never presented. */
-export const REFERENCE_DECK = 'sample'
+/** A deck as the app and the studio handle it: the data, plus how to name it. */
+export type LoadedDeck = {
+  id: string
+  label: string
+  items: SlideItem[]
+  data: Deck
+}
 
-const modules = import.meta.env.DEV ? import.meta.glob('../../content/*.json', { eager: true }) : {}
+/**
+ * The glob skips `types.ts`, which is the contract and not a deck. Every other
+ * module in `content/` default-exports one.
+ */
+const modules = import.meta.env.DEV
+  ? import.meta.glob<{ default: Deck }>('../../content/*.ts', { eager: true })
+  : {}
 
-/** Filename without extension: `content/version_1.json` → `version_1`. */
-const idOf = (path) => path.split('/').pop().replace(/\.json$/, '')
+/** Filename without extension: `content/version_1.ts` → `version_1`. */
+const idOf = (path: string) => path.split('/').pop()!.replace(/\.ts$/, '')
 
-function toDeck(id, data) {
+function toDeck(id: string, data: Deck): LoadedDeck {
   return {
     id,
     // What the deck calls itself, falling back to a readable form of its file
@@ -41,10 +54,14 @@ function toDeck(id, data) {
   }
 }
 
-const found = new Map(Object.entries(modules).map(([path, mod]) => {
-  const id = idOf(path)
-  return [id, toDeck(id, mod.default ?? mod)]
-}))
+const found = new Map<string, LoadedDeck>(
+  Object.entries(modules)
+    .filter(([path]) => idOf(path) !== 'types')
+    .map(([path, mod]) => {
+      const id = idOf(path)
+      return [id, toDeck(id, mod.default)]
+    }),
+)
 
 // The static import wins for the presented deck, so it is there in every build
 // whether or not the glob ran.
@@ -52,7 +69,7 @@ found.set(DEFAULT_DECK, toDeck(DEFAULT_DECK, presented))
 
 if (import.meta.env.DEV && !Object.keys(modules).some((p) => idOf(p) === DEFAULT_DECK)) {
   throw new Error(
-    `DEFAULT_DECK is '${DEFAULT_DECK}' but src/lib/decks.js statically imports a different file. ` +
+    `DEFAULT_DECK is '${DEFAULT_DECK}' but src/lib/decks.ts statically imports a different file. ` +
       `Both must name the same deck — fix the import at the top of this file.`,
   )
 }
@@ -67,6 +84,6 @@ export const DECK_IDS = DECKS.map((d) => d.id)
  * deck was bundled — gets the presentation rather than an empty stage, because
  * a blank screen is worse than the wrong-but-working one.
  */
-export function resolveDeck(id) {
+export function resolveDeck(id: string | undefined): LoadedDeck | null {
   return DECKS.find((d) => d.id === id) || DECKS.find((d) => d.id === DEFAULT_DECK) || DECKS[0] || null
 }

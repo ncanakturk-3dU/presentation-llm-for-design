@@ -1,17 +1,20 @@
-import { Component } from 'react'
+import { Component, type ReactNode } from 'react'
 
 /**
  * The last line under the deck. `failed` forces the caught look without
  * throwing, so the state can be declared and captured rather than only ever
  * seen when something is already broken.
  */
-export default class ErrorBoundary extends Component {
-  constructor(props) {
+type Props = { children?: ReactNode; failed?: boolean }
+type State = { failed: boolean }
+
+export default class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props)
     this.state = { failed: false }
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(): State {
     return { failed: true }
   }
 
