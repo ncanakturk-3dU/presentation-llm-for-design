@@ -49,7 +49,7 @@
 .cover__art {
   position: absolute;
   top: 50%;
-  right: -2%;
+  right: 0;
   width: clamp(280px, 42vw, 560px);
   aspect-ratio: 1 / 1;
   transform: translateY(-50%);
@@ -962,7 +962,11 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .callouts__frame { max-width: 82%; margin-inline: auto; }
   .callouts__pin { width: 20px; height: 20px; font-size: 9px; box-shadow: 0 0 0 2px var(--panel-2); }
   .cover__text { max-width: 100%; }
-  .cover__art { position: relative; top: auto; right: auto; transform: none; width: clamp(200px, 46vw, 320px); margin-top: 20px; }
+  /* Stacked, `.cover__art` is a flex item, and a flex item's aspect-ratio
+     yields to the main-axis size — the box came out portrait and squished the
+     sphere. An explicit square height (matching the width) and flex: none pin
+     it back to 1 : 1. */
+  .cover__art { position: relative; top: auto; right: auto; transform: none; flex: none; width: clamp(200px, 46vw, 320px); height: clamp(200px, 46vw, 320px); aspect-ratio: auto; margin-top: 20px; }
   .cover { justify-content: center; }
   .twocol__grid { grid-template-columns: 1fr; }
   /* One column, and the stair flattened to nothing: stacked, an indent per
@@ -1007,7 +1011,20 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .pvtable th { white-space: normal; padding-right: 10px; width: 40%; }
   .codeui .shead__title { font-size: clamp(22px, 6.6vw, 30px); max-width: 100%; }
   .codeui__note { margin-top: 10px; font-size: 12px; }
-  .matrix { display: block; overflow-x: auto; white-space: nowrap; }
+  /* Four columns cannot hold on a phone, and the old scroll fallback left two
+     of them off-screen with no cue. Each row stacks into a record instead — the
+     chip, then its values down the block — so nothing is hidden. */
+  .matrix { margin-top: clamp(18px, 4vw, 26px); font-size: 14px; }
+  .matrix thead { display: none; }
+  .matrix,
+  .matrix tbody,
+  .matrix tr,
+  .matrix td { display: block; }
+  .matrix tr { padding: 13px 0; border-bottom: 1px solid var(--hairline); }
+  .matrix tr:first-child { border-top: 1px solid var(--hairline); }
+  .matrix td { padding: 0; border: 0; white-space: normal; }
+  .matrix td + td { margin-top: 4px; }
+  .matrix td:first-child { margin-bottom: 8px; }
   .showcase__grid[data-count='2'] { grid-template-columns: 1fr; }
   .showcase__frame,
   .showcase__grid[data-count='2'] .showcase__frame { height: clamp(120px, 21vh, 210px); }

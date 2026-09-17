@@ -2,7 +2,12 @@
   --font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --pad: clamp(34px, 4.6vw, 84px);
+  /* Up to ~1770px the fluid clamp sets the side padding; past it the second
+     term takes over so the content column caps at --max-stage and centres,
+     keeping measures and the cover art composed instead of spread across an
+     ultra-wide screen. */
+  --max-stage: 1600px;
+  --pad: max(clamp(34px, 4.6vw, 84px), (100vw - var(--max-stage)) / 2);
   --pad-y: clamp(24px, 3vw, 46px);
   --gap: clamp(16px, 1.5vw, 24px);
 
@@ -51,4 +56,14 @@
   --panel-line: rgba(255, 255, 255, 0.1);
   --numeral: rgba(255, 255, 255, 0.15);
   color-scheme: dark;
+}
+
+/* On a phone the desktop gutter is a 34px-min side inset that eats a tenth of a
+   390px screen before content starts. The deck scrolls at this width, so the
+   inset tightens to a thumb's margin and the vertical padding with it. */
+@media (max-width: 940px) {
+  :root {
+    --pad: clamp(16px, 5vw, 24px);
+    --pad-y: clamp(14px, 3.6vw, 20px);
+  }
 }

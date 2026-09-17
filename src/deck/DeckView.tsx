@@ -112,6 +112,11 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     if (!lab && total) window.location.hash = String(index + 1)
   }, [lab, index, total])
 
+  // A phone scrolls the deck, so a new slide has to arrive at its own top
+  // rather than wherever the last one was read down to.
+  const deckRef = useRef<HTMLDivElement>(null)
+  useEffect(() => { deckRef.current?.scrollTo(0, 0) }, [index])
+
   const go = useCallback((i: number) => { if (total) setIndex(Math.max(0, Math.min(total - 1, i))) }, [total])
   const next = useCallback(() => { if (total) setIndex((i) => Math.min(total - 1, i + 1)) }, [total])
   const prev = useCallback(() => { if (total) setIndex((i) => Math.max(0, i - 1)) }, [total])
@@ -143,13 +148,23 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     return () => window.removeEventListener('keydown', onKey)
   }, [contentsOpen, next, prev, go, total])
 
-  const touchX = useRef<number | null>(null)
-  const onTouchStart = (e: React.TouchEvent) => { touchX.current = e.changedTouches[0].clientX }
+  const touch = useRef<{ x: number; y: number } | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.changedTouches[0]
+    touch.current = { x: t.clientX, y: t.clientY }
+  }
   const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchX.current == null) return
-    const dx = e.changedTouches[0].clientX - touchX.current
-    if (!contentsOpen && Math.abs(dx) > 64) (dx < 0 ? next() : prev())
-    touchX.current = null
+    if (touch.current == null) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - touch.current.x
+    const dy = t.clientY - touch.current.y
+    touch.current = null
+    // Horizontal-dominant only: a phone now scrolls the deck, so a drag that
+    // travels more down than across is a scroll and must not turn the page.
+    if (!contentsOpen && Math.abs(dx) > 64 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      if (dx < 0) next()
+      else prev()
+    }
   }
   const onStageClick = (e: React.MouseEvent) => {
     if (contentsOpen) return
@@ -157,6 +172,9 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     // pointing at the file on GitHub. Without this the click opens the page
     // *and* advances the deck, so the presenter comes back to the wrong slide.
     if ((e.target as HTMLElement).closest('a')) return
+    // On a phone the surface scrolls and the swipe turns the page, so a tap
+    // does neither — otherwise reading past the fold jumps a slide per tap.
+    if (window.innerWidth <= 940) return
     if (e.clientX < window.innerWidth * 0.28) prev()
     else next()
   }
@@ -172,7 +190,7 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
 
   return (
     <>
-      <div className="deck" data-theme={theme} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="deck" ref={deckRef} data-theme={theme} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <header className="chrome chrome--top">
           <div className="brand">
             <button className="brand__menu" aria-label="Open contents (O)" aria-haspopup="dialog" onClick={() => setContentsOpen(true)}>
@@ -190,6 +208,7 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
             <motion.div
               key={index}
               className="slidewrap"
+              data-theme={theme}
               initial={{ opacity: 0, y: reduced ? 0 : 14 }}
               animate={{ opacity: 1, y: 0, transition: { duration: reduced ? 0.15 : 0.44, ease: EASE } }}
               exit={{ opacity: 0, y: reduced ? 0 : -10, transition: { duration: reduced ? 0.12 : 0.26, ease: EASE } }}
