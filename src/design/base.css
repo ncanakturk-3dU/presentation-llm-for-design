@@ -44,6 +44,8 @@ body {
 em { font-style: italic; }
 .ilink {
   color: inherit;
+  /* A URL label breaks when its card is narrower than it; a prose link still breaks at its spaces. */
+  overflow-wrap: anywhere;
   text-decoration: underline;
   text-decoration-color: var(--accent);
   text-underline-offset: 0.18em;

@@ -390,7 +390,7 @@ function Cards({ item }: { item: CardsItem }) {
   // sets of them. A title that is a filename or a name is not quoted at all.
   const Title = item.quoted ? 'q' : 'h3'
   return (
-    <div className="cards">
+    <div className="cards" data-dense={cards.length >= 5 ? '' : undefined}>
       <Head kicker={item.kicker} title={item.title} note={item.note} />
       <ul className="cards__grid" style={{ '--cards': cards.length || 3 } as CSSVars}>
         {cards.map((c, i) => (

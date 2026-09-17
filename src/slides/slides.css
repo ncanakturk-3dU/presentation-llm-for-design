@@ -435,7 +435,8 @@
      an offset smaller than the card it moves reads as misalignment, not as
      sequence. The unit shrinks as steps are added (`330px / --steps`) so a
      five-step flow lands no further down the stage than a three-step one. */
-  --stair: min(clamp(44px, 7vw, 116px), 330px / var(--steps, 4));
+  /* And never deeper than the stage: on a laptop-height window the loop row fell below it. */
+  --stair: min(clamp(44px, 7vw, 116px), 330px / var(--steps, 4), 26vh / (var(--steps, 4) - 1));
   /* What the connector needs to find a chip: one column's width, and the chip's
      own centre inside its card. */
   --flow-col: calc((100% - (var(--steps, 4) - 1) * var(--flow-gap)) / var(--steps, 4));
@@ -642,6 +643,8 @@
   display: grid;
   grid-row: span 3;
   grid-template-rows: subgrid;
+  /* Bounded, not auto: an auto column grows to an unbreakable chip and the card clips every row at its own edge. */
+  grid-template-columns: minmax(0, 1fr);
   /* No padding on the card: the header band has to reach its edges, so each
      of the three rows carries its own. */
   border: 1px solid var(--hairline);
@@ -726,6 +729,15 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   border-radius: 999px;
   background: var(--ink-faint);
 }
+/* A five-up card is narrower than its longest command: break inside the chip before the card clips it. */
+.cards__points code,
+.process__points code {
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.cards[data-dense] .shead__title { max-width: 30ch; }
+.cards[data-dense] .shead__note { max-width: 64ch; }
 
 .codeui { height: 100%; display: flex; flex-direction: column; justify-content: center; }
 /* A filename title (`PRODUCT.md anatomy`) runs past the 15ch default and
@@ -1133,4 +1145,12 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .showcase__fnum { width: 22px; height: 22px; font-size: 10px; }
   .showcase__frame,
   .showcase__grid[data-count='2'] .showcase__frame { height: clamp(120px, 21vh, 210px); }
+}
+
+/* Laptop height: the process loop ran past an 836px stage; 1080p is untouched. */
+@media (max-height: 900px) and (min-width: 941px) {
+  .cards[data-dense] .cards__grid { margin-top: clamp(18px, 2vw, 28px); }
+  .cards[data-dense] .cards__points { padding: 16px 20px; gap: 6px; }
+  .process__flow { margin-top: clamp(20px, 2.2vw, 32px); }
+  .process__loop { margin-top: clamp(12px, 1.4vw, 20px); }
 }
