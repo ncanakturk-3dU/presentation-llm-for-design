@@ -111,6 +111,7 @@ const deck = {
       type: "keypoints",
       id: "seven-things-to-prepare",
       chapter: "Seven things to prepare",
+      kicker: "PART 1 — TAKEAWAY",
       title: "Seven things to **prepare** before you type.",
       marker: "number",
       split: "golden-flip",
@@ -293,6 +294,7 @@ const deck = {
       type: "keypoints",
       id: "establish-a-design-contract",
       chapter: "Establish a design contract",
+      kicker: "PART 2 — TAKEAWAY",
       title: "Before developing your first screen, establish a design **contract**.",
       marker: "none",
       points: [
@@ -455,6 +457,7 @@ const deck = {
       type: "keypoints",
       id: "know-right-to-know-wrong",
       chapter: "Know right to know wrong",
+      kicker: "PART 3 — TAKEAWAY",
       title: "You need to know what is **right** to know what is wrong.",
       marker: "bullet",
       points: [
@@ -600,6 +603,7 @@ const deck = {
       type: "keypoints",
       id: "how-you-run-the-loop",
       chapter: "How you run the loop",
+      kicker: "PART 4 — TAKEAWAY",      
       title: "How **you** run the loop.",
       marker: "bullet",
       split: "golden-flip",
@@ -649,7 +653,7 @@ const deck = {
     {
       type: "quote",
       id: "shape-the-thinking",
-      chapter: "Shape the thinking",
+      chapter: "Closing summary",
       standalone: true,
       quote: "Good AI design prompts shape the **thinking** that creates the screen.",
       closer: "Reduce ambiguity → Encode intent → Evaluate with evidence → Iterate deliberately.",

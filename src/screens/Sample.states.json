@@ -13,53 +13,53 @@
       "options": [
         {
           "id": "cover",
-          "label": "cover · cover"
+          "label": "Cover · cover"
         },
         {
           "id": "section-one",
-          "label": "section-one · divider"
+          "label": "Section one · divider"
         },
         {
           "id": "key-points",
-          "label": "key-points · keypoints"
+          "label": "Key points · keypoints"
         },
         {
           "id": "before-after",
-          "label": "before-after · twocolumn"
+          "label": "Before / after · twocolumn"
         },
         {
           "id": "process",
-          "label": "process · process"
+          "label": "The process · process"
         },
         {
           "id": "cards",
-          "label": "cards · cards"
+          "label": "Parallel cards · cards"
         },
         {
           "id": "code-ui",
-          "label": "code-ui · codeui"
+          "label": "Code + preview · codeui"
         },
         {
           "id": "table",
-          "label": "table · table"
+          "label": "Comparison · table"
         },
         {
           "id": "callouts",
-          "label": "callouts · callouts"
+          "label": "Callouts · callouts"
         },
         {
           "id": "showcase",
-          "label": "showcase · showcase"
+          "label": "Showcase · showcase"
         },
         {
           "id": "closing",
-          "label": "closing · quote"
+          "label": "Closing · quote"
         }
       ]
     },
     {
       "id": "contents",
-      "label": "contents",
+      "label": "Slides navigation",
       "default": "closed",
       "options": [
         {
@@ -149,7 +149,7 @@
     },
     {
       "id": "slide-section-one",
-      "label": "02 · Section one",
+      "label": "02 · Part 1 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "section-one"
@@ -157,7 +157,7 @@
     },
     {
       "id": "slide-key-points",
-      "label": "03 · Section one · Key points",
+      "label": "03 · Part 1 · Key points",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "key-points"
@@ -165,7 +165,7 @@
     },
     {
       "id": "slide-before-after",
-      "label": "04 · Section one · Before / after",
+      "label": "04 · Part 1 · Before / after",
       "note": "The twocolumn archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "before-after"
@@ -173,7 +173,7 @@
     },
     {
       "id": "slide-process",
-      "label": "05 · Section one · The process",
+      "label": "05 · Part 1 · The process",
       "note": "The process archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "process"
@@ -181,7 +181,7 @@
     },
     {
       "id": "slide-cards",
-      "label": "06 · Section one · Parallel cards",
+      "label": "06 · Part 1 · Parallel cards",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "cards"
@@ -189,7 +189,7 @@
     },
     {
       "id": "slide-code-ui",
-      "label": "07 · Section one · Code + preview",
+      "label": "07 · Part 1 · Code + preview",
       "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "code-ui"
@@ -197,7 +197,7 @@
     },
     {
       "id": "slide-table",
-      "label": "08 · Section one · Comparison",
+      "label": "08 · Part 1 · Comparison",
       "note": "The table archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "table"
@@ -205,7 +205,7 @@
     },
     {
       "id": "slide-callouts",
-      "label": "09 · Section one · Callouts",
+      "label": "09 · Part 1 · Callouts",
       "note": "The callouts archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "callouts"
@@ -213,7 +213,7 @@
     },
     {
       "id": "slide-showcase",
-      "label": "10 · Section one · Showcase",
+      "label": "10 · Part 1 · Showcase",
       "note": "The showcase archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "showcase"
@@ -221,7 +221,7 @@
     },
     {
       "id": "slide-closing",
-      "label": "11 · Section one · Closing",
+      "label": "11 · Part 1 · Takeaway",
       "note": "The quote archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "closing"

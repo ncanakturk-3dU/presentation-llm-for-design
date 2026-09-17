@@ -13,133 +13,133 @@
       "options": [
         {
           "id": "designing-with-ai",
-          "label": "designing-with-ai · cover"
+          "label": "Designing with AI · cover"
         },
         {
           "id": "what-we-cover-today",
-          "label": "what-we-cover-today · keypoints"
+          "label": "What we cover today · keypoints"
         },
         {
           "id": "why-prompts-fail",
-          "label": "why-prompts-fail · divider"
+          "label": "Why prompts fail · divider"
         },
         {
           "id": "three-prompts-three-defaults",
-          "label": "three-prompts-three-defaults · cards"
+          "label": "Three prompts, three defaults · cards"
         },
         {
           "id": "you-already-know-this-look",
-          "label": "you-already-know-this-look · callouts"
+          "label": "You already know this look · callouts"
         },
         {
           "id": "seven-things-to-prepare",
-          "label": "seven-things-to-prepare · keypoints"
+          "label": "Seven things to prepare · keypoints"
         },
         {
           "id": "express-your-design-intent",
-          "label": "express-your-design-intent · divider"
+          "label": "Express your design intent · divider"
         },
         {
           "id": "what-makes-intent-actionable",
-          "label": "what-makes-intent-actionable · keypoints"
+          "label": "What makes intent actionable · keypoints"
         },
         {
           "id": "the-brand-book-in-two-files",
-          "label": "the-brand-book-in-two-files · cards"
+          "label": "The brand book, in two files · cards"
         },
         {
           "id": "product-md-anatomy",
-          "label": "product-md-anatomy · codeui"
+          "label": "PRODUCT.md anatomy · codeui"
         },
         {
           "id": "design-md-anatomy",
-          "label": "design-md-anatomy · codeui"
+          "label": "DESIGN.md anatomy · codeui"
         },
         {
           "id": "three-ways-to-get-a-brand-book",
-          "label": "three-ways-to-get-a-brand-book · cards"
+          "label": "Three ways to get a brand book · cards"
         },
         {
           "id": "what-to-review-from-design-md",
-          "label": "what-to-review-from-design-md · keypoints"
+          "label": "What to review from DESIGN.md · keypoints"
         },
         {
           "id": "establish-a-design-contract",
-          "label": "establish-a-design-contract · keypoints"
+          "label": "Establish a design contract · keypoints"
         },
         {
           "id": "how-to-know-what-is-wrong",
-          "label": "how-to-know-what-is-wrong · divider"
+          "label": "How to know what is wrong · divider"
         },
         {
           "id": "do-not-reinvent-the-wheel",
-          "label": "do-not-reinvent-the-wheel · keypoints"
+          "label": "Do not reinvent the wheel · keypoints"
         },
         {
           "id": "look-past-the-first-reference",
-          "label": "look-past-the-first-reference · cards"
+          "label": "Look past the first reference · cards"
         },
         {
           "id": "not-every-rule-binds-the-same-way",
-          "label": "not-every-rule-binds-the-same-way · table"
+          "label": "Not every rule binds the same way · table"
         },
         {
           "id": "measure-what-can-be-measured",
-          "label": "measure-what-can-be-measured · codeui"
+          "label": "Measure what can be measured · codeui"
         },
         {
           "id": "what-this-looks-like-in-impeccable",
-          "label": "what-this-looks-like-in-impeccable · cards"
+          "label": "What this looks like in Impeccable · cards"
         },
         {
           "id": "know-right-to-know-wrong",
-          "label": "know-right-to-know-wrong · keypoints"
+          "label": "Know right to know wrong · keypoints"
         },
         {
           "id": "my-working-loop",
-          "label": "my-working-loop · divider"
+          "label": "My working loop · divider"
         },
         {
           "id": "four-steps-and-the-way-back",
-          "label": "four-steps-and-the-way-back · process"
+          "label": "Four steps, and the way back · process"
         },
         {
           "id": "the-same-loop-in-commands",
-          "label": "the-same-loop-in-commands · codeui"
+          "label": "The same loop, in commands · codeui"
         },
         {
           "id": "refine-or-set-a-new-direction",
-          "label": "refine-or-set-a-new-direction · cards"
+          "label": "Refine, or set a new direction · cards"
         },
         {
           "id": "use-a-fresh-model-as-a-second-opinion",
-          "label": "use-a-fresh-model-as-a-second-opinion · showcase"
+          "label": "A fresh model as second opinion · showcase"
         },
         {
           "id": "how-you-run-the-loop",
-          "label": "how-you-run-the-loop · keypoints"
+          "label": "How you run the loop · keypoints"
         },
         {
           "id": "part-5",
-          "label": "part-5 · divider"
+          "label": "Part 5 · divider"
         },
         {
           "id": "part-5-placeholder",
-          "label": "part-5-placeholder · divider"
+          "label": "To be written · divider"
         },
         {
           "id": "everything-here-has-a-link",
-          "label": "everything-here-has-a-link · keypoints"
+          "label": "Everything here has a link · keypoints"
         },
         {
           "id": "shape-the-thinking",
-          "label": "shape-the-thinking · quote"
+          "label": "Closing summary · quote"
         }
       ]
     },
     {
       "id": "contents",
-      "label": "contents",
+      "label": "Slides navigation",
       "default": "closed",
       "options": [
         {
@@ -461,7 +461,7 @@
     },
     {
       "id": "slide-shape-the-thinking",
-      "label": "31 · Shape the thinking",
+      "label": "31 · Closing summary",
       "note": "The quote archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "shape-the-thinking"
