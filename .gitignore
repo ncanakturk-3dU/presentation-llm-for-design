@@ -27,3 +27,4 @@ source.local/
 # Generated review artifacts: large, regenerable, and specific to one run.
 .impeccable/review/
 .impeccable/hook.cache.json
+.playwright-mcp/
