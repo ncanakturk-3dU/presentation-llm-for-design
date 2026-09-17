@@ -504,6 +504,49 @@
   white-space: nowrap;
   color: var(--ink-soft);
 }
+/* The return, drawn as a rule rather than a curve: it spans the whole flow, so
+   it reads as "all of this, again" rather than as one more connector between
+   two cards. The head is at the left, on the step the loop goes back to; the
+   ring at the right is the same departure mark the connectors use. */
+.process__loop {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 16px);
+  margin: clamp(18px, 2vw, 30px) 0 0;
+}
+.process__loopline {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+}
+.process__loopcap {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 45%, transparent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.process__loopdot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--ink) 45%, transparent);
+}
+/* --ink-soft, not faint: the label says when the loop is taken, which is the
+   claim the whole archetype is making here. */
+.process__looplabel {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
 .process__step {
   position: relative;
   z-index: 1;
@@ -851,7 +894,15 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
    the element's own font size, and this wrapper inherits the ~15px body size,
    so `max-width: 24ch` here was about 350px and a six-word quote broke onto
    six lines. On .quoteslide__text it resolves against the display size. */
-.quoteslide__main { display: flex; gap: clamp(10px, 1.4vw, 22px); }
+/* A grid rather than a row, so the closer can sit in the quote's own column:
+   it is the line that says what the quote is for, and a corner is not where
+   you read that. The mark keeps its own column and the closer clears it. */
+.quoteslide__main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(10px, 1.4vw, 22px);
+  align-items: start;
+}
 .quoteslide__mark {
   font-weight: 600;
   font-size: clamp(60px, 8vw, 120px);
@@ -869,12 +920,23 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   max-width: 17ch;
 }
 .quoteslide__side {
-  position: absolute;
-  top: 6%;
-  right: 0;
-  text-align: right;
+  grid-column: 2;
+  margin-top: clamp(20px, 2.4vw, 38px);
+  padding-top: clamp(14px, 1.6vw, 22px);
+  border-top: 1px solid var(--hairline);
+  /* As wide as the line it carries, not as wide as the quote: a closer is
+     often a sequence, and a rule that forces it to wrap breaks a step in
+     half. It still cannot outrun the slide. */
+  width: max-content;
+  min-width: min(18ch, 100%);
+  max-width: 100%;
 }
-.quoteslide__closer { font-size: clamp(17px, 1.5vw, 22px); font-weight: 500; color: var(--ink); }
+.quoteslide__closer {
+  font-size: clamp(15px, 1.3vw, 19px);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
 .quoteslide__byline {
   position: absolute;
   left: 0;
@@ -913,6 +975,32 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   overflow: hidden;
 }
 .showcase__grid[data-count='2'] .showcase__frame { height: clamp(180px, 38vh, 410px); }
+/* Sent, said, suggested. The middle column is narrower than the pictures on
+   purpose: it is what was found in the left one, not a third exhibit. */
+.showcase__grid[data-count='2'][data-mid] {
+  grid-template-columns: 1fr minmax(210px, 0.9fr) 1fr;
+  align-items: center;
+}
+.showcase__findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(12px, 1.4vw, 20px); }
+.showcase__finding {
+  display: flex;
+  gap: clamp(9px, 0.9vw, 13px);
+  font-size: clamp(13px, 1.05vw, 16px);
+  line-height: 1.35;
+  color: var(--ink);
+}
+.showcase__fnum {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-strong);
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
 /* Fill the frame and let `contain` letterbox inside it, rather than capping
    with a percentage max-height: on a grid item in an auto-sized row that
    percentage does not resolve, and the picture renders at natural height and
@@ -974,6 +1062,10 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
      already carried by the order. Two columns left phase three orphaned under
      a half-empty row and wrapped every line of it. */
   .process__flow { grid-template-columns: 1fr; --stair: 0px; gap: 12px; margin-top: clamp(16px, 3vw, 24px); }
+  /* Stacked, the label is what carries the return; the two dashed runs either
+     side of it have no width left to be read as a path. */
+  .process__loop { gap: 8px; margin-top: 14px; }
+  .process__looplabel { white-space: normal; font-size: 10px; letter-spacing: 0.1em; }
   /* No stair, so there is no arrow to draw; stacked order carries it. */
   .process__linkwrap { display: none; }
   .process__cardhead { padding: 9px 13px; gap: 10px; }
@@ -1025,7 +1117,13 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .matrix td { padding: 0; border: 0; white-space: normal; }
   .matrix td + td { margin-top: 4px; }
   .matrix td:first-child { margin-bottom: 8px; }
-  .showcase__grid[data-count='2'] { grid-template-columns: 1fr; }
+  .showcase__grid[data-count='2'],
+  .showcase__grid[data-count='2'][data-mid] { grid-template-columns: 1fr; }
+  /* Stacked, the findings sit between the two pictures in reading order
+     already, so they only need to stop looking like a column. */
+  .showcase__findings { gap: 8px; }
+  .showcase__finding { font-size: 13px; }
+  .showcase__fnum { width: 22px; height: 22px; font-size: 10px; }
   .showcase__frame,
   .showcase__grid[data-count='2'] .showcase__frame { height: clamp(120px, 21vh, 210px); }
 }

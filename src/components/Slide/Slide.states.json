@@ -697,6 +697,55 @@
         },
         "still": true
       }
+    },
+    {
+      "id": "callouts-light",
+      "label": "Callouts · light",
+      "device": "desktop",
+      "note": "The same archetype with `theme: \"light\"`, the ground an item asks for instead of the archetype's default.",
+      "props": {
+        "item": {
+          "type": "callouts",
+          "id": "callouts-light",
+          "chapter": "Callouts",
+          "kicker": "CALLOUTS",
+          "title": "A list, and the screen that **proves** it.",
+          "image": {
+            "src": "showcase/treeqr-studio.png",
+            "alt": "Describe the screenshot for a reader who cannot see it. Any file under public/showcase works.",
+            "label": "What the picture is"
+          },
+          "points": [
+            {
+              "text": "A claim the picture can settle",
+              "pin": {
+                "x": 30,
+                "y": 34
+              }
+            },
+            {
+              "text": "Another one, somewhere else on it",
+              "pin": {
+                "x": 68,
+                "y": 55
+              }
+            },
+            {
+              "text": "A third, further down",
+              "pin": {
+                "x": 45,
+                "y": 78
+              }
+            },
+            {
+              "text": "A claim with no pin: nothing to point at in a still"
+            }
+          ],
+          "status": "One line about what the picture is, or is not.",
+          "theme": "light"
+        },
+        "still": true
+      }
     }
   ]
 }

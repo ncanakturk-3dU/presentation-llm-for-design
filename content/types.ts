@@ -62,11 +62,18 @@ export type ColumnVariant = 'plain' | 'brand'
  * indexes — an item without one cannot be captured, and `npm run lab:states`
  * refuses a deck that has any. `chapter` is the short label the Contents
  * outline and the studio's state labels read.
+ *
+ * `standalone` is how a slide says it belongs to no part. The studio's labels
+ * take the part from the last `divider` passed, which is right for every slide
+ * inside a section and wrong for the ones that close the deck: a closing line
+ * is not the last slide of Part 5, it is what comes after the parts. Set it and
+ * the slide's label is its own `chapter` alone.
  */
 type Base = {
   id: string
   chapter?: string
   theme?: Theme
+  standalone?: boolean
 }
 
 export type CoverItem = Base & {
@@ -141,6 +148,13 @@ export type ProcessItem = Base & {
   type: 'process'
   kicker?: string
   title: string
+  /**
+   * What the return is called — set it and the flow draws a path from the last
+   * step back to the first, which is the difference between a loop and a
+   * pipeline that happens to be named one. Left out, the flow ends where its
+   * last card ends.
+   */
+  loop?: string
   steps: Array<{
     n: string
     tone?: StepTone
@@ -221,14 +235,19 @@ export type TableItem = Base & {
   kicker?: string
   title: string
   note?: string
-  /** Exactly four: the layout has four columns and no more. */
-  columns: [string, string, string, string]
+  /**
+   * Three or four, and no other count: the layout is a label column, two
+   * prose columns and an optional last one for where the row comes from. A
+   * three-column table simply leaves `action` off its rows.
+   */
+  columns: [string, string, string] | [string, string, string, string]
   rows: Array<{
     severity: string
     tone?: RowTone
     meaning: string
     examples: string
-    action: string
+    /** The fourth column. Omitted on a three-column table. */
+    action?: string
   }>
 }
 
@@ -244,6 +263,12 @@ export type ShowcaseItem = Base & {
   kicker?: string
   title: string
   note?: string
+  /**
+   * A numbered column between two images — what was found in the first, and
+   * answered in the second. Only drawn on a two-image showcase, because a
+   * middle column with nothing either side of it is a list with a picture.
+   */
+  points?: string[]
   /**
    * One or two. `src` is a path inside `public/` written without a leading
    * slash; an image with no `src` draws its `alt` in a dashed frame, which is

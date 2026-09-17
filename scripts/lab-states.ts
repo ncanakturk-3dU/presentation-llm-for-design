@@ -26,7 +26,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import type { Deck, SlideItem, SlideType } from '../content/types'
+import type { Deck, SlideItem, SlideType, Theme } from '../content/types'
 import { DEFAULT_DECK, REFERENCE_DECK } from '../src/lib/deck-ids'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -137,6 +137,7 @@ const screens = decks.map((d) => {
   type State = { id: string; label: string; note?: string; device?: string; params?: Record<string, string> }
   const states: State[] = d.items.map((it, n) => {
     if (it.type === 'divider') section = it.chapter || null
+    if (it.standalone) section = null
     const crumbs = [String(n + 1).padStart(2, '0')]
     if (section) crumbs.push(section)
     if (it.chapter && it.chapter !== section) crumbs.push(it.chapter)
@@ -296,6 +297,22 @@ for (const type of PHONE_TYPES) {
     device: 'iphone',
     note: 'The same archetype at 393px, where its grid has to give.',
     props: { item: it, still: true },
+  })
+}
+
+// The other ground. An archetype has a default ground and an item can ask for
+// the opposite one with `theme`; the reference deck carries each archetype once,
+// so the flipped ground is only ever seen here.
+const THEME_FLIP: Array<[SlideType, Theme]> = [['callouts', 'light']]
+for (const [type, theme] of THEME_FLIP) {
+  const it = byType.get(type)
+  if (!it) continue
+  slideStates.push({
+    id: `${type}-${theme}`,
+    label: `${(ARCHETYPES[type] ?? [type])[0]} · ${theme}`,
+    device: 'desktop',
+    note: `The same archetype with \`theme: "${theme}"\`, the ground an item asks for instead of the archetype's default.`,
+    props: { item: { ...it, id: `${type}-${theme}`, theme }, still: true },
   })
 }
 

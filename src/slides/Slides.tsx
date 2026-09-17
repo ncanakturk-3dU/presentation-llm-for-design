@@ -327,6 +327,21 @@ function Process({ item }: { item: ProcessItem }) {
           </li>
         ))}
       </ol>
+      {/* The return. It is a row under the flow rather than a path drawn around
+          it: the connectors between cards are hidden at phone width, where the
+          flow is one column, and a loop that disappears on the narrow layout is
+          a loop the deck only claims on the wide one. */}
+      {item.loop && (
+        <p className="process__loop">
+          <svg className="process__loopcap" viewBox="0 0 13 13" aria-hidden="true">
+            <path d="M7.5 1 L2 6.5 L7.5 12" />
+          </svg>
+          <span className="process__loopline" aria-hidden="true" />
+          <em className="mono process__looplabel">{item.loop}</em>
+          <span className="process__loopline" aria-hidden="true" />
+          <span className="process__loopdot" aria-hidden="true" />
+        </p>
+      )}
     </div>
   )
 }
@@ -484,9 +499,15 @@ function TableSlide({ item }: { item: TableItem }) {
               </td>
               <td className="matrix__strong">{renderInline(r.meaning)}</td>
               <td className="matrix__muted">{renderInline(r.examples)}</td>
-              <td>
-                <span className={`act act--${r.tone}`}>{r.action}</span>
-              </td>
+              {/* The fourth column is optional: a three-column table is the
+                  same matrix with the source folded into the prose, and an
+                  empty cell in every row would draw a column that says
+                  nothing. */}
+              {cols.length > 3 && (
+                <td>
+                  <span className={`act act--${r.tone}`}>{r.action}</span>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -503,9 +524,11 @@ function Quote({ item }: { item: QuoteItem }) {
           &ldquo;
         </span>
         <blockquote className="quoteslide__text">{renderInline(item.quote)}</blockquote>
-      </div>
-      <div className="quoteslide__side">
-        {item.closer && <div className="quoteslide__closer">{item.closer}</div>}
+        {item.closer && (
+          <div className="quoteslide__side">
+            <div className="quoteslide__closer">{renderInline(item.closer)}</div>
+          </div>
+        )}
       </div>
       {item.byline && <div className="quoteslide__byline">{item.byline}</div>}
     </div>
@@ -525,26 +548,42 @@ function Quote({ item }: { item: QuoteItem }) {
 function Showcase({ item }: { item: ShowcaseItem }) {
   const images = item.images || []
   const base = import.meta.env.BASE_URL || '/'
+  /* The findings sit between the two pictures, so the row reads left to right
+     as what was sent, what came back about it, and what came back instead. A
+     list under the images would be a caption for both and point at neither. */
+  const findings = images.length === 2 ? item.points || [] : []
+  const figures = images.map((im, i) => (
+    <figure key={i} className="showcase__fig">
+      <div className="showcase__frame">
+        {im.src ? (
+          <img
+            className="showcase__img"
+            src={/^(https?:|data:|\/)/.test(im.src) ? im.src : base + im.src}
+            alt={im.alt || im.label || ''}
+          />
+        ) : (
+          <span className="showcase__placeholder mono">{im.alt || 'no image'}</span>
+        )}
+      </div>
+      {im.label && <figcaption className="showcase__cap mono">{im.label}</figcaption>}
+    </figure>
+  ))
   return (
     <div className="showcase">
       <Head kicker={item.kicker} title={item.title} note={item.note} />
-      <div className="showcase__grid" data-count={images.length}>
-        {images.map((im, i) => (
-          <figure key={i} className="showcase__fig">
-            <div className="showcase__frame">
-              {im.src ? (
-                <img
-                  className="showcase__img"
-                  src={/^(https?:|data:|\/)/.test(im.src) ? im.src : base + im.src}
-                  alt={im.alt || im.label || ''}
-                />
-              ) : (
-                <span className="showcase__placeholder mono">{im.alt || 'no image'}</span>
-              )}
-            </div>
-            {im.label && <figcaption className="showcase__cap mono">{im.label}</figcaption>}
-          </figure>
-        ))}
+      <div className="showcase__grid" data-count={images.length} data-mid={findings.length ? '' : undefined}>
+        {figures[0]}
+        {findings.length > 0 && (
+          <ol className="showcase__findings">
+            {findings.map((p, i) => (
+              <li key={i} className="showcase__finding">
+                <span className="showcase__fnum mono">{pad(i + 1)}</span>
+                <span>{renderInline(p)}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+        {figures.slice(1)}
       </div>
       <div className="showcase__foot">
         {item.status && <span className="showcase__status mono">{item.status}</span>}
