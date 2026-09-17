@@ -1038,7 +1038,14 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
 .showcase__link { color: var(--ink-soft); overflow-wrap: anywhere; }
 
 @media (max-width: 940px) {
-  .divider, .divider[data-split], .keypoints, .callouts { grid-template-columns: 1fr; gap: clamp(22px, 4vw, 40px); align-content: center; }
+  /* The `[data-split]` variants are listed by name because a bare class cannot
+     outrank them: `.keypoints[data-split='golden-flip']` is one step more
+     specific than `.keypoints`, so without this the split kept its two
+     columns on a 393px phone and the title argued with the list sideways. */
+  .divider, .divider[data-split], .keypoints, .keypoints[data-split], .callouts { grid-template-columns: 1fr; gap: clamp(22px, 4vw, 40px); align-content: center; }
+  /* Stacked, the column is the slide, so the measure is the same for every
+     split — the caps above exist to match a title to its column width. */
+  .keypoints[data-split] .shead__title { max-width: 12ch; }
   /* Stacked, the picture is under the list rather than beside it, so its
      height comes out of the same column the list already spent. Left at the
      wide cap the foot ran off the bottom of the slide. */
