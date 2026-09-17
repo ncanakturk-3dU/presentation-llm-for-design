@@ -289,16 +289,41 @@ function Process({ item }: { item: ProcessItem }) {
       <Head kicker={item.kicker} title={item.title} />
       <ol className="process__flow" style={{ '--steps': (item.steps || []).length || 4 } as CSSVars}>
         {(item.steps || []).map((s, i) => (
-          <li key={i} className="process__step" data-tone={s.tone || 'ink'}>
+          <li key={i} className="process__step" data-tone={s.tone || 'ink'} style={{ '--i': i } as CSSVars}>
             <div className="process__card">
-              <span className="process__chip mono">{s.n}</span>
-              <span className="process__steptitle">{renderInline(s.title)}</span>
+              {/* The band and the points are one card, not two siblings. A
+                  card that closes above its own list tells the eye the content
+                  ended before it began, and no amount of proximity undoes a
+                  boundary. */}
+              <div className="process__cardhead">
+                <span className="process__chip mono">{s.n}</span>
+                <span className="process__steptitle">{renderInline(s.title)}</span>
+              </div>
+              <ul className="process__points">
+                {(s.points || []).map((p, j) => (
+                  <li key={j}>{renderInline(p)}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="process__points">
-              {(s.points || []).map((p, j) => (
-                <li key={j}>{renderInline(p)}</li>
-              ))}
-            </ul>
+            {/* The connector is three marks, not a line: a ring on the card it
+                leaves, the curve, and a head on the card it arrives at. A line
+                with unmarked ends reads as a stray rule. */}
+            {i < (item.steps || []).length - 1 && (
+              <span className="process__linkwrap" aria-hidden="true">
+                {s.via && <em className="mono process__via">{s.via}</em>}
+                {/* One SVG, one coordinate system. The ring, the curve and the
+                    head were three absolutely-positioned boxes, and three
+                    boxes sized off three different `calc()`s drift apart by a
+                    pixel or two at some viewport — which is exactly what a
+                    join between them shows. Here they are one 100x100 drawing
+                    scaled as a square, so they cannot disagree. */}
+                <svg className="process__link" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <path className="process__arrow" d="M7 0 H58 Q100 0 100 42 V90" />
+                  <path className="process__arrow" d="M91 86 L100 97 L109 86" />
+                  <circle className="process__ring" cx="0" cy="0" r="5" />
+                </svg>
+              </span>
+            )}
           </li>
         ))}
       </ol>

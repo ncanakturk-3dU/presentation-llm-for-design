@@ -146,6 +146,13 @@ export type ProcessItem = Base & {
     tone?: StepTone
     title: string
     points: string[]
+    /**
+     * What the move to the *next* step is called — one word, set over the
+     * connector that leaves this card. It belongs to the arrow, not to the
+     * step, which is why the last step's is never drawn. Left out, the arrow
+     * is drawn unlabelled.
+     */
+    via?: string
   }>
 }
 

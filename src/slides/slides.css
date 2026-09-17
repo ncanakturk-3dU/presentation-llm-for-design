@@ -418,64 +418,149 @@
 .process { height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .process__flow {
   list-style: none;
-  margin: clamp(28px, 3.2vw, 48px) 0 0;
+  margin: clamp(24px, 2.8vw, 40px) 0 0;
   padding: 0;
+  position: relative;
   display: grid;
   /* One column per step, not a fixed four: a three-step flow would otherwise
      leave a dead column and a five-step flow would wrap one card onto its own
-     row. The phone rule below still collapses it to two. */
+     row. The phone rule below still collapses it to one. */
   grid-template-columns: repeat(var(--steps, 4), minmax(0, 1fr));
-  gap: clamp(14px, 1.6vw, 26px);
+  /* The gap is a variable because the connector spans it and has to agree with
+     it; a literal repeated in both silently detaches the line from the cards. */
+  --flow-gap: clamp(20px, 2.3vw, 38px);
+  gap: var(--flow-gap);
+  /* The stair. Each step starts a full card lower than the one before it, so
+     the flow reads as a descent rather than as a row that failed to line up —
+     an offset smaller than the card it moves reads as misalignment, not as
+     sequence. The unit shrinks as steps are added (`330px / --steps`) so a
+     five-step flow lands no further down the stage than a three-step one. */
+  --stair: min(clamp(44px, 7vw, 116px), 330px / var(--steps, 4));
+  /* What the connector needs to find a chip: one column's width, and the chip's
+     own centre inside its card. */
+  --flow-col: calc((100% - (var(--steps, 4) - 1) * var(--flow-gap)) / var(--steps, 4));
+  --chip-x: calc(clamp(13px, 1.3vw, 17px) + 15px);
+  --chip-y: calc(clamp(11px, 1.1vw, 15px) + 15px);
+  /* The drop the arrow has to cover, which is also its width. The tip sits at
+     97 of the drawing's 100 units, not at its bottom edge, so the box is
+     scaled up by that fraction — sized to the box instead, the ink stops short
+     of the card by the 3% nobody drew on. */
+  --arrow: calc((var(--stair) - var(--chip-y) - 3px) / 0.97);
+  align-items: start;
 }
-.process__step { position: relative; }
-.process__step:not(:last-child)::after {
-  content: '';
+/* The connector is one square drawing: it leaves the card at its chip line and
+   comes down onto the next card's head. Square, because a viewBox scaled
+   unevenly skews the curve and the head with it; the side is the drop it has
+   to cover (`stair - chip-y`, less the head's own reach), and the horizontal
+   run comes out the same, which lands it on the next card's head just short of
+   its chip. */
+.process__linkwrap {
   position: absolute;
-  top: clamp(38px, 4.6vw, 50px);
-  right: calc(-1 * clamp(14px, 1.6vw, 26px) / 2 - 4px);
-  width: 8px; height: 8px;
-  border-top: 1.5px solid var(--ink-faint);
-  border-right: 1.5px solid var(--ink-faint);
-  transform: rotate(45deg);
+  z-index: 0;
+  left: 100%;
+  top: var(--chip-y);
+  width: var(--arrow);
+  height: var(--arrow);
 }
+.process__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The ring sits on the card edge, which is the drawing's origin, so half of
+     it is outside the viewBox. */
+  overflow: visible;
+}
+/* Non-scaling strokes: the drawing scales with the stair, the line weight
+   should not. Ink at 45% measures 4.6:1 on paper — the line carries the
+   sequence, so it is content, and the --ink-faint hairline this replaced
+   measured 2.96:1. */
+.process__arrow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 45%, transparent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* The departure mark, in the step's own tone: the arrow starts at something
+   rather than from nowhere. */
+.process__ring {
+  fill: var(--ground);
+  stroke: var(--tone, #2b2c31);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+/* What the move is called, over the horizontal run. --ink-soft, not faint: it
+   names the transition, so it is content. */
+.process__via {
+  position: absolute;
+  left: 13px;
+  bottom: calc(100% + 9px);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+.process__step {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--i, 0) * var(--stair));
+}
+/* The card is the whole step — band and list in one closed region. No
+   min-height: a guessed height is right for one content length and leaves a
+   band of empty card for every other, which is the rule this archetype used to
+   break. */
 .process__card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: clamp(88px, 10.5vw, 108px);
-  padding: clamp(13px, 1.3vw, 17px);
   border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+}
+.process__cardhead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(11px, 1.1vw, 15px) clamp(13px, 1.3vw, 17px);
   background: color-mix(in srgb, var(--tone, #2b2c31) 15%, #17181c);
 }
 .process__chip {
   flex: none;
-  align-self: flex-start;
-  width: 26px; height: 26px;
-  border-radius: 7px;
+  width: 30px; height: 30px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-size: 13px;
   color: #fff;
   background: var(--tone, #2b2c31);
 }
-.process__step[data-tone='teal'] { --tone: #2f8f86; }
+/* The teal was #2f8f86, which puts white at 3.89:1 — under AA on the one chip
+   that carries a number the room has to read. */
+.process__step[data-tone='teal'] { --tone: #2b827a; }
 .process__step[data-tone='blue'] { --tone: #3768c9; }
 .process__step[data-tone='violet'] { --tone: #7a5af0; }
 .process__step[data-tone='ink'] { --tone: #2b2c31; }
-.process__steptitle { font-weight: 600; font-size: clamp(14px, 1.1vw, 17px); color: #f3f2ee; line-height: 1.15; }
+/* The phase name is the slide's whole takeaway, so it is set at title weight
+   for a projected room rather than at caption size. */
+.process__steptitle { font-weight: 600; font-size: clamp(17px, 1.5vw, 23px); color: #f3f2ee; line-height: 1.15; letter-spacing: -0.01em; }
 .process__points {
   list-style: none;
-  margin: clamp(14px, 1.4vw, 18px) 0 0;
-  padding: 0 0 0 4px;
+  margin: 0;
+  padding: clamp(12px, 1.2vw, 16px) clamp(13px, 1.3vw, 17px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 .process__points li {
   position: relative;
-  padding-left: 16px;
-  font-size: clamp(13px, 1vw, 15px);
+  padding-left: 17px;
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.35;
   color: var(--ink-soft);
 }
 .process__points li::before {
@@ -880,8 +965,18 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .cover__art { position: relative; top: auto; right: auto; transform: none; width: clamp(200px, 46vw, 320px); margin-top: 20px; }
   .cover { justify-content: center; }
   .twocol__grid { grid-template-columns: 1fr; }
-  .process__flow { grid-template-columns: 1fr 1fr; }
-  .process__step:not(:last-child)::after { display: none; }
+  /* One column, and the stair flattened to nothing: stacked, an indent per
+     step is margin eaten out of a 393px-wide card, and the descent it drew is
+     already carried by the order. Two columns left phase three orphaned under
+     a half-empty row and wrapped every line of it. */
+  .process__flow { grid-template-columns: 1fr; --stair: 0px; gap: 12px; margin-top: clamp(16px, 3vw, 24px); }
+  /* No stair, so there is no arrow to draw; stacked order carries it. */
+  .process__linkwrap { display: none; }
+  .process__cardhead { padding: 9px 13px; gap: 10px; }
+  .process__chip { width: 26px; height: 26px; font-size: 12px; }
+  .process__steptitle { font-size: 16px; }
+  .process__points { padding: 11px 13px; gap: 7px; }
+  .process__points li { font-size: 13px; padding-left: 15px; }
   /* Three cards stacked have to clear the header and the intro on a 852px
      phone, so the card spends less on padding and more on its text. */
   /* Stacked, there is no row of cards left to align across, so the card drops
