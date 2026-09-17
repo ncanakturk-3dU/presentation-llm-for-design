@@ -6,7 +6,8 @@ A JSON-driven presentation deck. React + Vite (JSX), Framer Motion for transitio
 
 - All deck JSONs live in **`content/`** (one JSON = one deck; `meta` + an `items` array of typed slides). Keep versions here as separate files.
 - The **presented** deck is `DEFAULT_DECK` in `src/lib/decks.js` — currently `version_1`. The app shows that deck and only that deck: a published presentation is one deck, and a way to switch mid-talk is a way to open the wrong one on stage. Change what is presented by changing that constant.
-- **All** decks in `content/` are visible in designlab through the screen's `deck` param, so the others can be reviewed without being presentable.
+- **All** decks in `content/` are visible in designlab through the screen's `deck` param, so a draft can be reviewed without being presentable.
+- A **production build carries only the presented deck**: the glob over `content/` is dev-only, so a draft's copy is never readable in the published JS. The studio runs the dev server, which is why every deck shows up there. One consequence — `export_prototype` is a production build, so an exported prototype has only the presented deck.
 - `content/sample.json` is the **reference** deck (`meta.mark: "Sample Deck"`), one slide of every archetype. It is what a new deck gets started from and what the schema is documented against — never overwrite it to change what is presented.
 - The designlab states pin item **ids** from the active deck, so after changing content run **`npm run lab:states`**. Skipping it breaks nothing loudly: the deck falls back to the first slide and every capture becomes a picture of the cover. `npm run lab:states -- --check` exits 1 when they are stale.
 - Author a new deck with the **`/new-deck`** command (see `.claude/commands/new-deck.md`): it maps your content onto the existing slide types, writes a new JSON into `content/`, points the import at it, and — with your OK — can add a new slide type when the content needs one.

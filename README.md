@@ -18,7 +18,8 @@ The whole deck is data — everything renders from one JSON file.
 - Deck JSONs live in **`content/`**. Every file there is a deck; `src/lib/decks.js` discovers them.
 - The **presented** deck is `DEFAULT_DECK` in `src/lib/decks.js` — currently `version_1`. The running app shows that one and only that one, so what you publish is never ambiguous.
 - Every deck is browsable in designlab via the `deck` param on the deck screen, which is where you review a draft without making it presentable.
-- To present a different deck, change `DEFAULT_DECK`, then run `npm run lab:states`.
+- To present a different deck, change `DEFAULT_DECK` **and** the static import at the top of `src/lib/decks.js` — they must name the same file, and `npm run lab:states` fails if they drift. Then re-run it.
+- A production build bundles only the presented deck, so an unfinished draft in `content/` is never readable on the published page. Drafts are reviewed in the designlab studio, which runs the dev server.
 - `content/sample.json` is the reference deck, one slide of every type. Copy it to start a new deck; do not overwrite it to change what is presented.
 - Emphasise one word in a `title` or `quote` with `**double asterisks**` — it renders in the accent color.
 

@@ -37,6 +37,22 @@ function deckConst(name) {
 const DEFAULT_DECK = deckConst('DEFAULT_DECK')
 const REFERENCE_DECK = deckConst('REFERENCE_DECK')
 
+// decks.js states the presented deck twice — once as a static import so every
+// build carries it, once as DEFAULT_DECK. Two statements of one fact drift, and
+// the drift is quiet: the app would present one deck while the lab captured
+// another. Catch it here rather than in a screenshot nobody re-reads.
+{
+  const src = readFileSync(resolve(root, 'src/lib/decks.js'), 'utf8')
+  const m = src.match(/^import\s+presented\s+from\s+'.*?\/([^/']+)\.json'/m)
+  if (!m) throw new Error("src/lib/decks.js has no `import presented from '.../<deck>.json'` line")
+  if (m[1] !== DEFAULT_DECK) {
+    throw new Error(
+      `src/lib/decks.js disagrees with itself: it imports '${m[1]}.json' but DEFAULT_DECK is ` +
+        `'${DEFAULT_DECK}'. The app would present ${m[1]} while the lab captured ${DEFAULT_DECK}.`,
+    )
+  }
+}
+
 const contentDir = resolve(root, 'content')
 const decks = readdirSync(contentDir)
   .filter((f) => f.endsWith('.json'))
