@@ -626,15 +626,189 @@ const deck = {
       list: [
         "Five tools, and what each is for",
         "A starter three",
-        "Four references worth a bookmark",
+        "References worth a bookmark",
         "What to take away",
       ],
     },
     {
-      type: "divider",
-      id: "part-5-placeholder",
-      chapter: "To be written",
-      title: "To be **written**.",
+      type: "cards",
+      id: "part-5-tools",
+      chapter: "Tools",
+      title: "Five tools worth the **install**.",
+      note: "As of September 2026, and none of them was in Parts 1–4. Two make the agent design better; three make you see whether it did. Every one has a date on it, so you can see what is still moving.",
+      cards: [
+        {
+          title: "emilkowalski/skills",
+          subtitle: "Motion the agent gets right",
+          points: [
+            "`npx skills add emilkowalski/skills`",
+            "Picks curve, duration and property before anything moves, then grades what it built",
+            "Sep 2026 · [emilkowalski/skills](https://github.com/emilkowalski/skills)",
+          ],
+        },
+        {
+          title: "diagram-design",
+          subtitle: "Diagrams in your brand, not Mermaid",
+          points: [
+            "`/plugin marketplace add cathrynlavery/diagram-design`",
+            "39 editorial types as self-contained HTML+SVG, in your site's own palette and fonts",
+            "Cathryn Lavery · Sep 2026 · [cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design)",
+          ],
+        },
+        {
+          title: "web-design-guidelines",
+          subtitle: "The rulebook, run as an audit",
+          points: [
+            "`npx skills add vercel-labs/agent-skills`",
+            "“Review my UI” fetches 100+ rules fresh and reports every miss as `file:line`",
+            "Vercel Labs · Aug 2026 · [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)",
+          ],
+        },
+        {
+          title: "jakubkrehel/skills",
+          subtitle: "One ranked verdict on the whole screen",
+          points: [
+            "`npx skills add jakubkrehel/skills`",
+            "`better-interface` checks a11y, type, color, copy and motion, then ranks the findings",
+            "Aug 2026 · [jakubkrehel/skills](https://github.com/jakubkrehel/skills)",
+          ],
+        },
+        {
+          title: "agent-browser",
+          subtitle: "The review step, in a real browser",
+          points: [
+            "`npm i -g agent-browser`",
+            "Playwright in a Rust CLI; `snapshot` returns the a11y tree as text, ~5× fewer tokens",
+            "Vercel Labs · Sep 2026 · [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)",
+          ],
+        },
+      ],
+    },
+    {
+      type: "cards",
+      id: "part-5-starter-three",
+      chapter: "A starter three",
+      title: "If you only install **three**.",
+      note: "One to write the rules down, one to keep the slop out of what the agent draws, one to audit the result against those rules. The rest can wait a week.",
+      cards: [
+        {
+          title: "impeccable",
+          subtitle: "Write the rules",
+          points: [
+            "`/impeccable init` + `/impeccable document`",
+            "Your own codebase → `PRODUCT.md` + `DESIGN.md`, read by every session",
+            "Sep 2026 · [impeccable.style](https://impeccable.style)",
+          ],
+        },
+        {
+          title: "tasteskill",
+          subtitle: "Prevent the slop",
+          points: [
+            "`npx skills add Leonxlnx/taste-skill`",
+            "Three dials — variance, motion, density — set before the agent writes",
+            "Sep 2026 · [tasteskill.dev](https://tasteskill.dev)",
+          ],
+        },
+        {
+          title: "web-design-guidelines",
+          subtitle: "Audit it",
+          points: [
+            "`npx skills add vercel-labs/agent-skills`",
+            "“Review my UI” → 100+ rules, `file:line`, on every pass",
+            "Aug 2026 · [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)",
+          ],
+        },
+      ],
+    },
+    {
+      type: "cards",
+      id: "part-5-references",
+      chapter: "References worth a bookmark",
+      title: "Keep these open in a **tab**.",
+      note: "Not the Part 3 standards again — these are the four I keep open while designing with an agent. Every one has a date.",
+      cards: [
+        {
+          title: "The anti-slop framework",
+          subtitle: "Mohamed Elkholy — May 2026",
+          points: [
+            "5 stages, 3 disciplines — the spine this whole talk is built on",
+            "Read it once; it names the thing you keep re-deriving on your own",
+            "May 2026 · [moelkholy1995.medium.com](https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994)",
+          ],
+        },
+        {
+          title: "Web Interface Guidelines",
+          subtitle: "Vercel Labs — Aug 2026",
+          points: [
+            "100+ rules under nine headings: interactions, animations, layout, content, forms, performance, design",
+            "The list `web-design-guidelines` fetches fresh on every review — read it once, so a finding is something you can argue with",
+            "Aug 2026 · [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines)",
+          ],
+        },
+        {
+          title: "Details that make interfaces feel better",
+          subtitle: "Jakub Krehel — Mar 2026",
+          points: [
+            "`text-wrap: balance` on titles, concentric radii, tabular numerals, interruptible motion — small things that compound",
+            "By the hands behind the `better-*` skills in the five; the tips ship as a skill of their own too",
+            "Mar 2026 · [jakub.kr/writing/details-that-make-interfaces-feel-better](https://jakub.kr/writing/details-that-make-interfaces-feel-better)",
+          ],
+        },
+        {
+          title: "A Review Checklist for AI-Generated UI",
+          subtitle: "21st.dev — Aug 2026",
+          points: [
+            "Six passes in the order that catches most for least: is it in the HTML, the keyboard, the states nobody generates",
+            "The gap a screenshot review cannot see — what only exists in the source",
+            "Aug 2026 · [21st.dev/blog/ai-generated-ui-review-checklist](https://21st.dev/blog/ai-generated-ui-review-checklist)",
+          ],
+        },
+      ],
+    },
+    {
+      type: "process",
+      id: "part-5-takeaway",
+      chapter: "What to take away",
+      title: "Constrain, write it down, measure, **enforce**.",
+      steps: [
+        {
+          n: "1",
+          tone: "teal",
+          title: "Constrain",
+          points: [
+            "Fewer choices, not more words",
+            "The prompt gives the model too much freedom",
+          ],
+        },
+        {
+          n: "2",
+          tone: "blue",
+          title: "Document",
+          points: [
+            "`PRODUCT.md` + `DESIGN.md` in the repo",
+            "Every session finds them, no re-briefing",
+          ],
+        },
+        {
+          n: "3",
+          tone: "violet",
+          title: "Measure",
+          points: [
+            "Numbers against standards, not moods",
+            "WCAG · Laws of UX · designparser",
+          ],
+        },
+        {
+          n: "4",
+          tone: "ink",
+          title: "Enforce",
+          points: [
+            "Tools that catch slop before it ships",
+            "critique, audit, skills, browser checks",
+          ],
+        },
+      ],
+      loop: "every release, again",
     },
     {
       type: "keypoints",
@@ -643,11 +817,12 @@ const deck = {
       standalone: true,
       title: "Everything here has a **link**.",
       points: [
-        "moelkholy1995.medium.com, the anti-slop article",
-        "impeccable.style · tasteskill.dev · github.com/emilkowalski/skills",
-        "skillui.vercel.app · getdesign.md · design.md spec, Google Labs",
-        "designparser.de · lawsofux.com",
-        "developer.apple.com/design · w3.org/TR/WCAG22",
+        "[moelkholy1995.medium.com](https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994) — the anti-slop framework this talk follows",
+        "[emilkowalski/skills](https://github.com/emilkowalski/skills) · [cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design)",
+        "[vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) · [jakubkrehel/skills](https://github.com/jakubkrehel/skills) · [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)",
+        "[vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines) · [jakub.kr](https://jakub.kr/writing/details-that-make-interfaces-feel-better) · [21st.dev/blog/ai-generated-ui-review-checklist](https://21st.dev/blog/ai-generated-ui-review-checklist)",
+        "[impeccable.style](https://impeccable.style) · [skillui.vercel.app](https://skillui.vercel.app) · [getdesign.md](https://getdesign.md) · [tasteskill.dev](https://tasteskill.dev)",
+        "[designparser.de](https://designparser.de) · [lawsofux.com](https://lawsofux.com) · [developer.apple.com/design](https://developer.apple.com/design) · [w3.org/TR/WCAG22](https://www.w3.org/TR/WCAG22)",
       ],
     },
     {
