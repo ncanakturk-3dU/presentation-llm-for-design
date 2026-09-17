@@ -5,7 +5,9 @@
 export default {
   version: 2,
   name: 'LLM for design — presentation',
-  defaultScreen: 'deck',
+  // The presented deck. src/screens/ has one generated screen per deck in
+  // content/, so this follows DEFAULT_DECK in src/lib/decks.js.
+  defaultScreen: 'version-1',
   // Headings in the studio's tree, for screens and components alike. A states
   // file names its group; this list only fixes the order of the headings.
   groups: ['Deck', 'Slides', 'Parts'],

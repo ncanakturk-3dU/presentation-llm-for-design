@@ -7,7 +7,7 @@ import { useReducedMotion, EASE } from '../lib/motion'
 import { pad } from '../lib/text'
 import { indexOfSlide, isLab, pickContents, pickMotion, pickStatus } from '../lib/lab'
 import { DEFAULT_DECK } from '../lib/decks'
-import './Deck.css'
+import './DeckView.css'
 
 function MenuIcon() {
   return (
@@ -18,7 +18,11 @@ function MenuIcon() {
 }
 
 /**
- * The presented deck, and the one screen designlab renders.
+ * The deck itself — the shell, the chrome, the keyboard and the slide.
+ *
+ * It is not a designlab screen. `src/screens/` holds one generated wrapper per
+ * deck in `content/`, each fixing its own `deck`, so the studio tree lists the
+ * decks by name instead of hiding them behind a param on a single screen.
  *
  * The app passes `preset: 'app'` and the deck drives itself — the hash picks
  * the slide, the keyboard and the stage move it, the contents panel opens on a
@@ -32,7 +36,7 @@ function MenuIcon() {
  * others is a review job, so `deck` is a designlab param and nothing else
  * reads it.
  */
-export default function Deck({ preset, motion: motionKnob, deck: deckParam, slide, contents, status }) {
+export default function DeckView({ preset, motion: motionKnob, deck: deckParam, slide, contents, status }) {
   const lab = isLab(preset)
   const still = lab && pickMotion(motionKnob) === 'still'
 

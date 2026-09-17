@@ -250,6 +250,36 @@
       }
     },
     {
+      "id": "showcase",
+      "label": "Showcase",
+      "device": "desktop",
+      "note": "Light. One or two real screenshots in framed figures, over a status line. An image with no `src` draws its alt text in a dashed frame, which is the placeholder case.",
+      "props": {
+        "item": {
+          "type": "showcase",
+          "id": "showcase",
+          "chapter": "Showcase",
+          "kicker": "SHOWCASE",
+          "title": "A real screen, not a **mockup**.",
+          "note": "A short line about what the screenshots show and why they are here.",
+          "images": [
+            {
+              "src": "showcase/treeqr-studio.png",
+              "alt": "Describe the screenshot for a reader who cannot see it. This one stands in: any file under public/showcase works.",
+              "label": "First state"
+            },
+            {
+              "alt": "[second screenshot goes here]",
+              "label": "Second state"
+            }
+          ],
+          "status": "Shipped",
+          "link": "example.com/the-thing"
+        },
+        "still": true
+      }
+    },
+    {
       "id": "quote",
       "label": "Quote",
       "device": "desktop",
@@ -458,6 +488,36 @@
               "action": "Optional"
             }
           ]
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "showcase-phone",
+      "label": "Showcase · phone",
+      "device": "iphone",
+      "note": "The same archetype at 393px, where its grid has to give.",
+      "props": {
+        "item": {
+          "type": "showcase",
+          "id": "showcase",
+          "chapter": "Showcase",
+          "kicker": "SHOWCASE",
+          "title": "A real screen, not a **mockup**.",
+          "note": "A short line about what the screenshots show and why they are here.",
+          "images": [
+            {
+              "src": "showcase/treeqr-studio.png",
+              "alt": "Describe the screenshot for a reader who cannot see it. This one stands in: any file under public/showcase works.",
+              "label": "First state"
+            },
+            {
+              "alt": "[second screenshot goes here]",
+              "label": "Second state"
+            }
+          ],
+          "status": "Shipped",
+          "link": "example.com/the-thing"
         },
         "still": true
       }

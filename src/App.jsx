@@ -1,5 +1,5 @@
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
-import Deck from './screens/Deck'
+import DeckView from './deck/DeckView'
 
 /**
  * The presented deck. Everything it draws is the `deck` screen, so the app and
@@ -9,7 +9,7 @@ import Deck from './screens/Deck'
 export default function App() {
   return (
     <ErrorBoundary>
-      <Deck preset="app" />
+      <DeckView preset="app" />
     </ErrorBoundary>
   )
 }
