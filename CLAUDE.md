@@ -5,7 +5,9 @@ A JSON-driven presentation deck. React + Vite (JSX), Framer Motion for transitio
 ## Content
 
 - All deck JSONs live in **`content/`** (one JSON = one deck; `meta` + an `items` array of typed slides). Keep versions here as separate files.
-- The **active** deck is whatever `src/lib/useContent.js` imports — by default `content/sample.json` (a placeholder deck with one of every slide type). Swap that one import to change decks.
+- The **active** deck is whatever `src/lib/useContent.js` imports — currently `content/version_1.json`, the real presentation. Swap that one import to change decks; it is the single declaration of which deck is presented.
+- `content/sample.json` is the **reference** deck (`meta.mark: "Sample Deck"`), one slide of every archetype. It is what a new deck gets started from and what the schema is documented against — never overwrite it to change what is presented.
+- The designlab states pin item **ids** from the active deck, so after changing content run **`npm run lab:states`**. Skipping it breaks nothing loudly: the deck falls back to the first slide and every capture becomes a picture of the cover. `npm run lab:states -- --check` exits 1 when they are stale.
 - Author a new deck with the **`/new-deck`** command (see `.claude/commands/new-deck.md`): it maps your content onto the existing slide types, writes a new JSON into `content/`, points the import at it, and — with your OK — can add a new slide type when the content needs one.
 - Emphasise one word in a title/quote with `**word**` (renders in the accent color).
 

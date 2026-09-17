@@ -15,6 +15,7 @@ dist-ssr
 *.local
 *.pem
 *.key
+source.local/
 
 # Per-machine tool wiring. None of this describes the project — it points at
 # servers and paths that only exist on one machine, so it is never shared.
