@@ -316,7 +316,7 @@ const deck = {
         rows: [
           { label: "metric", detail: "Which threshold, and the measured value." },
           { label: "evidence", detail: "A screenshot, or the file and line." },
-          { label: "severity", detail: "P0 blocking to P3 polish." },
+          { label: "severity", detail: "Blocking, major, minor, or polish." },
           { label: "fix", detail: "Concrete, or the agent invents one." },
         ],
       },
@@ -327,32 +327,30 @@ const deck = {
       id: "impeccable-does-it",
       chapter: "One implementation",
       title: "What this looks like in **Impeccable**.",
-      note: "One implementation of the two slides before it, not a requirement. Read more: [impeccable.style](https://impeccable.style).",
+      note: "Impeccable is one example of turning design principles into a repeatable review process.",
       cards: [
         {
           title: "/impeccable document",
-          subtitle: "Writes the contract",
+          subtitle: "Define the design rules",
           points: [
-            "Reads tokens, components, rendered page",
-            "Emits DESIGN.md with the thresholds in it",
+            "Reads the existing product and design system",
+            "Turns design decisions into a reusable DESIGN.md",
           ],
         },
         {
           title: "/impeccable critique",
-          subtitle: "Returns findings",
+          subtitle: "Review the design",
           points: [
-            "P0 blocking, P1 major, P2 minor, P3 polish",
-            "\"Would a user contact support?\" \u2014 then P1",
-            "Each finding carries its own fix",
+            "Identifies usability and visual design issues",
+            "Explains why they matter and suggests improvements",
           ],
         },
         {
           title: "/impeccable audit",
-          subtitle: "Runs the deterministic checks",
+          subtitle: "Run objective checks",
           points: [
-            "Contrast, labels, focus, semantics",
-            "No model and no API key",
-            "Scores five areas out of 20",
+            "Checks things that can be measured consistently",
+            "Covers areas such as accessibility, structure, and interaction",
           ],
         },
       ],
