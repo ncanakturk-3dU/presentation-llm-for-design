@@ -237,7 +237,7 @@
     },
     {
       "id": "slide-why-prompts-fail",
-      "label": "03 · Why prompts fail",
+      "label": "03 · Part 1 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "why-prompts-fail"
@@ -245,7 +245,7 @@
     },
     {
       "id": "slide-three-prompts-three-defaults",
-      "label": "04 · Why prompts fail · Three prompts, three defaults",
+      "label": "04 · Part 1 · Three prompts, three defaults",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "three-prompts-three-defaults"
@@ -253,7 +253,7 @@
     },
     {
       "id": "slide-you-already-know-this-look",
-      "label": "05 · Why prompts fail · You already know this look",
+      "label": "05 · Part 1 · You already know this look",
       "note": "The callouts archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "you-already-know-this-look"
@@ -261,7 +261,7 @@
     },
     {
       "id": "slide-seven-things-to-prepare",
-      "label": "06 · Why prompts fail · Seven things to prepare",
+      "label": "06 · Part 1 · Takeaway",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "seven-things-to-prepare"
@@ -269,7 +269,7 @@
     },
     {
       "id": "slide-express-your-design-intent",
-      "label": "07 · Express your design intent",
+      "label": "07 · Part 2 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "express-your-design-intent"
@@ -277,7 +277,7 @@
     },
     {
       "id": "slide-what-makes-intent-actionable",
-      "label": "08 · Express your design intent · What makes intent actionable",
+      "label": "08 · Part 2 · What makes intent actionable",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "what-makes-intent-actionable"
@@ -285,7 +285,7 @@
     },
     {
       "id": "slide-the-brand-book-in-two-files",
-      "label": "09 · Express your design intent · The brand book, in two files",
+      "label": "09 · Part 2 · The brand book, in two files",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "the-brand-book-in-two-files"
@@ -293,7 +293,7 @@
     },
     {
       "id": "slide-product-md-anatomy",
-      "label": "10 · Express your design intent · PRODUCT.md anatomy",
+      "label": "10 · Part 2 · PRODUCT.md anatomy",
       "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "product-md-anatomy"
@@ -301,7 +301,7 @@
     },
     {
       "id": "slide-design-md-anatomy",
-      "label": "11 · Express your design intent · DESIGN.md anatomy",
+      "label": "11 · Part 2 · DESIGN.md anatomy",
       "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "design-md-anatomy"
@@ -309,7 +309,7 @@
     },
     {
       "id": "slide-three-ways-to-get-a-brand-book",
-      "label": "12 · Express your design intent · Three ways to get a brand book",
+      "label": "12 · Part 2 · Three ways to get a brand book",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "three-ways-to-get-a-brand-book"
@@ -317,7 +317,7 @@
     },
     {
       "id": "slide-what-to-review-from-design-md",
-      "label": "13 · Express your design intent · What to review from DESIGN.md",
+      "label": "13 · Part 2 · What to review from DESIGN.md",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "what-to-review-from-design-md"
@@ -325,7 +325,7 @@
     },
     {
       "id": "slide-establish-a-design-contract",
-      "label": "14 · Express your design intent · Establish a design contract",
+      "label": "14 · Part 2 · Takeaway",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "establish-a-design-contract"
@@ -333,7 +333,7 @@
     },
     {
       "id": "slide-how-to-know-what-is-wrong",
-      "label": "15 · How to know what is wrong",
+      "label": "15 · Part 3 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "how-to-know-what-is-wrong"
@@ -341,7 +341,7 @@
     },
     {
       "id": "slide-do-not-reinvent-the-wheel",
-      "label": "16 · How to know what is wrong · Do not reinvent the wheel",
+      "label": "16 · Part 3 · Do not reinvent the wheel",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "do-not-reinvent-the-wheel"
@@ -349,7 +349,7 @@
     },
     {
       "id": "slide-look-past-the-first-reference",
-      "label": "17 · How to know what is wrong · Look past the first reference",
+      "label": "17 · Part 3 · Look past the first reference",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "look-past-the-first-reference"
@@ -357,7 +357,7 @@
     },
     {
       "id": "slide-not-every-rule-binds-the-same-way",
-      "label": "18 · How to know what is wrong · Not every rule binds the same way",
+      "label": "18 · Part 3 · Not every rule binds the same way",
       "note": "The table archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "not-every-rule-binds-the-same-way"
@@ -365,7 +365,7 @@
     },
     {
       "id": "slide-measure-what-can-be-measured",
-      "label": "19 · How to know what is wrong · Measure what can be measured",
+      "label": "19 · Part 3 · Measure what can be measured",
       "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "measure-what-can-be-measured"
@@ -373,7 +373,7 @@
     },
     {
       "id": "slide-what-this-looks-like-in-impeccable",
-      "label": "20 · How to know what is wrong · What this looks like in Impeccable",
+      "label": "20 · Part 3 · What this looks like in Impeccable",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "what-this-looks-like-in-impeccable"
@@ -381,7 +381,7 @@
     },
     {
       "id": "slide-know-right-to-know-wrong",
-      "label": "21 · How to know what is wrong · Know right to know wrong",
+      "label": "21 · Part 3 · Takeaway",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "know-right-to-know-wrong"
@@ -389,7 +389,7 @@
     },
     {
       "id": "slide-my-working-loop",
-      "label": "22 · My working loop",
+      "label": "22 · Part 4 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "my-working-loop"
@@ -397,7 +397,7 @@
     },
     {
       "id": "slide-four-steps-and-the-way-back",
-      "label": "23 · My working loop · Four steps, and the way back",
+      "label": "23 · Part 4 · Four steps, and the way back",
       "note": "The process archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "four-steps-and-the-way-back"
@@ -405,7 +405,7 @@
     },
     {
       "id": "slide-the-same-loop-in-commands",
-      "label": "24 · My working loop · The same loop, in commands",
+      "label": "24 · Part 4 · The same loop, in commands",
       "note": "The codeui archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "the-same-loop-in-commands"
@@ -413,7 +413,7 @@
     },
     {
       "id": "slide-refine-or-set-a-new-direction",
-      "label": "25 · My working loop · Refine, or set a new direction",
+      "label": "25 · Part 4 · Refine, or set a new direction",
       "note": "The cards archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "refine-or-set-a-new-direction"
@@ -421,7 +421,7 @@
     },
     {
       "id": "slide-use-a-fresh-model-as-a-second-opinion",
-      "label": "26 · My working loop · A fresh model as second opinion",
+      "label": "26 · Part 4 · A fresh model as second opinion",
       "note": "The showcase archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "use-a-fresh-model-as-a-second-opinion"
@@ -429,7 +429,7 @@
     },
     {
       "id": "slide-how-you-run-the-loop",
-      "label": "27 · My working loop · How you run the loop",
+      "label": "27 · Part 4 · Takeaway",
       "note": "The keypoints archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "how-you-run-the-loop"
@@ -437,7 +437,7 @@
     },
     {
       "id": "slide-part-5",
-      "label": "28 · Part 5",
+      "label": "28 · Part 5 · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "part-5"
@@ -445,7 +445,7 @@
     },
     {
       "id": "slide-part-5-placeholder",
-      "label": "29 · To be written",
+      "label": "29 · To be written · Intro",
       "note": "The divider archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "part-5-placeholder"

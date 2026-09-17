@@ -133,14 +133,41 @@ const screens = decks.map((d) => {
   // the slide from the item's own `chapter`. The archetype is not in the label
   // — it is what the slide is made of, not where it sits — and stays on the
   // `slide` param, which is the list you use when you want "the table one".
+  //
+  // The part is the divider's `number` (`Part 1`), not its `chapter`: a chapter
+  // is written to read as a title, and repeating a title on all seven slides of
+  // a part pushes every slide's own name past the tree's width. The number is
+  // two characters and says the same thing. A divider with no number falls back
+  // to its chapter, which is what an unnumbered part has instead.
+  //
+  // A part opens on its divider and closes on the slide that says what to take
+  // from it, so those two are labelled by the job they do — `Intro`, `Takeaway`
+  // — rather than by their own title: in the tree you look for where a part
+  // starts and where it lands, and the titles of those two slides are the least
+  // useful place to spend the width.
+  const closers = new Set<number>()
+  let open: number | null = null
+  d.items.forEach((it, n) => {
+    if (it.type === 'divider' || it.standalone) {
+      if (open !== null && open !== n - 1) closers.add(n - 1)
+      open = it.type === 'divider' && !it.standalone ? n : null
+    }
+  })
+  if (open !== null && open !== d.items.length - 1) closers.add(d.items.length - 1)
+
   let section: string | null = null
   type State = { id: string; label: string; note?: string; device?: string; params?: Record<string, string> }
   const states: State[] = d.items.map((it, n) => {
-    if (it.type === 'divider') section = it.chapter || null
+    if (it.type === 'divider') {
+      const num = it.number && Number(it.number)
+      section = num ? `Part ${num}` : it.chapter || null
+    }
     if (it.standalone) section = null
     const crumbs = [String(n + 1).padStart(2, '0')]
     if (section) crumbs.push(section)
-    if (it.chapter && it.chapter !== section) crumbs.push(it.chapter)
+    const role = it.type === 'divider' ? 'Intro' : closers.has(n) ? 'Takeaway' : null
+    if (section && role) crumbs.push(role)
+    else if (it.chapter && it.chapter !== section) crumbs.push(it.chapter)
     return {
       id: `slide-${it.id}`,
       label: crumbs.join(' · '),

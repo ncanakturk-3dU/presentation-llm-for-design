@@ -292,11 +292,9 @@ const deck = {
     {
       type: "keypoints",
       id: "establish-a-design-contract",
-      theme: "light",
       chapter: "Establish a design contract",
       title: "Before developing your first screen, establish a design **contract**.",
       marker: "none",
-      split: "golden",
       points: [
         "Reduce ambiguous design decisions by making intent persistent and explicit.",
         "The contract is the two files: `PRODUCT.md` and `DESIGN.md`.",
@@ -456,11 +454,9 @@ const deck = {
     {
       type: "keypoints",
       id: "know-right-to-know-wrong",
-      theme: "light",
       chapter: "Know right to know wrong",
       title: "You need to know what is **right** to know what is wrong.",
       marker: "bullet",
-      split: "golden-flip",
       points: [
         "Principles tell you why it works",
         "Conventions tell you what users already expect",
