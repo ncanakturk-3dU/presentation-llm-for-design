@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="3DUniversum develops applied AI and computer vision for 3D scanning, visual inspection, image analysis and synthetic media." />
+  <title>3DUniversum | Applied AI and Computer Vision</title>
+  <style>
+    :root {
+      --red: #e30628;
+      --red-dark: #bd001e;
+      --black: #090909;
+      --ink: #141414;
+      --muted: #66645f;
+      --paper: #ffffff;
+      --warm: #f3f2ef;
+      --line: #d8d6d0;
+      --dark-line: #2b2b2b;
+      --max: 1380px;
+      --section-max: 1520px;
+      --media-max: 920px;
+      --gutter: clamp(20px, 4.2vw, 68px);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+    button { font: inherit; }
+    ::selection { background: var(--red); color: #fff; }
+
+    .wrap { width: min(var(--max), calc(100% - (var(--gutter) * 2))); margin: 0 auto; }
+    .skip {
+      position: fixed; left: 16px; top: 16px; z-index: 999;
+      transform: translateY(-180%); background: #fff; color: #000;
+      padding: 10px 14px; border: 1px solid #000; text-decoration: none;
+    }
+    .skip:focus { transform: none; }
+
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid #d7d7d7;
+    }
+    .nav {
+      min-height: 74px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 42px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+    .brand img { width: 62px; height: auto; }
+    .brand strong { font-size: 13px; letter-spacing: .07em; }
+    .navlinks { justify-self: center; display: flex; gap: 30px; align-items: center; }
+    .navlinks a { text-decoration: none; font-size: 14px; font-weight: 700; }
+    .navlinks a:hover, .navlinks a:focus-visible { color: var(--red); }
+    .nav-cta, .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 0 18px;
+      text-decoration: none; font-size: 14px; font-weight: 800;
+      border: 1px solid var(--black);
+    }
+    .nav-cta { background: var(--black); color: #fff; }
+    .nav-cta:hover, .nav-cta:focus-visible { background: var(--red); border-color: var(--red); }
+    .button { background: var(--red); color: #fff; border-color: var(--red); }
+    .button:hover, .button:focus-visible { background: var(--red-dark); border-color: var(--red-dark); }
+    .button.dark { background: #fff; border-color: #fff; color: #000; }
+    .button.dark:hover, .button.dark:focus-visible { background: transparent; color: #fff; }
+    .text-link { font-weight: 800; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+    .text-link:hover, .text-link:focus-visible { color: var(--red); }
+    .menu-btn { display: none; border: 0; background: transparent; padding: 8px; cursor: pointer; }
+    .menu-btn span { display: block; width: 26px; height: 2px; margin: 5px 0; background: #000; }
+    .mobile-menu { display: none; }
+
+    .hero {
+      position: relative;
+      min-height: min(880px, calc(100vh - 74px));
+      overflow: hidden;
+      background: var(--black);
+      color: #fff;
+      border-bottom: 8px solid var(--red);
+    }
+    .hero-inner {
+      position: relative;
+      min-height: inherit;
+      padding: clamp(66px, 7vw, 106px) 0 46px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hero-copy { position: relative; z-index: 3; max-width: 1080px; }
+    h1 {
+      margin: 0;
+      font-size: clamp(60px, 8.3vw, 132px);
+      line-height: .86;
+      letter-spacing: -.07em;
+      font-weight: 850;
+      max-width: 1080px;
+    }
+    h1 .accent { color: var(--red); }
+    .hero-copy > p {
+      margin: 34px 0 0;
+      max-width: 680px;
+      color: #d1d1d1;
+      font-size: clamp(18px, 1.5vw, 23px);
+      line-height: 1.48;
+    }
+    .hero-actions { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-top: 34px; }
+    .hero .text-link { color: #fff; }
+    .hero .text-link:hover, .hero .text-link:focus-visible { color: #ff5c73; }
+
+    .hero-art {
+      position: absolute;
+      z-index: 1;
+      right: clamp(-80px, -4vw, -30px);
+      bottom: 12px;
+      width: min(61vw, 900px);
+      pointer-events: none;
+    }
+    .hero-art::before {
+      content: "";
+      position: absolute;
+      width: 58%; aspect-ratio: 1;
+      right: 8%; bottom: 4%;
+      border-radius: 50%;
+      background: var(--red);
+      opacity: .13;
+    }
+    .hero-art img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: contrast(1.06) saturate(.9);
+      transform: rotate(-4deg);
+      transform-origin: 55% 70%;
+      animation: scanEnter 680ms cubic-bezier(.2,.75,.2,1) both;
+    }
+    .hero-proof {
+      position: relative; z-index: 3;
+      width: min(660px, 100%);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 28px;
+      padding-top: 52px;
+      border-top: 1px solid #555;
+    }
+    .hero-proof strong { display: block; margin-bottom: 6px; font-size: 15px; }
+    .hero-proof p { margin: 0; max-width: 470px; color: #aaa; font-size: 13px; line-height: 1.45; }
+    .hero-proof span { color: #fff; font-size: 12px; font-weight: 800; text-align: right; }
+    @keyframes scanEnter { from { opacity: 0; transform: rotate(-4deg) translateY(18px) scale(.97); } to { opacity: 1; transform: rotate(-4deg) translateY(0) scale(1); } }
+
+    .client-strip { padding: 30px 0; border-bottom: 1px solid var(--line); background: #fff; }
+    .client-grid { display: grid; grid-template-columns: 220px 1fr; gap: 44px; align-items: center; }
+    .client-grid p { margin: 0; font-size: 14px; line-height: 1.4; font-weight: 750; }
+    .logos { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; align-items: center; }
+    .logos img { width: 100%; height: 38px; object-fit: contain; filter: grayscale(1); opacity: .68; }
+
+    .statement { padding: clamp(92px, 11vw, 172px) 0; }
+    .statement-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .55fr); gap: clamp(60px, 10vw, 150px); align-items: start; }
+    .statement h2, .work-copy h2, .products h2, .services h2, .research h2, .contact h2 {
+      margin: 0;
+      font-size: clamp(46px, 5.7vw, 90px);
+      line-height: .94;
+      letter-spacing: -.055em;
+      font-weight: 840;
+    }
+    .statement-copy { padding-top: 10px; }
+    .statement-copy > p { margin: 0; font-size: 19px; line-height: 1.62; color: #454545; }
+    .cap-index { margin-top: 38px; border-top: 2px solid var(--black); }
+    .cap-index div {
+      display: grid; grid-template-columns: 1fr auto; gap: 26px;
+      padding: 15px 0; border-bottom: 1px solid var(--line); align-items: baseline;
+    }
+    .cap-index strong { font-size: 16px; }
+    .cap-index span { color: var(--muted); font-size: 13px; text-align: right; }
+
+    .work { border-top: 1px solid var(--line); }
+    .work-feature, .work-pair {
+      width: min(100%, var(--section-max));
+      margin-inline: auto;
+    }
+    .work-feature {
+      display: grid;
+      grid-template-columns: minmax(0, 1.22fr) minmax(360px, .78fr);
+      min-height: 720px;
+      background: var(--warm);
+      border-bottom: 1px solid var(--line);
+    }
+    .work-media {
+      position: relative;
+      overflow: hidden;
+      min-height: 600px;
+      padding: clamp(32px, 4vw, 64px);
+      background: #e9e8e3;
+      display: grid;
+      place-items: center;
+    }
+    .work-media img {
+      width: min(100%, var(--media-max));
+      height: auto;
+      max-height: 680px;
+      object-fit: contain;
+    }
+    .work-copy {
+      padding: clamp(52px, 6vw, 90px);
+      display: flex; flex-direction: column; justify-content: space-between;
+      border-left: 1px solid var(--line);
+    }
+    .work-copy h2 { font-size: clamp(46px, 5vw, 78px); }
+    .work-copy p { margin: 28px 0 0; font-size: 18px; line-height: 1.58; color: #484848; max-width: 520px; }
+    .proof-list { margin: 46px 0 0; padding: 0; list-style: none; border-top: 1px solid #9f9f9b; }
+    .proof-list li { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; border-bottom: 1px solid #c9c7c1; font-size: 14px; font-weight: 750; }
+    .proof-list span { color: #666; text-align: right; font-weight: 500; }
+
+    .work-pair { display: grid; grid-template-columns: 1fr 1fr; }
+    .work-case { min-height: 570px; padding: clamp(48px, 6vw, 84px); display: flex; flex-direction: column; justify-content: space-between; }
+    .work-case:first-child { background: #fff; border-right: 1px solid var(--line); }
+    .work-case:last-child { background: var(--black); color: #fff; }
+    .work-case h3 { margin: 0; max-width: 650px; font-size: clamp(38px, 4.2vw, 66px); line-height: .98; letter-spacing: -.045em; }
+    .work-case p { margin: 28px 0 0; max-width: 570px; font-size: 17px; line-height: 1.58; color: #4d4d4d; }
+    .work-case:last-child p { color: #bfbfbf; }
+    .case-image {
+      margin-top: 34px;
+      width: min(100%, 680px);
+      background: #171717;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .case-image img {
+      width: 100%;
+      height: auto;
+      max-height: 360px;
+      object-fit: contain;
+      object-position: center;
+    }
+    .case-foot { margin-top: 48px; display: flex; align-items: end; justify-content: space-between; gap: 30px; border-top: 1px solid currentColor; padding-top: 14px; }
+    .case-foot span { max-width: 330px; font-size: 13px; line-height: 1.45; opacity: .7; }
+
+    .products { padding: clamp(92px, 11vw, 166px) 0; background: var(--black); color: #fff; }
+    .product-intro { display: grid; grid-template-columns: 1fr .62fr; gap: 70px; align-items: end; margin-bottom: 62px; }
+    .product-intro p { margin: 0; color: #bcbcbc; font-size: 18px; line-height: 1.56; max-width: 570px; }
+    .product-index { border-top: 2px solid #fff; }
+    .product-row {
+      display: grid;
+      grid-template-columns: minmax(210px, .56fr) minmax(0, 1fr) auto;
+      gap: 46px;
+      align-items: start;
+      padding: 31px 0 34px;
+      border-bottom: 1px solid var(--dark-line);
+    }
+    .product-row h3 { margin: 0; font-size: clamp(28px, 3vw, 44px); letter-spacing: -.035em; }
+    .product-row p { margin: 4px 0 0; max-width: 710px; color: #bdbdbd; font-size: 16px; line-height: 1.55; }
+    .product-row a { align-self: start; font-size: 14px; font-weight: 800; text-underline-offset: 5px; }
+    .product-row a:hover, .product-row a:focus-visible { color: #ff5d73; }
+    .product-row:hover h3 { color: #ff4c65; }
+
+    .services { padding: clamp(92px, 10vw, 150px) 0; }
+    .services-top { display: grid; grid-template-columns: 1.08fr .72fr; gap: 80px; align-items: end; }
+    .services-top p { margin: 0; max-width: 570px; font-size: 19px; line-height: 1.58; color: #494949; }
+    .process { margin-top: 72px; border-top: 2px solid var(--black); }
+    .step { display: grid; grid-template-columns: 76px minmax(170px, .35fr) 1fr; gap: 34px; padding: 28px 0 31px; border-bottom: 1px solid var(--line); align-items: start; }
+    .step-num { width: 38px; height: 38px; display: grid; place-items: center; background: var(--red); color: #fff; font-size: 15px; font-weight: 850; }
+    .step h3 { margin: 2px 0 0; font-size: 30px; letter-spacing: -.03em; }
+    .step p { margin: 3px 0 0; max-width: 680px; font-size: 17px; line-height: 1.55; color: #4e4e4e; }
+    .services-foot { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px 28px; color: #585858; font-size: 14px; font-weight: 700; }
+
+    .research { padding: clamp(94px, 11vw, 170px) 0; background: var(--warm); border-top: 1px solid var(--line); }
+    .research-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: clamp(70px, 10vw, 150px); align-items: start; }
+    .research h2 { max-width: 590px; }
+    .research-body { border-top: 2px solid var(--black); padding-top: 18px; }
+    .research-stat { display: grid; grid-template-columns: auto 1fr; gap: 42px; align-items: end; }
+    .big-number { color: var(--red); font-size: clamp(100px, 13vw, 205px); line-height: .74; letter-spacing: -.08em; font-weight: 850; }
+    .research-stat p { margin: 0 0 2px; max-width: 540px; font-size: 18px; line-height: 1.55; color: #4d4d4d; }
+    .founders { margin-top: 54px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .founder { border-top: 1px solid #aaa7a0; padding-top: 15px; }
+    .founder strong { display: block; font-size: 18px; margin-bottom: 6px; }
+    .founder span { color: #68655f; font-size: 14px; line-height: 1.45; }
+
+    .contact { background: var(--red); color: #fff; }
+    .contact-grid { min-height: 440px; padding: clamp(70px, 8vw, 110px) 0; display: grid; grid-template-columns: 1.15fr .85fr; gap: 90px; align-items: start; }
+    .contact h2 { max-width: 780px; }
+    .contact-side { padding-top: 8px; }
+    .contact-side > p { margin: 0 0 28px; max-width: 560px; font-size: 18px; line-height: 1.55; }
+    .contact-meta { margin-top: 32px; border-top: 1px solid rgba(255,255,255,.65); }
+    .contact-meta a, .contact-meta div { display: flex; justify-content: space-between; gap: 24px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.38); text-decoration: none; font-size: 14px; }
+    .contact-meta strong { font-weight: 800; }
+    .contact-meta span { text-align: right; }
+
+    footer { background: var(--black); color: #fff; }
+    .footer-grid { padding: 48px 0 54px; display: grid; grid-template-columns: 1.35fr .7fr .7fr; gap: 58px; }
+    .footer-brand strong { font-size: 23px; letter-spacing: -.03em; }
+    .footer-brand p { margin: 12px 0 0; max-width: 430px; color: #999; font-size: 14px; line-height: 1.55; }
+    footer h4 { margin: 0 0 14px; color: #858585; font-size: 13px; }
+    footer a { display: block; margin: 9px 0; text-decoration: none; font-size: 14px; }
+    footer a:hover, footer a:focus-visible { color: #ff5d73; }
+    .legal { border-top: 1px solid #2a2a2a; padding: 18px 0 22px; display: flex; justify-content: space-between; gap: 22px; color: #888; font-size: 12px; }
+
+    @media (max-width: 1120px) {
+      .navlinks { display: none; }
+      .menu-btn { display: block; justify-self: end; }
+      .nav { grid-template-columns: auto 1fr auto auto; gap: 14px; }
+      .nav-cta { justify-self: end; }
+      .mobile-menu { position: absolute; top: 74px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--line); padding: 12px var(--gutter) 24px; }
+      .mobile-menu.open { display: block; }
+      .mobile-menu a { display: block; padding: 13px 0; border-bottom: 1px solid #ececec; text-decoration: none; font-weight: 750; }
+      .mobile-menu .button { display: inline-flex; margin-top: 18px; color: #fff; }
+
+      .hero { min-height: 830px; }
+      .hero-copy { max-width: 850px; }
+      .hero-art { width: 67vw; opacity: .82; right: -8vw; }
+      .client-grid { grid-template-columns: 1fr; gap: 22px; }
+      .logos { grid-template-columns: repeat(3, 1fr); }
+      .statement-grid, .services-top, .research-grid, .contact-grid, .product-intro { grid-template-columns: 1fr; }
+      .statement-copy { max-width: 700px; }
+      .work-feature { grid-template-columns: 1fr; }
+      .work-copy { border-left: 0; border-top: 1px solid var(--line); min-height: 520px; }
+      .work-pair { grid-template-columns: 1fr; }
+      .work-case:first-child { border-right: 0; border-bottom: 1px solid var(--line); }
+      .research-stat { grid-template-columns: auto 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --gutter: 20px; }
+      header { position: relative; }
+      .nav { min-height: 68px; grid-template-columns: auto 1fr auto; }
+      .brand strong, .nav-cta { display: none; }
+      .brand img { width: 56px; }
+      .mobile-menu { top: 68px; }
+
+      .hero { min-height: 780px; border-bottom-width: 6px; }
+      .hero-inner { padding-top: 64px; padding-bottom: 30px; }
+      h1 { font-size: clamp(54px, 16vw, 78px); max-width: 620px; }
+      .hero-copy > p { margin-top: 25px; font-size: 17px; max-width: 530px; }
+      .hero-actions { margin-top: 26px; gap: 16px; }
+      .hero-art { width: 116vw; right: -45vw; bottom: 52px; opacity: .56; }
+      .hero-art::before { opacity: .08; }
+      .hero-proof { grid-template-columns: 1fr; gap: 11px; padding-top: 18px; }
+      .hero-proof p { max-width: 310px; }
+      .hero-proof span { text-align: left; }
+
+      .client-strip { padding: 24px 0 28px; }
+      .logos { grid-template-columns: repeat(2, 1fr); gap: 20px 28px; }
+      .logos img { height: 32px; }
+
+      .statement { padding: 78px 0 86px; }
+      .statement h2, .products h2, .services h2, .research h2, .contact h2 { font-size: clamp(43px, 13vw, 64px); }
+      .statement-grid { gap: 42px; }
+      .statement-copy > p { font-size: 17px; }
+      .cap-index div { grid-template-columns: 1fr; gap: 4px; }
+      .cap-index span { text-align: left; }
+
+      .work-feature { min-height: 0; }
+      .work-media { min-height: 0; padding: 28px 20px; }
+      .work-media img { width: min(100%, 760px); height: auto; max-height: 520px; }
+      .work-copy { padding: 44px 20px; min-height: 510px; }
+      .work-copy h2 { font-size: clamp(42px, 12vw, 62px); }
+      .work-copy p { font-size: 17px; }
+      .proof-list li { flex-direction: column; gap: 4px; }
+      .proof-list span { text-align: left; }
+      .work-case { min-height: 500px; padding: 44px 20px; }
+      .work-case h3 { font-size: clamp(38px, 11vw, 56px); }
+      .case-foot { flex-direction: column; align-items: flex-start; }
+
+      .products { padding: 82px 0 92px; }
+      .product-intro { gap: 26px; margin-bottom: 44px; }
+      .product-intro p { font-size: 17px; }
+      .product-row { grid-template-columns: 1fr; gap: 12px; padding: 26px 0 29px; }
+      .product-row p { margin-top: 0; }
+      .product-row a { margin-top: 5px; }
+
+      .services { padding: 82px 0 90px; }
+      .services-top { gap: 28px; }
+      .services-top p { font-size: 17px; }
+      .process { margin-top: 48px; }
+      .step { grid-template-columns: 48px 1fr; gap: 16px; padding: 24px 0 26px; }
+      .step p { grid-column: 2; }
+
+      .research { padding: 82px 0 88px; }
+      .research-grid { gap: 48px; }
+      .research-stat { grid-template-columns: 1fr; gap: 24px; }
+      .big-number { font-size: clamp(110px, 36vw, 160px); }
+      .research-stat p { font-size: 17px; }
+      .founders { grid-template-columns: 1fr; }
+
+      .contact-grid { gap: 36px; }
+      .contact-meta a, .contact-meta div { flex-direction: column; gap: 4px; }
+      .contact-meta span { text-align: left; }
+      .footer-grid { grid-template-columns: 1fr; gap: 34px; }
+      .footer-brand { grid-column: 1; }
+      .legal { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="3DUniversum home">
+        <img src="https://3duniversum.com/wp-content/uploads/2018/01/3du_logo%40150w_flat.png" alt="3DUniversum" />
+        <strong>3DUNIVERSUM</strong>
+      </a>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="#work">Expertise</a>
+        <a href="#products">Products</a>
+        <a href="#services">Services</a>
+        <a href="#research">Research</a>
+      </nav>
+      <a class="nav-cta" href="mailto:info@3duniversum.com">Start a project</a>
+      <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
+    </div>
+    <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation">
+      <a href="#work">Expertise</a>
+      <a href="#products">Products</a>
+      <a href="#services">Services</a>
+      <a href="#research">Research</a>
+      <a class="button" href="mailto:info@3duniversum.com">Start a project</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <h1>Computer vision for the <span class="accent">real world.</span></h1>
+          <p>3DUniversum turns academic AI research into deployed systems for 3D scanning, visual inspection, image analysis and synthetic media.</p>
+          <div class="hero-actions">
+            <a class="button" href="mailto:info@3duniversum.com">Start a project</a>
+            <a class="text-link" href="#work">See what we build</a>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <img src="https://wescan.io/wp-content/uploads/2024/01/BirdView.png" alt="" />
+        </div>
+
+        <div class="hero-proof">
+          <div>
+            <strong>Real weScan spatial capture</strong>
+            <p>A LiDAR enabled iPhone or iPad becomes the input for 3D models, floor plans, measurements and spatial data.</p>
+          </div>
+          <span>Capture / process / measure / export</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="client-strip" aria-label="Selected clients and partners">
+      <div class="wrap client-grid">
+        <p>Selected clients and partners across industry, technology, media and public services.</p>
+        <div class="logos">
+          <img src="https://3duniversum.com/wp-content/uploads/2021/02/akzo.png" alt="AkzoNobel" />
+          <img src="https://3duniversum.com/wp-content/uploads/2020/01/Frame-17.png" alt="Nike" />
+          <img src="https://3duniversum.com/wp-content/uploads/2020/01/Frame-15.png" alt="Samsung" />
+          <img src="https://3duniversum.com/wp-content/uploads/2020/01/Frame-16.png" alt="Huawei" />
+          <img src="https://3duniversum.com/wp-content/uploads/2018/01/Talpa-Logo-2.png" alt="Talpa" />
+          <img src="https://3duniversum.com/wp-content/uploads/2018/06/rode_kruis.png" alt="Red Cross" />
+        </div>
+      </div>
+    </section>
+
+    <section class="statement">
+      <div class="wrap statement-grid">
+        <h2>From visual data to something you can act on.</h2>
+        <div class="statement-copy">
+          <p>Our work starts where images, video or depth data need to become reliable information. We combine computer vision, machine learning and 3D understanding with product engineering for systems that have to work outside the lab.</p>
+          <div class="cap-index">
+            <div><strong>3D computer vision</strong><span>scanning, reconstruction, measurement</span></div>
+            <div><strong>Image understanding</strong><span>detection, segmentation, OCR, tagging</span></div>
+            <div><strong>Visual inspection</strong><span>defects, area, volume, color</span></div>
+            <div><strong>Synthetic media</strong><span>creation, education, detection</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="work" aria-label="Selected expertise">
+      <article class="work-feature">
+        <div class="work-media">
+          <img src="https://wescan.io/wp-content/uploads/elementor/thumbs/BG_ADV-qi7o58v1jugczm9luwoj9r049xt7dk9gak465mx4ow.jpg" alt="Detailed floor plan generated from a weScan property capture" />
+        </div>
+        <div class="work-copy">
+          <div>
+            <h2>Capture a space. Deliver usable geometry.</h2>
+            <p>weScan uses LiDAR enabled iPhone and iPad devices to capture residential and commercial spaces, then turns the scan into deliverables for real estate and measurement workflows.</p>
+            <ul class="proof-list">
+              <li>3D capture <span>rooms, houses, commercial spaces</span></li>
+              <li>Plan output <span>2D and 3D floor plans</span></li>
+              <li>Measurement <span>reports and spatial data</span></li>
+              <li>Export <span>DWG, Revit, PCD and project files</span></li>
+            </ul>
+          </div>
+          <a class="text-link" href="https://wescan.io/" target="_blank" rel="noreferrer">Explore weScan</a>
+        </div>
+      </article>
+
+      <div class="work-pair">
+        <article class="work-case">
+          <div>
+            <h3>Inspect physical products with a mobile camera.</h3>
+            <p>3DUniversum visual inspection software applies computer vision and machine learning to surfaces, machine parts and manufactured goods. It can measure attributes such as area, volume and color and identify visual defects without removing parts from the production environment.</p>
+          </div>
+          <div class="case-foot">
+            <span>Designed for real-time monitoring and integration into production workflows.</span>
+            <a class="text-link" href="https://3duniversum.com/product/visual-inspection/" target="_blank" rel="noreferrer">Visual Inspection</a>
+          </div>
+        </article>
+
+        <article class="work-case">
+          <div>
+            <h3>Understand faces, objects, text and scenes.</h3>
+            <p>The Image Analysis SDK covers object detection, segmentation, OCR, automatic tagging, environment detection and low-level image processing. 3DUniversum also develops 2D and 3D facial analysis for measurement and virtual try-on.</p>
+          </div>
+          <div class="case-image"><img src="https://3duniversum.com/wp-content/uploads/2018/06/Retail_2-1.png" alt="3DUniversum facial analysis and virtual eyewear technology" /></div>
+          <div class="case-foot">
+            <span>Computer vision building blocks designed to be extended for specific use cases.</span>
+            <a class="text-link" href="https://3duniversum.com/product/image-analysis/" target="_blank" rel="noreferrer">Image Analysis SDK</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="products" id="products">
+      <div class="wrap">
+        <div class="product-intro">
+          <h2>Research that became products.</h2>
+          <p>3DUniversum develops its own product lines alongside tailored client work. Each product is built around a specific computer vision or synthetic media problem.</p>
+        </div>
+
+        <div class="product-index">
+          <article class="product-row">
+            <h3>weScan</h3>
+            <p>Mobile 3D scanning for residential and commercial spaces, with models, floor plans, measurements and exportable spatial data.</p>
+            <a href="https://wescan.io/" target="_blank" rel="noreferrer">wescan.io</a>
+          </article>
+          <article class="product-row">
+            <h3>FairFake</h3>
+            <p>Synthetic media for media, entertainment, government and education, plus consultancy and training on how deepfakes are produced and detected.</p>
+            <a href="https://fairfake.ai/" target="_blank" rel="noreferrer">fairfake.ai</a>
+          </article>
+          <article class="product-row">
+            <h3>DeepTherapy</h3>
+            <p>An online communication platform where practitioners use controlled video person animations during private therapeutic sessions.</p>
+            <a href="https://deeptherapy.ai/" target="_blank" rel="noreferrer">deeptherapy.ai</a>
+          </article>
+          <article class="product-row">
+            <h3>Visual Inspection</h3>
+            <p>Mobile inspection for surfaces, machine parts and manufactured goods with automated measurement and defect detection.</p>
+            <a href="https://3duniversum.com/product/visual-inspection/" target="_blank" rel="noreferrer">View product</a>
+          </article>
+          <article class="product-row">
+            <h3>Image Analysis SDK</h3>
+            <p>An extendable computer vision SDK for object detection, segmentation, OCR, automatic tagging, scene analysis and image processing.</p>
+            <a href="https://3duniversum.com/product/image-analysis/" target="_blank" rel="noreferrer">View SDK</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="services" id="services">
+      <div class="wrap">
+        <div class="services-top">
+          <h2>A path from problem to production.</h2>
+          <p>Projects can begin with consultancy or co-research and continue into prototyping, integration and full software development.</p>
+        </div>
+        <div class="process">
+          <div class="step">
+            <div class="step-num">1</div>
+            <h3>Learn</h3>
+            <p>Define the problem, available data, target environment and the result the system needs to produce.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <h3>Plan</h3>
+            <p>Select a technical approach and create a development path that can be validated before full implementation.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <h3>Implement</h3>
+            <p>Prototype, test, integrate and develop the computer vision or machine learning solution for its real operating environment.</p>
+          </div>
+        </div>
+        <div class="services-foot">
+          <span>Project consultancy</span><span>Co-research</span><span>AI solution development</span><span>Training and seminars</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="research" id="research">
+      <div class="wrap research-grid">
+        <h2>Academic depth without stopping at the paper.</h2>
+        <div class="research-body">
+          <div class="research-stat">
+            <div class="big-number">250+</div>
+            <p>The 3DUniversum team has written more than 250 scientific papers and a number of books in computer vision, deep learning and AI. The team combines MSc and PhD research expertise with business and product development.</p>
+          </div>
+          <div class="founders">
+            <div class="founder"><strong>Prof. Dr. Theo Gevers</strong><span>Founder and Full Professor of Computer Vision</span></div>
+            <div class="founder"><strong>Dr. Sezer Karaoglu</strong><span>Founder and 2D/3D Computer Vision and Machine Learning Specialist</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap contact-grid">
+        <h2>Bring us the visual problem that is hard to solve.</h2>
+        <div class="contact-side">
+          <p>Start with the problem, the data you have and where the system has to work. We can determine whether consultancy, co-research or product development is the right next step.</p>
+          <a class="button dark" href="mailto:info@3duniversum.com">Email 3DUniversum</a>
+          <div class="contact-meta">
+            <a href="mailto:info@3duniversum.com"><strong>Email</strong><span>info@3duniversum.com</span></a>
+            <div><strong>Office</strong><span>Science Park 400, 1098 XH Amsterdam</span></div>
+            <a href="tel:+31202357881"><strong>Phone</strong><span>+31 020 235 7881</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <strong>3DUniversum</strong>
+        <p>Applied AI and computer vision from Amsterdam, combining academic research with product and software development.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="#work">Expertise</a>
+        <a href="#products">Products</a>
+        <a href="#services">Services</a>
+        <a href="#research">Research</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="https://3duniversum.com/about-us/" target="_blank" rel="noreferrer">About</a>
+        <a href="https://3duniversum.com/careers/" target="_blank" rel="noreferrer">Careers</a>
+        <a href="https://3duniversum.com/contacts/" target="_blank" rel="noreferrer">Contact</a>
+      </div>
+    </div>
+    <div class="wrap legal">
+      <span>Copyright © 2026 3DUniversum</span>
+      <span>Computer vision / machine learning / 3D spatial technology</span>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.querySelector('.menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuButton?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(open));
+    });
+
+    mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuButton?.setAttribute('aria-expanded', 'false');
+    }));
+  </script>
+</body>
+</html>

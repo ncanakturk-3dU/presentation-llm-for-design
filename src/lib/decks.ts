@@ -1,4 +1,5 @@
-import type { Deck, SlideItem } from '../../content/types'
+import type { Deck, Part, SlideItem } from '../../content/types'
+import { flattenDeck, type PartRef } from './parts'
 import { DEFAULT_DECK } from './deck-ids'
 import presented from '../../content/version_1'
 
@@ -24,11 +25,21 @@ import presented from '../../content/version_1'
  */
 export { DEFAULT_DECK, REFERENCE_DECK } from './deck-ids'
 
-/** A deck as the app and the studio handle it: the data, plus how to name it. */
+/**
+ * A deck as the app and the studio handle it: the data, how to name it, and the
+ * flat run of slides it is presented as.
+ *
+ * `items` and `partAt` are the flattening of `data.parts`, done once here so
+ * every consumer walks the same array and reads the same part for a given
+ * index. `partAt[i]` is the part slide `i` was written in.
+ */
 export type LoadedDeck = {
   id: string
   label: string
   items: SlideItem[]
+  partAt: Part[]
+  refAt: PartRef[]
+  parts: Part[]
   data: Deck
 }
 
@@ -44,12 +55,16 @@ const modules = import.meta.env.DEV
 const idOf = (path: string) => path.split('/').pop()!.replace(/\.ts$/, '')
 
 function toDeck(id: string, data: Deck): LoadedDeck {
+  const flat = flattenDeck(data)
   return {
     id,
     // What the deck calls itself, falling back to a readable form of its file
     // name so a deck with no `meta.mark` is still nameable in the studio.
     label: data?.meta?.mark || id.replace(/[-_]+/g, ' '),
-    items: data?.items || [],
+    items: flat.items,
+    partAt: flat.partAt,
+    refAt: flat.refAt,
+    parts: flat.parts,
     data,
   }
 }

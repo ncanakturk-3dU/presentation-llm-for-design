@@ -26,8 +26,9 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import type { Deck, SlideItem, SlideType, Theme } from '../content/types'
+import type { Deck, Part, SlideItem, SlideType, Theme } from '../content/types'
 import { DEFAULT_DECK, REFERENCE_DECK } from '../src/lib/deck-ids'
+import { flattenDeck, partNumber } from '../src/lib/parts'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const check = process.argv.includes('--check')
@@ -48,7 +49,7 @@ const check = process.argv.includes('--check')
   }
 }
 
-type LoadedDeck = { id: string; label: string; items: SlideItem[] }
+type LoadedDeck = { id: string; label: string; items: SlideItem[]; partAt: Part[] }
 
 const contentDir = resolve(root, 'content')
 const deckFiles = readdirSync(contentDir)
@@ -60,14 +61,17 @@ const decks: LoadedDeck[] = await Promise.all(
     const id = f.replace(/\.ts$/, '')
     const mod = (await import(resolve(contentDir, f))) as { default: Deck }
     const data = mod.default
-    return { id, label: data?.meta?.mark || id.replace(/[-_]+/g, ' '), items: data?.items || [] }
+    // The same flattening the app does, from the same function, so a state's
+    // label and the slide's own chrome cannot disagree about which part it is in.
+    const flat = flattenDeck(data)
+    return { id, label: data?.meta?.mark || id.replace(/[-_]+/g, ' '), items: flat.items, partAt: flat.partAt }
   }),
 )
 
 if (decks.length === 0) throw new Error('no decks in content/')
 
 for (const d of decks) {
-  if (d.items.length === 0) throw new Error(`content/${d.id}.ts declares no items`)
+  if (d.items.length === 0) throw new Error(`content/${d.id}.ts declares no slides in any part`)
   const missing = d.items.filter((it) => !it.id)
   if (missing.length) {
     throw new Error(
@@ -101,6 +105,10 @@ const ARCHETYPES: Partial<Record<SlideType, [string, string]>> = {
     'Light. Parallel specimen cards — a title on the same dark band `process` gives its steps, over the list or paragraph that supports it. No numerals and no connectors, which is what separates it from the process row.',
   ],
   codeui: ['Code and UI', 'Light. Highlighted source in a tabbed pane beside the rendered result.'],
+  commands: [
+    'Commands',
+    'Dark. One row per call — the command in mono, what it writes beside it, and the line that says what it is for — over the rules that hold for the whole set.',
+  ],
   table: ['Table', 'Light. A matrix with tone-coded severity and action columns.'],
   quote: ['Quote', 'Light. Oversized quote mark, the line itself, and the closer beside it.'],
   showcase: [
@@ -129,45 +137,44 @@ const titleOf = (id: string) => id.split(/[-_]+/).filter(Boolean).map((w) => w[0
 const screens = decks.map((d) => {
   // A deck is navigated the way its table of contents reads: position first,
   // then which part you are in, then which slide of that part. So the label is
-  // index · part · slide, taking the part from the last `divider` passed and
-  // the slide from the item's own `chapter`. The archetype is not in the label
-  // — it is what the slide is made of, not where it sits — and stays on the
-  // `slide` param, which is the list you use when you want "the table one".
+  // index · part · slide — and the part is now read off the nesting rather than
+  // inferred from the last divider passed, so a state's label says where the
+  // slide was actually written. The archetype is not in the label — it is what
+  // the slide is made of, not where it sits — and stays on the `slide` param,
+  // which is the list you use when you want "the table one".
   //
-  // The part is the divider's `number` (`Part 1`), not its `chapter`: a chapter
-  // is written to read as a title, and repeating a title on all seven slides of
+  // A numbered part is labelled by its number (`Part 1`), not its name: a part
+  // name is written to read as a title, and repeating it on all seven slides of
   // a part pushes every slide's own name past the tree's width. The number is
-  // two characters and says the same thing. A divider with no number falls back
-  // to its chapter, which is what an unnumbered part has instead.
+  // two characters and says the same thing. A part with no divider, and so no
+  // number — the intro, the closing — uses its short label, which is what it
+  // has instead.
   //
-  // A part opens on its divider and closes on the slide that says what to take
-  // from it, so those two are labelled by the job they do — `Intro`, `Takeaway`
-  // — rather than by their own title: in the tree you look for where a part
-  // starts and where it lands, and the titles of those two slides are the least
-  // useful place to spend the width.
-  const closers = new Set<number>()
-  let open: number | null = null
-  d.items.forEach((it, n) => {
-    if (it.type === 'divider' || it.standalone) {
-      if (open !== null && open !== n - 1) closers.add(n - 1)
-      open = it.type === 'divider' && !it.standalone ? n : null
-    }
-  })
-  if (open !== null && open !== d.items.length - 1) closers.add(d.items.length - 1)
+  // A `number` that is not a numeral is used as it is written: the bonus part
+  // opens on a divider numbered `Bonus`, and that is already the name of the
+  // section. Running it through `Number()` turned it into `Part NaN`.
+  //
+  // The slide's own `chapter` is the last crumb, always. A previous version
+  // labelled the first and last slide of a part `Intro` and `Takeaway`, worked
+  // out from their position — which named a shape the deck does not
+  // necessarily have: the bonus part's last slide is a second prompt example,
+  // not a takeaway, and the tree said one thing while the outline beside it
+  // said another. Two lists of the same deck that disagree are worse than one
+  // list that is plain, so the label now says what the slide says it is.
 
-  let section: string | null = null
   type State = { id: string; label: string; note?: string; device?: string; params?: Record<string, string> }
   const states: State[] = d.items.map((it, n) => {
-    if (it.type === 'divider') {
-      const num = it.number && Number(it.number)
-      section = num ? `Part ${num}` : it.chapter || null
-    }
-    if (it.standalone) section = null
+    const part = d.partAt[n]
+    const num = part ? partNumber(part) : undefined
+    const numeral = num !== undefined && num.trim() !== '' ? Number(num) : NaN
+    const section = part
+      ? Number.isFinite(numeral)
+        ? `Part ${numeral}`
+        : num || part.label
+      : null
     const crumbs = [String(n + 1).padStart(2, '0')]
     if (section) crumbs.push(section)
-    const role = it.type === 'divider' ? 'Intro' : closers.has(n) ? 'Takeaway' : null
-    if (section && role) crumbs.push(role)
-    else if (it.chapter && it.chapter !== section) crumbs.push(it.chapter)
+    if (it.chapter !== section) crumbs.push(it.chapter)
     return {
       id: `slide-${it.id}`,
       label: crumbs.join(' · '),
@@ -217,7 +224,7 @@ const screens = decks.map((d) => {
       // a state can pin it, and reading a list of slugs to find one slide is
       // work the chapter already did. The archetype stays on the end, because
       // it is how you find "the table one".
-      { id: 'slide', label: 'slide', default: d.items[0].id, options: d.items.map((it) => ({ id: it.id, label: `${it.chapter || it.id} · ${it.type}` })) },
+      { id: 'slide', label: 'slide', default: d.items[0].id, options: d.items.map((it) => ({ id: it.id, label: `${it.chapter} · ${it.type}` })) },
       {
         // The id is the `DeckView` prop designlab passes it to, so it is not
         // free to be renamed for reading — the label is.
@@ -266,6 +273,32 @@ const screens = decks.map((d) => {
           { id: 'golden-flip', label: 'Golden flipped · 38 : 62' },
         ],
       },
+      // `process` only, and an override on the same terms: how big the step's
+      // mark is drawn. Settle on one here, then write it into the deck module
+      // as `mark`.
+      {
+        id: 'mark',
+        label: 'mark',
+        default: 'deck',
+        options: [
+          { id: 'deck', label: 'As written' },
+          { id: 'chip', label: 'Chip · small numeral' },
+          { id: 'block', label: 'Block · big letter' },
+        ],
+      },
+      // `cover` only, and only on the iPhone: above 940px the sphere always
+      // runs off the right edge, so both readings are the same picture there.
+      // Settle on one here, then write it into the deck module as `art`.
+      {
+        id: 'art',
+        label: 'art',
+        default: 'deck',
+        options: [
+          { id: 'deck', label: 'As written' },
+          { id: 'overlap', label: 'Overlap · off the edge' },
+          { id: 'stack', label: 'Stack · square below' },
+        ],
+      },
     ],
     states,
   }
@@ -307,6 +340,23 @@ const slideStates: SlideState[] = []
 for (const [type, it] of byType) {
   const [label, note] = ARCHETYPES[type] ?? [type, `The ${type} archetype.`]
   slideStates.push({ id: type, label, device: 'desktop', note, props: { item: it, still: true } })
+}
+
+// A second slide of a type it already has is a variant the reference deck went
+// out of its way to write — `process` twice, once per `mark` — so it gets a
+// state of its own rather than sitting in a deck nobody captures. Generic on
+// purpose: writing the variant into content/ is what adds the state, and no
+// list here has to be kept in step with it.
+for (const it of reference.items) {
+  if (byType.get(it.type) === it) continue
+  const [label] = ARCHETYPES[it.type] ?? [it.type]
+  slideStates.push({
+    id: it.id,
+    label: `${label} · ${it.chapter}`,
+    device: 'desktop',
+    note: `A second ${it.type} from the reference deck: the variant its first slide does not show.`,
+    props: { item: it, still: true },
+  })
 }
 
 // The dispatcher falls back to Divider for a type it does not know, and that

@@ -1,0 +1,18 @@
+/* On a slide `.cover__art` owns the box and sets both variables to 100%.
+   Standing on its own the orb has no parent to size it, so these fallbacks
+   give it one. */
+.coverorb {
+  position: relative;
+  width: var(--coverorb-width, min(520px, 62vmin));
+  height: var(--coverorb-height, min(520px, 62vmin));
+  display: grid;
+  place-items: center;
+}
+/* The ink is light and the cover it belongs to is dark. Alone on the stage
+   there is no cover, so the variant asks for the ground it is drawn against. */
+.coverorb--standalone {
+  background: var(--ground);
+}
+.coverorb__canvas {
+  display: block;
+}

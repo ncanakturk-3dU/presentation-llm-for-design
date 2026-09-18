@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { slideOutline, slideTitle, itemTheme } from '../../slides/Slides'
 import { pad, stripMarks } from '../../lib/text'
 import { EASE } from '../../lib/motion'
+import type { PartRef } from '../../lib/parts'
 import type { SlideItem } from '../../../content/types'
 import './Contents.css'
 
@@ -25,6 +26,8 @@ function TabIcon({ name }: { name: 'outline' | 'slides' }) {
 type ContentsProps = {
   open: boolean
   items: SlideItem[]
+  /** `partAt[i]` is the part slide `i` was written in — what the outline groups by. */
+  partAt?: PartRef[]
   index: number
   reduced: boolean
   onSelect: (index: number) => void
@@ -34,7 +37,7 @@ type ContentsProps = {
   still?: boolean
 }
 
-export default function Contents({ open, items, index, reduced, onSelect, onClose, initialTab = 'outline', initialQuery = '', still = false }: ContentsProps) {
+export default function Contents({ open, items, partAt = [], index, reduced, onSelect, onClose, initialTab = 'outline', initialQuery = '', still = false }: ContentsProps) {
   const [tab, setTab] = useState(initialTab)
   const [query, setQuery] = useState(initialQuery)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -48,6 +51,11 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
   }, [open, reduced, initialQuery])
 
   const q = query.trim().toLowerCase()
+  // Search reads the whole slide — title, kicker, chapter and every point on
+  // it — which is deliberately more than the outline shows. You look for a
+  // slide by a phrase you remember being *on* it, and a row you cannot find is
+  // worse than a row whose match you cannot see. The chapter still names
+  // whatever the query lands you on.
   const matches = (it: SlideItem) => {
     if (!q) return true
     const kicker = 'kicker' in it ? it.kicker : undefined
@@ -95,38 +103,40 @@ export default function Contents({ open, items, index, reduced, onSelect, onClos
             <div className="toc__body">
               {tab === 'outline' ? (
                 <div className="toc__outline">
-                  {items.map((it, i) => {
+                  {/* Two levels, part over chapter, and no third. The outline is
+                      read as a list of places to go, so each row is the slide's
+                      `chapter` — its short name — not the sentence it puts on
+                      stage, and the points written on it stay on it.
+
+                      The grouping is by the part a slide was written in, so the
+                      heading falls where the deck actually divides rather than
+                      wherever a divider happened to be. A part opens on its first
+                      row that survives the search, which keeps the heading with
+                      its rows when a query hides the rest of the part. */}
+                  {(() => {
+                    // Compared by `id`, never by reference: a states file hands
+                    // this a fresh object per row, and identity would then read
+                    // as a new part on every line.
+                    let shown: string | null = null
+                    return items.map((it, i) => {
                     if (!matches(it)) return null
-                    const subs = slideOutline(it)
-                    // A divider opens a part: it gets a rule and a Part tag above
-                    // it, so the outline reads as sections rather than one long
-                    // run of slides.
-                    const isPart = it.type === 'divider'
+                    const part = partAt[i] || null
+                    const opensPart = (part?.id ?? null) !== shown
+                    if (opensPart) shown = part?.id ?? null
+                    const num = part?.number
                     return (
-                      <div key={it.id || i} className={`ol ${isPart ? 'ol--part' : ''} ${i === index ? 'is-current' : ''}`}>
-                        {it.type === 'divider' && it.number && (
-                          <span className="ol__parttag mono">Part {it.number}</span>
+                      <div key={it.id || i} className={`ol ${opensPart ? 'ol--part' : ''} ${i === index ? 'is-current' : ''}`}>
+                        {opensPart && part && (
+                          <span className="ol__parttag mono">{num ? `Part ${num}` : part.label}</span>
                         )}
                         <button className="ol__row" onClick={() => onSelect(i)}>
                           <span className="ol__num mono">{pad(i + 1)}</span>
-                          <span className="ol__title">{slideTitle(it)}</span>
-                          {subs.length > 0 && <span className="ol__count mono">{subs.length}</span>}
+                          <span className="ol__title">{stripMarks(it.chapter)}</span>
                         </button>
-                        {subs.length > 0 && (
-                          <ul className="ol__subs">
-                            {subs.map((s, j) => (
-                              <li key={j}>
-                                <button className="ol__sub" onClick={() => onSelect(i)}>
-                                  <span className="ol__subn mono">{i + 1}.{j + 1}</span>
-                                  <span className="ol__subt">{stripMarks(s)}</span>
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
                       </div>
                     )
-                  })}
+                    })
+                  })()}
                 </div>
               ) : (
                 <div className="toc__slides">

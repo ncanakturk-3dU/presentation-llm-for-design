@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3DUniversum, computer vision that measures the physical world</title>
+<meta name="description" content="3DUniversum builds deep learning and computer vision software that reconstructs the physical world in 3D and measures it. Amsterdam. Healthcare, industrial inspection, retail.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --surface:#f2f2f0;
+  --ink:#000000;
+  --muted:#575753;
+  --line:#dddcd7;
+  --line-strong:#bfbeb8;
+  --red:#e10600;
+  --red-deep:#b80500;
+  --red-lt:#ff3b2f;
+  --on-dark:#ffffff;
+  --on-dark-muted:#a3a39d;
+  --dark-line:#2a2a28;
+  --f: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+:root:not([data-theme="light"]){ color-scheme: light; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#faf9f7; --surface:#eeedea; --line:#d5d4ce; --line-strong:#b4b3ac;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#faf9f7; --surface:#eeedea; --line:#d5d4ce; --line-strong:#b4b3ac;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--f); font-size:17px; line-height:1.62;
+  font-variant-numeric:tabular-nums; font-synthesis-weight:none;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg,canvas{display:block; max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4{margin:0; font-weight:700; letter-spacing:-0.032em; line-height:1.02}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--red); outline-offset:3px}
+
+.wrap{max-width:1260px; margin:0 auto; padding-inline:clamp(20px,4.2vw,52px)}
+.rule{height:1px; background:var(--line); border:0; margin:0}
+
+/* ---------- header ---------- */
+.hdr{position:sticky; top:0; z-index:60; background:var(--paper); border-bottom:1px solid var(--line)}
+.hdr__in{display:flex; align-items:center; gap:28px; height:68px}
+.brand{display:flex; align-items:center; gap:11px; text-decoration:none; flex:0 0 auto}
+.brand svg{width:26px;height:26px}
+.brand span{font-weight:800; font-stretch:112%; letter-spacing:-0.005em; font-size:16.5px}
+.nav{display:flex; align-items:center; gap:4px; margin-left:auto}
+.nav a,.nav button{
+  font:inherit; font-size:15px; font-weight:500; color:var(--ink); background:none; border:0;
+  padding:9px 13px; text-decoration:none; cursor:pointer; border-radius:2px;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.nav a:hover,.nav button:hover{color:var(--red)}
+.nav .chev{width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s ease}
+.nav [aria-expanded="true"] .chev{transform:rotate(-135deg) translate(-3px,-3px)}
+.menu{position:relative}
+.menu__panel{
+  position:absolute; top:calc(100% + 10px); left:-8px; min-width:300px;
+  background:var(--paper); border:1px solid var(--line-strong); padding:8px;
+  display:none; box-shadow:0 18px 40px -28px rgba(0,0,0,.5);
+}
+.menu__panel[data-open="true"]{display:block}
+.menu__panel a{display:block; padding:9px 12px; font-size:15px; border-radius:2px}
+.menu__panel a:hover{background:var(--surface); color:var(--ink)}
+.menu__panel a b{font-weight:600; display:block}
+.menu__panel a em{font-style:normal; color:var(--muted); font-size:13px; line-height:1.4; display:block}
+.menu__sep{height:1px;background:var(--line);margin:7px 12px}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  font:inherit; font-weight:600; font-size:15px; letter-spacing:-0.01em;
+  padding:12px 20px; border:1px solid transparent; text-decoration:none; cursor:pointer;
+  background:var(--red); color:#fff; transition:background .16s ease, transform .16s ease;
+}
+.btn:hover{background:var(--red-deep)}
+.btn:active{transform:translateY(1px)}
+.btn--sm{padding:9px 15px; font-size:14.5px}
+.btn--ghost{background:transparent; color:var(--ink); border-color:var(--ink)}
+.btn--ghost:hover{background:var(--ink); color:#fff}
+.btn--onblack{background:var(--red); color:#fff}
+.btn--lg{padding:15px 26px; font-size:16.5px}
+
+.burger{display:none; margin-left:auto; width:44px;height:44px; background:none;border:0;cursor:pointer; align-items:center;justify-content:center}
+.burger i{display:block;width:21px;height:1.5px;background:var(--ink);position:relative}
+.burger i::before,.burger i::after{content:"";position:absolute;left:0;width:21px;height:1.5px;background:var(--ink)}
+.burger i::before{top:-6px}.burger i::after{top:6px}
+
+.drawer{position:fixed; inset:68px 0 0; background:var(--paper); z-index:55; display:none; overflow:auto; padding:8px clamp(20px,4.2vw,52px) 48px}
+.drawer[data-open="true"]{display:block}
+.drawer a{display:block; text-decoration:none; padding:15px 0; border-bottom:1px solid var(--line); font-size:23px; font-weight:650; font-stretch:106%; letter-spacing:-0.025em}
+.drawer .sub a{font-size:16px; font-weight:500; padding:11px 0 11px 18px; color:var(--muted); border-bottom:1px solid var(--line)}
+.drawer .btn{margin-top:26px; width:100%}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(40px,5vw,72px); padding-bottom:0; overflow:clip}
+.hero__grid{display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,0.98fr); gap:clamp(28px,4vw,64px); align-items:center}
+h1{font-size:clamp(2.55rem,5.9vw,4.9rem); font-stretch:113%; line-height:0.93; letter-spacing:-0.042em}
+h1 .ln{display:block; overflow:hidden; padding-bottom:.07em; margin-bottom:-.07em}
+h1 .ln > span{display:block; will-change:transform}
+.hero__lead{margin-top:26px; max-width:46ch; font-size:clamp(1.04rem,1.35vw,1.19rem); color:var(--muted); line-height:1.58}
+.hero__lead b{color:var(--ink); font-weight:600}
+.hero__cta{display:flex; flex-wrap:wrap; gap:14px 18px; align-items:center; margin-top:32px}
+.txtlink{font-weight:600; font-size:15.5px; text-decoration:none; border-bottom:1.5px solid var(--red); padding-bottom:2px}
+.txtlink:hover{color:var(--red)}
+
+.stage{position:relative}
+.stage__frame{position:relative; background:var(--paper)}
+.stage canvas{width:100%; aspect-ratio:1/0.8; min-height:300px; touch-action:pan-y; cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.brk{position:absolute;width:15px;height:15px;border:1.5px solid var(--red);pointer-events:none}
+.brk.tl{top:0;left:0;border-right:0;border-bottom:0}
+.brk.tr{top:0;right:0;border-left:0;border-bottom:0}
+.brk.bl{bottom:0;left:0;border-right:0;border-top:0}
+.brk.br{bottom:0;right:0;border-left:0;border-top:0}
+.stage__cap{display:flex; justify-content:space-between; gap:16px; margin-top:12px; font-size:12.5px; color:var(--muted); letter-spacing:0.005em}
+
+.clients{margin-top:clamp(44px,5vw,76px); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.clients__in{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px clamp(22px,3.4vw,46px); padding:20px 0}
+.clients__lb{font-size:13px; color:var(--muted); flex:0 0 auto}
+.clients__n{font-size:clamp(1rem,1.5vw,1.2rem); font-weight:650; font-stretch:108%; letter-spacing:-0.02em}
+
+/* ---------- dark section ---------- */
+.dark{background:var(--ink); color:var(--on-dark)}
+.dark h2{color:#fff}
+.sec{padding-block:clamp(64px,8vw,124px)}
+
+.origin__grid{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr); gap:clamp(32px,5vw,80px)}
+h2{font-size:clamp(1.95rem,3.7vw,3.2rem); font-stretch:109%; letter-spacing:-0.035em}
+.origin p{margin-top:24px; color:var(--on-dark-muted); max-width:52ch; font-size:clamp(1rem,1.2vw,1.1rem)}
+.origin p + p{margin-top:18px}
+.facts{align-self:end}
+.facts li{display:grid; grid-template-columns:auto 1fr; gap:4px 18px; padding:18px 0; border-top:1px solid var(--dark-line)}
+.facts li:last-child{border-bottom:1px solid var(--dark-line)}
+.facts .k{font-size:clamp(1.5rem,2.4vw,2.1rem); font-weight:700; font-stretch:110%; letter-spacing:-0.035em; color:var(--red); line-height:1; padding-top:2px}
+.facts .v{font-size:15px; color:#fff; font-weight:600}
+.facts .v em{display:block; font-style:normal; font-weight:400; color:var(--on-dark-muted); font-size:14px; margin-top:2px}
+
+/* ---------- industries ---------- */
+.ind__head{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:clamp(24px,4vw,64px); align-items:end; padding-bottom:clamp(34px,4vw,58px)}
+.ind__head p{color:var(--muted); max-width:44ch}
+.row{display:grid; gap:clamp(24px,3.6vw,56px); align-items:center; padding-block:clamp(40px,5vw,72px); border-top:1px solid var(--line)}
+.row--a{grid-template-columns:minmax(0,1.22fr) minmax(0,0.78fr)}
+.row--b{grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr)}
+.row--c{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.row--b .row__fig{order:2}
+.row__t{font-size:clamp(1.5rem,2.5vw,2.15rem); font-stretch:107%}
+.row__d{margin-top:16px; color:var(--muted); max-width:50ch}
+.row__d + .row__d{margin-top:14px}
+.row__m{margin-top:22px; display:flex; flex-wrap:wrap; gap:8px 26px; padding-top:16px; border-top:1px solid var(--line)}
+.row__m div{font-size:13.5px; color:var(--muted)}
+.row__m b{display:block; font-size:clamp(1.15rem,1.8vw,1.5rem); font-weight:700; font-stretch:108%; letter-spacing:-0.03em; color:var(--ink); line-height:1.15}
+.row__lk{display:inline-block; margin-top:22px; font-weight:600; font-size:15px; text-decoration:none; border-bottom:1.5px solid var(--red); padding-bottom:2px}
+.row__lk:hover{color:var(--red)}
+.fig{position:relative; background:var(--surface); padding:clamp(14px,1.8vw,24px)}
+.fig svg{width:100%;height:auto}
+.fig__cap{margin-top:10px; font-size:12.5px; color:var(--muted)}
+.fadeanno{opacity:0}
+.inview .fadeanno{opacity:1; transition:opacity .7s ease .35s}
+
+/* ---------- products ---------- */
+.prods{background:var(--surface)}
+.prods__grid{display:grid; grid-template-columns:minmax(0,1.24fr) minmax(0,0.76fr); gap:clamp(24px,3vw,44px); margin-top:clamp(32px,4vw,52px)}
+.pmain{background:var(--paper); padding:clamp(22px,2.6vw,38px); display:flex; flex-direction:column; align-items:flex-start}
+.pmain__n{font-size:clamp(2.1rem,4vw,3.4rem); font-stretch:112%; letter-spacing:-0.04em; line-height:0.95}
+.pmain__d{margin-top:16px; color:var(--muted); max-width:44ch}
+.pmain__fig{margin-top:auto; padding-top:26px; align-self:stretch; width:100%}
+.pside{display:grid; gap:clamp(24px,3vw,44px); align-content:start}
+.pcard{background:var(--paper); padding:clamp(20px,2.2vw,30px)}
+.pcard__n{font-size:clamp(1.55rem,2.4vw,2.1rem); font-stretch:110%; letter-spacing:-0.035em}
+.pcard__d{margin-top:12px; color:var(--muted); font-size:15.5px}
+.plk{display:inline-block; margin-top:18px; font-weight:600; font-size:15px; text-decoration:none; border-bottom:1.5px solid var(--red); padding-bottom:2px}
+.plk:hover{color:var(--red)}
+
+/* ---------- services ledger ---------- */
+.svc__head{max-width:56ch}
+.svc__head p{margin-top:20px; color:var(--muted)}
+.ledger{margin-top:clamp(32px,4vw,52px); border-top:1.5px solid var(--ink)}
+.ledger li{display:grid; grid-template-columns:minmax(0,0.9fr) minmax(0,1.5fr) minmax(0,0.9fr); gap:8px clamp(20px,3vw,48px); padding:26px 0; border-bottom:1px solid var(--line); align-items:baseline}
+.ledger h3{font-size:clamp(1.2rem,1.9vw,1.55rem); font-stretch:107%; letter-spacing:-0.03em}
+.ledger p{color:var(--muted); font-size:16px}
+.ledger .fit{font-size:14.5px; color:var(--ink); font-weight:500}
+.ledger .fit span{color:var(--muted); display:block; font-weight:400; font-size:13px}
+
+.steps{background:var(--ink); color:#fff}
+.steps__in{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(22px,3vw,48px); padding-block:clamp(44px,5vw,68px)}
+.step{position:relative; padding-top:26px}
+.step::before{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:var(--red); transform-origin:left center; transform:scaleX(0)}
+.steps__in.inview .step::before{transform:scaleX(1); transition:transform .75s cubic-bezier(.2,.7,.2,1)}
+.steps__in.inview .step:nth-child(2)::before{transition-delay:.11s}
+.steps__in.inview .step:nth-child(3)::before{transition-delay:.22s}
+.step .no{font-size:13px; color:var(--red-lt); font-weight:700; letter-spacing:.02em}
+.step h3{margin-top:6px; font-size:clamp(1.25rem,2vw,1.6rem); font-stretch:108%; color:#fff}
+.step p{margin-top:10px; color:var(--on-dark-muted); font-size:15.5px; max-width:34ch}
+
+/* ---------- press ---------- */
+.press__in{display:grid; grid-template-columns:minmax(0,0.62fr) minmax(0,1.38fr); gap:clamp(24px,4vw,64px); align-items:start}
+.press h2{font-size:clamp(1.5rem,2.3vw,2rem)}
+.press__note{margin-top:14px; color:var(--muted); font-size:15px; max-width:32ch}
+.press__list{display:grid; grid-template-columns:repeat(auto-fill,minmax(205px,1fr)); column-gap:clamp(18px,2.4vw,36px); border-top:1px solid var(--line)}
+.press__list a{
+  display:block; padding:15px 0; border-bottom:1px solid var(--line); text-decoration:none;
+  font-size:clamp(1rem,1.5vw,1.2rem); font-weight:650; font-stretch:106%; letter-spacing:-0.022em;
+}
+.press__list a:hover{color:var(--red)}
+.press__list a em{display:block; font-style:normal; font-size:12.5px; font-weight:400; color:var(--muted); letter-spacing:0}
+
+/* ---------- contact ---------- */
+.ct__grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:clamp(32px,5vw,72px)}
+.ct h2{font-size:clamp(2rem,4.2vw,3.5rem); font-stretch:111%}
+.ct__lead{margin-top:22px; color:var(--on-dark-muted); max-width:44ch; font-size:clamp(1rem,1.2vw,1.12rem)}
+.ct__cta{margin-top:30px; display:flex; flex-wrap:wrap; gap:14px 18px; align-items:center}
+.ct__ghost{color:#fff; border-bottom:1.5px solid var(--red); text-decoration:none; font-weight:600; font-size:15.5px; padding-bottom:2px}
+.ct__info li{padding:18px 0; border-top:1px solid var(--dark-line)}
+.ct__info li:last-child{border-bottom:1px solid var(--dark-line)}
+.ct__info .lb{font-size:12.5px; color:var(--on-dark-muted)}
+.ct__info .vl{margin-top:4px; font-size:clamp(1rem,1.5vw,1.2rem); font-weight:600; font-stretch:106%; letter-spacing:-0.02em}
+.ct__info a{text-decoration:none}
+.ct__info a:hover{color:var(--red)}
+
+.nl{margin-top:clamp(44px,5vw,72px); border-top:1px solid var(--dark-line); padding-top:clamp(28px,3vw,42px); display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(20px,3vw,48px); align-items:center}
+.nl p{color:var(--on-dark-muted); font-size:15.5px; max-width:42ch}
+.nl strong{color:#fff; display:block; font-size:17px; font-weight:650; margin-bottom:6px}
+.nlform{display:flex; gap:10px; flex-wrap:wrap}
+.nlform input{
+  flex:1 1 220px; min-width:0; font:inherit; font-size:15px; padding:12px 14px;
+  background:transparent; color:#fff; border:1px solid var(--dark-line);
+}
+.nlform input::placeholder{color:#6d6d68}
+.nlform input:focus{border-color:var(--red); outline:none}
+.nlmsg{font-size:13.5px; color:var(--on-dark-muted); margin-top:10px; min-height:1.2em}
+
+.ft{background:var(--ink); color:#fff; border-top:1px solid var(--dark-line)}
+.ft__grid{display:grid; grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr)); gap:clamp(24px,3vw,48px); padding-block:clamp(44px,5vw,64px)}
+.ft h4{font-size:13px; color:var(--on-dark-muted); font-weight:500; letter-spacing:0}
+.ft ul{margin-top:14px; display:grid; gap:9px}
+.ft ul a{font-size:15px; text-decoration:none; color:#e6e6e2}
+.ft ul a:hover{color:var(--red)}
+.ft__brand svg{width:26px;height:26px}
+.ft__brand p{margin-top:14px; color:var(--on-dark-muted); font-size:14.5px; max-width:30ch}
+.ft__base{display:flex; flex-wrap:wrap; gap:10px 28px; justify-content:space-between; padding-block:22px; border-top:1px solid var(--dark-line); font-size:13.5px; color:var(--on-dark-muted)}
+.ft__base a{text-decoration:none}
+.ft__base a:hover{color:var(--red)}
+
+/* ---------- reveal for hero ---------- */
+.pre h1 .ln > span{transform:translateY(105%)}
+.pre .hero__lead,.pre .hero__cta{opacity:0}
+.go h1 .ln > span{transform:translateY(0); transition:transform .82s cubic-bezier(.19,.9,.22,1)}
+.go h1 .ln:nth-child(2) > span{transition-delay:.09s}
+.go h1 .ln:nth-child(3) > span{transition-delay:.18s}
+.go .hero__lead{opacity:1; transition:opacity .6s ease .34s}
+.go .hero__cta{opacity:1; transition:opacity .6s ease .44s}
+
+@media (max-width:1000px){
+  .hero__grid{grid-template-columns:1fr; gap:34px}
+  .origin__grid,.ind__head,.prods__grid,.press__in,.ct__grid,.nl{grid-template-columns:1fr}
+  .row--a,.row--b,.row--c{grid-template-columns:1fr}
+  .row--b .row__fig{order:0}
+  .ledger li{grid-template-columns:1fr; gap:6px}
+  .ledger .fit{margin-top:6px}
+  .steps__in{grid-template-columns:1fr; gap:30px}
+  .ft__grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .nav{display:none}
+  .hdr .btn{display:none}
+  .burger{display:flex}
+  .stage canvas{height:clamp(300px,74vw,420px)}
+  .ft__grid{grid-template-columns:1fr}
+  .press__list{grid-template-columns:1fr}
+  body{font-size:16px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+  .pre h1 .ln > span{transform:none}
+  .pre .hero__lead,.pre .hero__cta{opacity:1}
+  .fadeanno{opacity:1}
+  .step::before{transform:none !important}
+}
+</style>
+<noscript><style>
+  .pre h1 .ln > span{transform:none}
+  .pre .hero__lead,.pre .hero__cta{opacity:1}
+  .fadeanno{opacity:1}
+  .step::before{transform:none}
+  .stage{display:none}
+</style></noscript>
+</head>
+<body class="pre">
+
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <a class="brand" href="/" aria-label="3DUniversum home">
+      <svg viewBox="0 0 26 26" aria-hidden="true">
+        <path d="M13 1.6 24.1 7.6v10.8L13 24.4 1.9 18.4V7.6z" fill="none" stroke="#000" stroke-width="1.6"/>
+        <path d="M13 8.2 19 11.5v6.5L13 21.3 7 18v-6.5z" fill="none" stroke="#e10600" stroke-width="1.6"/>
+        <circle cx="13" cy="14.7" r="1.9" fill="#e10600"/>
+      </svg>
+      <span>3DUNIVERSUM</span>
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <a href="https://3duniversum.com/our-services/">Services</a>
+      <div class="menu">
+        <button type="button" id="pbtn" aria-expanded="false" aria-controls="ppanel">Products <i class="chev"></i></button>
+        <div class="menu__panel" id="ppanel" data-open="false">
+          <a href="https://wescan.io/"><b>weScan</b><em>3D capture of spaces on iPhone and iPad</em></a>
+          <a href="https://fairfake.ai/"><b>FairFake</b><em>Synthetic media, made and detected responsibly</em></a>
+          <a href="https://deeptherapy.ai/"><b>Deep Therapy</b><em>Video animation for clinical practice</em></a>
+          <div class="menu__sep"></div>
+          <a href="https://3duniversum.com/product/visual-inspection/"><b>Visual inspection</b></a>
+          <a href="https://3duniversum.com/product/retail/"><b>Retail and eyewear</b></a>
+          <a href="https://3duniversum.com/product/healthcare/"><b>Healthcare</b></a>
+          <a href="https://3duniversum.com/product/mobile-scanner/"><b>Mobile scanner</b></a>
+        </div>
+      </div>
+      <a href="#industries">Industries</a>
+      <a href="https://3duniversum.com/news-2/">News</a>
+      <a href="https://3duniversum.com/about-us/">Company</a>
+    </nav>
+    <a class="btn btn--sm" href="https://3duniversum.com/book-ai-consultation">Book a consultation</a>
+
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="drawer" aria-label="Open menu"><i></i></button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" data-open="false">
+  <a href="https://3duniversum.com/our-services/">Services</a>
+  <a href="#industries">Industries</a>
+  <div class="sub">
+    <a href="https://wescan.io/">weScan</a>
+    <a href="https://fairfake.ai/">FairFake</a>
+    <a href="https://deeptherapy.ai/">Deep Therapy</a>
+    <a href="https://3duniversum.com/product/visual-inspection/">Visual inspection</a>
+    <a href="https://3duniversum.com/product/retail/">Retail and eyewear</a>
+    <a href="https://3duniversum.com/product/healthcare/">Healthcare</a>
+  </div>
+  <a href="https://3duniversum.com/news-2/">News</a>
+  <a href="https://3duniversum.com/about-us/">Company</a>
+  <a href="https://3duniversum.com/contacts/">Contact</a>
+  <a class="btn" href="https://3duniversum.com/book-ai-consultation">Book a consultation</a>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div>
+        <h1>
+          <span class="ln"><span>We turn cameras</span></span>
+          <span class="ln"><span>into measurement</span></span>
+          <span class="ln"><span>instruments.</span></span>
+        </h1>
+        <p class="hero__lead">3DUniversum builds deep learning and computer vision software that reconstructs the physical world in three dimensions, then measures it accurately enough to act on. <b>Founded by computer vision academics in Amsterdam</b>, building for AkzoNobel, Nike, Samsung, Huawei and Talpa.</p>
+        <div class="hero__cta">
+          <a class="btn btn--lg" href="https://3duniversum.com/book-ai-consultation">Book an AI consultation</a>
+          <a class="txtlink" href="#industries">See what we measure</a>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage__frame">
+          <canvas id="cloud" aria-label="Interactive point cloud of a scanned room with measured dimensions"></canvas>
+          <span class="brk tl"></span><span class="brk tr"></span><span class="brk bl"></span><span class="brk br"></span>
+        </div>
+        <div class="stage__cap">
+          <span id="ptcount">Room capture</span>
+          <span>Drag to orbit</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="clients">
+      <div class="clients__in">
+        <span class="clients__lb">Built with</span>
+        <span class="clients__n">AkzoNobel</span>
+        <span class="clients__n">Nike</span>
+        <span class="clients__n">Samsung</span>
+        <span class="clients__n">Huawei</span>
+        <span class="clients__n">Talpa</span>
+        <span class="clients__n">Red Cross</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGIN -->
+<section class="dark sec origin">
+  <div class="wrap origin__grid">
+    <div>
+      <h2>The research is not a credential. It is where the product starts.</h2>
+      <p>Our team is world leading in computer vision, machine learning and deep learning, and combines academic researchers with people who have shipped commercial software. Between us we have written more than 250 scientific papers and several books.</p>
+      <p>That matters because the hard part is rarely the model. It is knowing what a camera can physically resolve, what a scan can be trusted to measure, and where the answer stops being reliable. We tell you that before you build on it.</p>
+    </div>
+    <ul class="facts">
+      <li><span class="k">250+</span><span class="v">Peer reviewed papers<em>Computer vision, deep learning, 3D reconstruction</em></span></li>
+      <li><span class="k">2</span><span class="v">Founders<em>Prof. dr. Theo Gevers, full professor of computer vision, and Dr. Sezer Karaoglu</em></span></li>
+      <li><span class="k">3</span><span class="v">Product lines in market<em>weScan, FairFake, Deep Therapy</em></span></li>
+      <li><span class="k">NL</span><span class="v">Science Park 400, Amsterdam<em>On the university science campus, by design</em></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section class="sec" id="industries">
+  <div class="wrap">
+    <div class="ind__head">
+      <h2>Three industries where a millimetre changes the decision.</h2>
+      <p>Each of these started as a research question and ended as software someone uses on a working day. The measurement, not the model, is the deliverable.</p>
+    </div>
+
+    <!-- Healthcare -->
+    <article class="row row--a reveal">
+      <div class="row__fig">
+        <figure class="fig" style="margin:0">
+          <svg viewBox="0 0 620 440" role="img" aria-label="Depth contour map of a scanned skin surface with the wound boundary traced and measured">
+<title>Depth contour map of a scanned surface with a traced wound boundary</title>
+<defs><clipPath id="hcp"><rect x="16" y="16" width="588" height="368"/></clipPath></defs>
+<rect x="0" y="0" width="620" height="440" fill="#ffffff"/><rect x="16" y="16" width="588" height="368" fill="#ffffff"/>
+<g clip-path="url(#hcp)">
+  <g fill="none" stroke="#c9c8c2" stroke-width="1.1" stroke-linejoin="round"><path d="M158.5 0.7L152.9 5.2L150.0 7.3L147.2 9.2L143.9 11.4L139.0 14.2L135.9 15.7L130.2 18.2L125.6 19.9L121.7 21.1L116.1 22.5L110.4 23.6L104.7 24.5L99.1 25.1L94.2 25.5L90.6 25.8L84.9 26.1L79.3 26.4L73.6 26.8L67.9 27.6L64.2 28.4L59.5 30.0L53.8 33.1L51.0 35.4L48.1 38.3L45.3 41.8L42.8 45.4L39.6 50.3L37.3 53.9L34.0 58.9L31.3 62.5L28.8 65.3L25.9 68.1L22.6 70.8L17.6 73.8L14.2 75.4L10.4 76.6L5.7 77.9L0.0 78.9"/><path d="M512.4 2.8L517.7 2.8L523.7 3.7L529.4 5.5L535.1 8.4L537.9 10.4L540.7 12.7L543.6 15.3L546.4 18.2L549.2 21.4L552.1 24.7L554.9 28.0L557.7 31.2L560.3 34.1L563.1 36.9L566.2 39.7L569.0 42.0L571.9 44.1L577.5 47.7L583.2 50.6L588.9 53.2L594.5 55.5L600.2 57.7L604.9 59.6L608.7 61.2L614.3 63.8L620.0 66.9"/><path d="M441.6 5.7L447.3 7.5L451.7 8.5L455.8 9.2L461.5 9.8L467.1 9.9L472.8 9.7L478.4 9.0L484.1 8.1L489.8 6.9L495.2 5.7"/><path d="M0.0 361.1L2.8 365.2L5.2 369.0L8.5 374.4L10.4 377.5L14.0 383.2L15.9 386.1L17.9 388.9L20.2 391.7L22.6 394.6L25.4 397.4L28.3 400.0L31.1 402.1L36.8 405.6L42.5 408.2L48.1 410.1L53.8 411.4L59.5 412.4L65.1 413.0L70.8 413.4L76.4 413.6L82.1 413.7L87.8 413.9L93.4 414.2L99.1 414.9L104.7 416.1L108.9 417.3L113.2 419.0L118.9 421.8L124.6 425.3L127.4 427.3L130.2 429.2L133.1 431.1L138.1 434.3L141.6 436.2L147.2 438.8L150.4 440.0"/><path d="M192.5 2.0L186.8 4.8L181.2 8.2L176.5 11.4L172.7 14.0L169.9 16.0L167.0 18.0L164.2 19.9L159.9 22.7L155.7 25.2L150.0 28.3L144.4 31.0L138.7 33.3L133.1 35.4L128.5 36.9L124.6 38.1L119.1 39.7L113.2 41.4L109.3 42.6L104.7 43.9L100.2 45.4L96.3 46.8L92.7 48.3L87.8 50.5L82.1 53.7L79.3 55.6L76.4 57.8L73.6 60.2L70.8 63.0L67.9 66.1L65.1 69.4L62.3 73.0L59.5 76.6L57.4 79.5L55.2 82.3L52.9 85.2L50.6 88.0L48.1 90.8L45.5 93.7L42.6 96.5L39.6 99.1L36.8 101.3L34.0 103.4L28.3 107.0L22.6 110.0L17.0 112.6L11.3 115.0L5.7 117.5L2.1 119.2"/><path d="M322.7 2.0L317.1 4.2L312.8 5.7L308.6 7.0L303.0 8.5L297.3 9.7L291.6 10.5L285.9 10.9L280.3 10.9L274.6 10.6L268.9 9.9L263.3 8.9L257.6 7.6L252.0 6.1L246.3 4.3L241.5 2.8"/><path d="M393.5 0.1L398.3 2.8L402.0 5.1L407.6 8.5L412.3 11.4L416.2 13.6L421.8 16.6L427.5 19.2L433.2 21.5L436.7 22.7L441.6 24.2L446.6 25.5L450.1 26.4L455.8 27.5L461.3 28.4L467.1 29.2L472.8 29.8L478.4 30.4L484.1 31.0L489.8 31.7L495.4 32.5L501.1 33.5L506.8 35.1L511.5 36.9L515.3 38.7L520.9 42.4L523.7 44.6L526.6 47.0L529.4 49.7L532.2 52.4L535.1 55.1L537.9 57.8L540.7 60.2L543.4 62.5L546.4 64.6L552.1 68.1L557.7 70.8L563.4 72.8L566.7 73.8L571.9 75.1L577.5 76.4L583.2 77.7L588.9 79.2L594.5 80.9L598.5 82.3L603.0 84.3L608.7 87.5L611.5 89.5L614.3 91.9L617.2 94.6L620.0 97.9"/><path d="M0.0 319.6L2.8 321.6L5.7 323.8L8.5 326.4L11.3 329.3L13.6 332.1L15.7 335.0L17.6 337.8L19.8 341.5L22.5 346.3L25.4 352.0L28.3 357.5L30.0 360.5L33.5 366.2L35.6 369.0L37.9 371.9L40.6 374.7L44.0 377.5L48.1 380.3L53.8 383.0L59.5 384.6L65.1 385.5L70.8 385.9L76.4 386.0L82.1 386.0L87.8 386.0L91.5 386.1L96.3 386.3L101.9 386.9L107.6 387.8L112.0 388.9L116.1 390.2L120.3 391.7L124.6 393.7L130.2 396.8L135.7 400.3L138.7 402.4L141.6 404.4L144.4 406.6L147.2 408.7L150.0 410.8L152.9 412.9L155.7 414.8L159.5 417.3L164.2 420.1L169.9 422.9L175.5 425.2L181.2 427.1L186.6 428.6L192.5 430.0L198.2 431.1L203.8 432.0L209.5 432.8L215.2 433.4L220.8 434.0L226.5 434.6L232.1 435.1L237.8 435.6L243.5 436.2L249.1 436.7L254.0 437.2L257.6 437.5L263.3 438.2L268.9 438.8L274.6 439.4L280.3 440.0"/><path d="M467.7 408.8L472.8 408.4L478.4 408.2L484.1 408.2L489.8 408.3L495.4 408.4L501.1 408.4L506.8 408.2L512.4 407.7L518.1 406.9L522.4 405.9"/><path d="M325.3 440.0L331.2 439.7L336.9 439.4L342.6 439.1L348.2 438.7L353.9 438.4L359.5 438.0L365.2 437.6L370.9 437.2"/><path d="M348.2 13.8L342.6 15.0L336.9 16.6L331.2 18.2L325.6 19.8L319.9 21.4L314.3 22.7L308.6 23.9L302.9 24.9L297.8 25.5L291.6 26.1L285.9 26.5L280.3 26.6L274.6 26.5L268.9 26.2L263.3 25.8L257.6 25.2L252.0 24.4L246.3 23.5L241.2 22.7L235.0 21.7L229.3 21.0L223.7 20.4L218.0 20.3L212.3 20.7L206.7 21.6L202.7 22.7L198.2 24.3L192.5 26.7L189.1 28.4L184.0 31.1L178.4 34.1L172.9 36.9L169.9 38.4L164.2 41.0L160.3 42.6L155.7 44.4L150.0 46.3L144.4 48.2L138.7 49.9L134.6 51.1L130.2 52.4L125.3 53.9L121.7 55.1L116.8 56.8L113.2 58.1L109.6 59.6L104.7 61.9L99.1 65.0L94.3 68.1L90.6 71.0L87.8 73.4L84.9 76.1L82.1 79.1L79.3 82.3L76.9 85.2L74.6 88.0L72.4 90.8L70.2 93.7L68.0 96.5L65.8 99.4L63.5 102.2L61.2 105.0L58.7 107.9L56.1 110.7L53.3 113.5L50.3 116.4L47.1 119.2L43.7 122.1L40.0 124.9L36.8 127.3L34.0 129.4L31.1 131.4L28.4 133.4L25.5 135.6L22.6 137.8L19.8 140.1L17.0 142.7L14.2 145.6L11.3 149.0L8.5 153.0L6.7 156.1L4.0 161.8L1.9 167.5L0.2 173.2"/><path d="M422.3 34.1L427.5 35.7L431.4 36.9L436.0 38.1L441.6 39.6L447.3 40.9L453.0 42.2L458.6 43.5L464.3 44.9L470.0 46.3L475.6 48.0L481.3 49.9L486.9 52.3L490.4 53.9L495.4 56.7L499.8 59.6L503.5 62.5L506.8 65.2L509.6 67.8L512.4 70.4L515.3 73.2L518.1 76.0L520.9 78.7L523.7 81.4L526.6 83.9L529.4 86.3L535.1 90.5L540.2 93.7L543.6 95.5L549.2 98.1L552.5 99.4L557.7 101.2L561.1 102.2L566.2 103.6L571.3 105.0L574.7 106.0L580.3 107.9L586.0 110.4L591.2 113.5L594.5 116.4L597.1 119.2L599.1 122.1L602.1 127.7L604.0 133.4L605.3 139.1L606.1 144.8L606.7 150.5L607.1 156.1L607.4 161.8L607.8 167.5L608.1 173.2L608.6 178.8L609.3 184.5L610.2 190.2L611.2 195.9L612.6 201.5L614.1 207.2L615.9 212.9L617.2 216.5L619.0 221.4"/><path d="M266.1 176.0L271.8 174.3L277.4 174.1L283.1 175.6L288.3 178.8L291.2 181.7L293.4 184.5L296.6 190.2L298.9 195.9L300.1 199.9L301.1 204.4L301.8 210.1L301.4 215.7L300.1 219.3L297.3 222.3L292.3 224.3L288.8 224.6L283.1 224.4L277.4 223.3L271.8 221.6L266.1 219.1L260.9 215.7L257.7 212.9L255.3 210.1L252.5 204.4L251.6 198.7L252.0 194.4L253.1 190.2L254.8 186.7L257.6 182.6L260.5 179.7L263.3 177.6Z"/><path d="M0.0 266.0L2.6 269.7L5.1 272.5L7.9 275.4L11.0 278.2L14.2 280.9L17.0 283.3L19.8 285.8L22.6 288.4L25.5 291.2L28.3 294.3L31.1 297.7L33.6 300.9L35.5 303.7L38.9 309.4L42.0 315.1L44.8 320.8L47.5 326.5L50.3 332.1L53.4 337.8L56.6 342.8L59.4 346.3L62.0 349.2L65.1 351.9L67.9 354.0L73.6 357.2L79.3 359.6L84.9 361.4L90.6 363.0L96.3 364.5L101.9 366.0L107.6 367.5L112.5 369.0L116.1 370.2L120.6 371.9L124.6 373.5L130.2 376.2L135.9 379.3L141.6 382.8L144.4 384.7L147.2 386.7L150.0 388.8L152.9 390.9L155.7 393.1L158.5 395.3L161.4 397.4L164.2 399.5L167.0 401.5L169.9 403.4L173.9 405.9L178.4 408.4L184.0 411.0L189.7 413.2L193.8 414.5L198.2 415.6L203.8 416.8L207.2 417.3L212.3 417.9L218.0 418.3L223.7 418.5L229.3 418.5L235.0 418.2L240.6 417.8L246.1 417.3L252.0 416.6L257.6 415.9L263.3 415.3L268.9 414.7L272.8 414.5L277.4 414.3L283.1 414.3L288.8 414.7L294.4 415.4L300.1 416.3L305.4 417.3L311.4 418.5L317.1 419.7L322.7 420.7L328.4 421.7L334.1 422.4L339.2 423.0L345.4 423.4L351.1 423.6L356.7 423.6L362.4 423.4L368.0 423.0L373.7 422.4L379.4 421.5L385.0 420.3L390.7 418.8L395.5 417.3L399.2 415.9L402.8 414.5L407.7 412.2L413.3 409.2L419.0 406.0L424.0 403.1L427.5 401.1L433.2 397.9L438.8 395.1L444.5 392.6L450.1 390.6L455.8 389.0L461.5 387.8L467.1 387.0L472.8 386.5L478.4 386.3L484.1 386.3L489.8 386.3L495.4 386.4L501.1 386.3L505.4 386.1L509.6 385.6L515.3 384.6L520.0 383.2L523.7 381.8L529.4 378.8L532.2 376.9L535.1 374.8L537.9 372.2L540.7 369.4L543.6 366.3L546.1 363.4L548.3 360.5L550.6 357.7L552.8 354.8L557.3 349.2L559.8 346.3L562.4 343.5L565.2 340.6L568.2 337.8L571.6 335.0L574.7 332.6L577.5 330.7L583.2 327.1L588.9 323.7L593.9 320.8L597.4 318.7L602.9 315.1L605.8 313.0L608.7 310.7L611.5 308.1L614.3 305.2L617.2 301.7L619.7 298.1"/><path d="M331.2 36.9L336.9 36.3L342.6 35.8L348.2 35.5L353.9 35.3L359.5 35.5L365.2 36.1L370.3 36.9L373.7 37.6L379.4 39.0L385.0 40.5L390.7 42.1L396.3 43.6L402.0 45.1L407.7 46.5L413.3 47.8L419.0 49.1L424.7 50.2L429.0 51.1L433.2 51.9L438.8 53.1L442.5 53.9L447.3 55.0L453.0 56.5L458.6 58.1L463.2 59.6L467.1 61.1L470.5 62.5L475.6 64.9L481.3 68.1L485.6 71.0L489.4 73.8L492.6 76.5L495.4 79.0L498.3 81.7L501.1 84.5L503.9 87.3L506.8 90.2L509.6 93.0L512.4 95.8L515.3 98.5L518.1 101.1L520.9 103.6L523.7 105.9L529.4 110.1L532.2 112.1L537.9 115.6L543.6 118.9L549.2 122.0L554.4 124.9L557.7 126.8L563.4 130.5L566.2 132.6L569.0 135.0L571.9 137.8L574.7 141.2L577.2 144.8L580.2 150.5L582.4 156.1L584.2 161.8L585.6 167.5L586.8 173.2L587.8 178.8L588.8 184.5L589.7 190.2L590.6 195.9L591.5 201.5L592.5 207.2L593.5 212.9L594.5 218.0L595.2 221.4L596.4 227.1L597.4 231.5L598.3 235.6L599.5 241.3L600.2 244.9L601.0 249.8L601.8 255.5L602.1 261.2L601.9 266.8L600.9 272.5L599.1 278.2L597.4 281.6L594.5 285.8L591.7 289.0L588.9 291.6L586.0 293.8L583.2 295.7L579.4 298.1L574.7 300.7L569.2 303.7L566.2 305.5L560.5 309.1L557.7 311.1L554.9 313.3L552.1 315.8L549.2 318.5L546.4 321.5L543.6 324.8L540.7 328.3L537.9 332.1L535.8 335.0L533.7 337.8L531.5 340.6L529.4 343.4L526.9 346.3L524.3 349.2L521.4 352.0L518.1 354.8L515.3 356.8L509.6 360.0L503.9 362.3L500.7 363.4L495.4 364.7L489.8 365.9L484.1 366.8L478.4 367.7L472.8 368.7L467.1 369.7L461.5 370.8L457.1 371.9L453.0 373.0L447.4 374.7L441.6 376.8L436.0 379.2L430.3 381.9L424.7 384.9L419.0 388.1L413.3 391.4L408.0 394.6L404.8 396.4L399.2 399.4L393.5 402.1L387.9 404.3L382.8 405.9L379.4 406.9L373.7 408.1L368.9 408.8L365.2 409.1L359.5 409.4L353.9 409.3L348.2 408.9L342.6 408.2L336.9 407.2L331.2 406.0L325.6 404.5L320.4 403.1L317.1 402.2L311.4 400.6L305.8 399.1L300.1 397.8L294.4 396.8L288.8 396.1L283.1 395.8L277.4 395.8L271.8 396.1L266.1 396.7L261.0 397.4L254.8 398.5L249.1 399.6L245.5 400.3L240.6 401.1L235.0 402.0L229.3 402.6L223.7 402.9L218.0 403.0L212.3 402.6L206.7 401.8L201.0 400.6L195.3 398.9L191.6 397.4L186.8 395.3L181.2 392.2L176.0 388.9L172.7 386.6L169.9 384.6L167.0 382.5L164.2 380.4L161.4 378.2L158.5 376.1L155.7 374.1L152.9 372.1L150.0 370.2L144.4 366.7L138.7 363.5L133.1 360.6L127.4 358.0L121.7 355.6L116.1 353.4L112.6 352.0L107.6 349.9L101.9 347.5L96.3 344.8L90.6 341.6L85.0 337.8L82.1 335.4L79.3 332.7L76.4 329.7L73.8 326.5L71.8 323.6L69.9 320.8L67.9 317.6L65.1 312.6L63.4 309.4L60.5 303.7L57.6 298.1L54.6 292.4L51.3 286.7L48.1 281.6L45.9 278.2L43.9 275.4L41.8 272.5L39.6 269.8L37.3 266.8L35.0 264.0L32.7 261.2L30.4 258.3L26.0 252.6L24.1 249.8L20.6 244.1L17.9 238.5L15.9 232.8L14.4 227.1L13.4 221.4L12.8 215.7L12.5 210.1L12.6 204.4L13.0 198.7L13.8 193.0L14.9 187.4L16.4 181.7L18.5 176.0L21.1 170.3L24.5 164.6L26.6 161.8L28.9 159.0L31.1 156.4L34.0 153.5L36.8 150.9L39.6 148.3L42.5 145.9L45.3 143.6L48.1 141.2L51.0 138.8L53.8 136.4L56.6 133.8L59.5 131.2L62.3 128.4L65.1 125.4L67.9 122.3L70.5 119.2L72.8 116.4L75.1 113.5L77.2 110.7L81.5 105.0L83.7 102.2L85.9 99.4L88.2 96.5L90.5 93.7L93.1 90.8L95.8 88.0L98.8 85.2L101.9 82.5L104.7 80.4L107.6 78.4L113.2 75.1L118.9 72.3L122.2 71.0L127.4 69.1L133.1 67.4L138.7 65.9L144.4 64.6L150.0 63.4L155.1 62.5L158.5 61.8L164.2 60.7L169.3 59.6L172.7 58.9L178.4 57.5L184.0 55.9L189.7 54.1L195.3 52.2L201.0 50.2L206.7 48.3L212.3 46.5L216.2 45.4L220.8 44.3L226.5 43.3L231.7 42.6L237.8 42.0L243.5 41.7L249.1 41.4L254.8 41.3L260.5 41.1L266.1 41.0L271.8 40.9L277.4 40.8L283.1 40.6L288.8 40.4L294.4 40.1L300.1 39.8L305.8 39.4L311.4 38.9L317.1 38.4L322.7 37.8L328.4 37.2Z"/><path d="M269.8 159.0L274.6 158.4L280.3 158.6L285.9 159.9L290.4 161.8L294.4 164.3L297.3 166.6L300.1 169.7L302.7 173.2L305.8 178.7L308.2 184.5L310.1 190.2L311.4 194.3L312.7 198.7L314.2 204.3L315.7 210.1L317.1 215.7L318.0 221.4L318.1 227.1L317.1 231.4L314.2 235.4L308.6 238.2L302.9 239.0L297.3 239.0L292.1 238.5L285.9 237.5L280.3 236.3L274.6 235.0L268.9 233.4L263.3 231.5L259.4 229.9L254.8 227.7L249.1 224.3L246.3 222.0L243.5 219.2L240.8 215.7L237.9 210.1L236.6 204.4L236.4 198.7L237.3 193.0L239.1 187.4L240.6 183.8L243.4 178.8L245.3 176.0L247.5 173.2L250.0 170.3L253.0 167.5L256.6 164.6L260.5 162.3L266.1 159.9L269.8 159.0Z"/><path d="M263.3 56.5L257.6 57.4L252.0 58.5L247.5 59.6L243.5 60.8L238.2 62.5L235.0 63.6L230.8 65.3L226.5 67.1L220.8 69.6L217.6 71.0L212.3 73.1L206.7 75.0L201.0 76.6L195.3 77.8L189.7 78.6L184.0 79.1L178.4 79.4L172.7 79.6L167.0 79.8L161.4 80.0L155.7 80.3L150.0 80.9L144.4 81.7L140.8 82.3L135.9 83.5L130.4 85.2L124.6 87.5L118.9 90.5L114.1 93.7L110.4 96.5L107.6 99.1L104.7 101.9L101.9 105.0L99.5 107.9L97.3 110.7L95.2 113.5L93.1 116.4L91.1 119.2L89.1 122.1L87.1 124.9L85.0 127.7L82.9 130.6L80.8 133.4L78.5 136.3L76.1 139.1L73.6 141.9L70.9 144.8L68.1 147.6L65.1 150.4L62.3 153.0L59.5 155.6L56.6 158.2L53.8 160.8L51.0 163.4L48.1 166.3L45.3 169.4L42.5 172.9L40.3 176.0L37.0 181.7L34.6 187.4L32.9 193.0L31.9 198.7L31.6 204.4L31.8 210.1L32.6 215.7L34.0 221.1L36.1 227.1L38.8 232.8L42.1 238.5L45.3 243.5L47.6 247.0L49.5 249.8L51.5 252.6L53.3 255.5L56.6 260.6L58.7 264.0L62.0 269.7L65.0 275.4L67.9 281.0L70.7 286.7L73.5 292.4L76.4 298.1L79.3 303.3L81.2 306.6L84.9 312.3L87.1 315.1L89.4 317.9L92.0 320.8L95.0 323.6L98.3 326.5L101.9 329.1L106.6 332.1L110.4 334.3L116.1 337.2L121.7 339.9L127.4 342.4L133.1 344.8L136.4 346.3L141.6 348.7L147.2 351.5L152.9 354.6L158.1 357.7L161.4 359.7L166.8 363.4L169.9 365.5L172.7 367.5L175.5 369.5L178.4 371.5L181.2 373.4L186.8 377.0L192.5 380.0L198.2 382.5L203.8 384.4L209.5 385.8L215.2 386.5L220.8 386.8L226.5 386.7L232.1 386.2L237.8 385.5L243.5 384.6L249.1 383.6L254.8 382.7L260.5 381.9L266.1 381.3L271.8 380.9L277.4 380.7L283.1 380.8L288.8 381.2L294.4 381.9L300.1 382.8L305.8 384.0L311.4 385.3L317.1 386.8L322.7 388.5L328.4 390.1L334.1 391.6L339.7 392.9L345.4 393.9L350.5 394.6L353.9 394.9L359.5 395.0L365.2 394.7L370.9 393.9L376.5 392.7L382.2 391.0L387.7 388.9L393.5 386.2L399.2 383.3L404.5 380.4L407.7 378.6L413.3 375.4L419.0 372.4L424.7 369.5L430.3 366.9L436.0 364.5L441.6 362.4L446.9 360.5L453.0 358.6L458.6 356.9L464.3 355.2L470.0 353.5L474.6 352.0L478.4 350.7L482.5 349.2L486.9 347.3L492.6 344.4L498.3 340.9L501.1 338.7L503.9 336.3L506.8 333.6L509.6 330.6L512.4 327.2L515.2 323.6L517.3 320.8L519.3 317.9L521.3 315.1L523.2 312.3L525.2 309.4L527.2 306.6L529.3 303.7L531.5 300.9L533.8 298.1L536.2 295.2L538.8 292.4L541.6 289.5L544.5 286.7L547.6 283.9L550.7 281.0L554.0 278.2L557.1 275.4L560.1 272.5L562.9 269.7L565.4 266.8L567.6 264.0L570.9 258.3L573.3 252.6L574.7 247.5L575.4 244.1L576.1 238.5L576.5 232.8L576.6 227.1L576.5 221.4L576.2 215.7L575.8 210.1L575.3 204.4L574.7 199.9L574.1 195.9L573.2 190.2L572.0 184.5L570.6 178.8L569.0 173.8L567.8 170.3L566.2 166.6L563.8 161.8L560.5 156.5L558.1 153.3L555.7 150.5L552.9 147.6L549.8 144.8L546.4 142.0L543.6 139.8L540.7 137.7L537.9 135.7L535.1 133.8L532.2 131.8L529.4 129.9L526.6 127.9L523.7 125.8L520.9 123.7L518.1 121.5L515.3 119.2L512.4 116.7L509.6 114.2L506.8 111.5L503.9 108.7L501.1 105.9L498.3 103.0L495.4 100.0L492.6 97.1L489.8 94.2L486.9 91.5L484.1 88.9L481.3 86.4L478.4 84.1L475.6 82.0L472.8 80.1L467.1 76.7L461.5 74.0L455.8 71.7L450.1 69.9L444.5 68.4L438.8 67.2L433.2 66.2L427.5 65.5L421.8 64.9L416.2 64.5L410.5 64.1L404.8 63.9L399.2 63.7L393.5 63.5L387.9 63.3L382.2 63.0L376.5 62.6L370.9 62.1L365.2 61.3L359.5 60.4L354.7 59.6L351.1 59.0L345.4 58.0L339.7 57.1L334.1 56.3L328.4 55.7L322.7 55.1L317.1 54.7L311.4 54.5L305.8 54.3L300.1 54.2L294.4 54.2L288.8 54.4L283.1 54.6L277.4 55.0L271.8 55.5L266.1 56.1Z"/><path d="M272.0 144.8L277.4 144.6L283.1 145.1L288.8 146.2L292.9 147.6L297.3 149.6L302.8 153.3L305.8 156.0L308.3 159.0L310.3 161.8L313.4 167.5L315.6 173.2L317.1 177.6L318.2 181.7L319.7 187.4L321.2 193.0L322.7 198.7L324.3 204.4L325.6 208.6L326.9 212.9L328.4 217.7L329.5 221.4L330.9 227.1L331.6 232.8L331.2 237.8L330.1 241.3L325.6 246.6L319.9 249.1L316.1 249.8L311.4 250.1L305.8 249.9L300.1 249.3L294.4 248.4L288.8 247.4L283.1 246.3L277.4 245.1L273.1 244.1L268.9 243.2L263.3 241.8L257.6 240.3L252.0 238.5L246.3 236.3L240.6 233.5L235.4 229.9L232.2 227.1L229.7 224.3L227.7 221.4L225.0 215.7L223.7 211.0L223.1 207.2L223.1 201.5L223.7 197.7L224.7 193.0L226.5 187.8L227.9 184.5L230.7 178.8L234.0 173.2L237.8 167.5L239.9 164.6L242.2 161.8L244.8 159.0L247.6 156.1L250.9 153.3L254.8 150.5L260.4 147.6L266.1 145.7L271.8 144.8Z"/><path d="M280.3 70.9L285.9 70.5L291.6 70.3L297.3 70.5L302.7 71.0L308.6 71.8L314.2 72.9L317.8 73.8L322.7 75.2L327.1 76.6L331.2 78.1L335.0 79.5L339.7 81.2L345.4 83.1L351.1 84.7L356.7 85.7L362.4 86.4L368.0 86.5L373.7 86.3L379.4 85.7L383.3 85.2L387.9 84.5L393.5 83.5L399.2 82.6L404.8 81.8L410.5 81.1L416.2 80.7L421.8 80.5L427.5 80.6L433.2 81.1L438.8 81.9L444.5 83.2L450.1 84.9L455.8 87.2L461.5 90.1L467.0 93.7L470.0 95.9L472.8 98.2L475.6 100.6L478.4 103.3L481.3 106.0L484.1 108.9L486.9 111.9L489.8 114.9L492.6 117.8L495.4 120.8L498.3 123.6L501.1 126.3L503.9 128.9L506.8 131.4L509.6 133.8L512.4 136.1L515.3 138.4L518.1 140.6L520.9 142.7L523.7 144.8L526.6 147.0L529.4 149.2L532.2 151.5L535.1 153.9L537.9 156.5L540.4 159.0L543.0 161.8L545.4 164.6L547.4 167.5L550.9 173.2L553.6 178.8L554.9 182.2L556.5 187.4L557.7 192.4L558.4 195.9L559.1 201.5L559.5 207.2L559.6 212.9L559.2 218.6L558.5 224.3L557.7 228.4L556.6 232.8L554.9 237.7L553.3 241.3L550.3 247.0L546.5 252.6L544.4 255.5L542.1 258.3L539.7 261.2L537.3 264.0L534.8 266.8L532.4 269.7L530.0 272.5L527.7 275.4L525.4 278.2L523.3 281.0L521.2 283.9L519.2 286.7L517.2 289.5L515.3 292.4L512.4 296.7L509.7 300.9L506.8 305.3L503.9 309.4L501.9 312.3L499.7 315.1L497.4 317.9L492.6 323.1L489.8 325.7L486.9 328.1L484.1 330.3L478.4 334.0L472.8 337.1L467.1 339.7L461.5 342.1L457.8 343.5L453.0 345.2L447.3 347.2L441.8 349.2L436.0 351.3L430.3 353.4L426.7 354.8L421.8 356.9L416.2 359.4L410.5 362.1L404.8 364.9L399.2 367.7L393.5 370.5L387.9 373.0L383.8 374.7L379.4 376.3L375.2 377.5L370.9 378.6L365.2 379.5L359.5 380.0L353.9 379.9L348.2 379.5L342.6 378.7L336.9 377.6L331.2 376.3L325.6 375.0L319.9 373.6L314.2 372.3L308.6 371.1L302.9 370.0L297.3 369.1L291.6 368.4L285.9 367.9L280.3 367.6L274.6 367.4L268.9 367.4L263.3 367.6L257.6 367.8L252.0 368.2L246.3 368.6L240.6 369.0L235.0 369.3L229.3 369.4L223.7 369.2L218.0 368.6L212.3 367.5L207.7 366.2L203.8 364.8L198.2 362.3L192.5 359.2L186.8 355.7L181.2 352.1L176.6 349.2L172.7 346.8L167.0 343.6L161.4 340.7L155.7 338.0L150.0 335.6L144.4 333.3L138.7 331.0L134.7 329.3L130.2 327.4L124.6 324.7L118.9 321.6L113.2 318.0L110.4 315.9L107.6 313.6L104.7 311.0L101.9 308.0L99.1 304.7L96.3 300.9L93.4 296.4L91.1 292.4L88.3 286.7L85.7 281.0L83.3 275.4L81.0 269.7L79.3 265.3L77.6 261.2L75.3 255.5L73.6 251.5L71.6 247.0L69.1 241.3L66.5 235.6L63.9 229.9L62.3 226.0L60.6 221.4L59.5 217.8L58.4 212.9L57.8 207.2L58.2 201.5L59.5 196.5L60.8 193.0L64.0 187.4L66.1 184.5L68.4 181.7L70.8 179.1L73.6 176.1L76.4 173.2L79.3 170.3L82.0 167.5L84.5 164.6L86.9 161.8L89.1 159.0L91.2 156.1L93.1 153.3L96.3 148.3L98.3 144.8L101.5 139.1L104.7 133.5L106.5 130.6L110.2 124.9L112.2 122.1L114.4 119.2L116.9 116.4L119.6 113.5L122.9 110.7L126.8 107.9L130.2 105.8L135.9 103.2L141.6 101.4L147.2 100.2L152.9 99.4L158.5 99.0L164.2 98.8L169.9 98.8L175.5 98.9L181.2 99.1L186.8 99.2L192.5 99.2L198.2 99.2L203.8 98.9L209.5 98.4L215.2 97.6L219.8 96.5L223.7 95.3L227.6 93.7L232.1 91.4L237.8 88.0L242.2 85.2L246.3 82.6L251.9 79.5L257.6 76.8L263.3 74.7L268.9 73.0L274.6 71.8L280.1 71.0Z"/><path d="M259.9 130.6L263.3 129.8L268.9 129.2L274.6 129.0L280.3 129.3L285.9 130.0L291.6 131.1L297.3 132.6L302.9 134.7L308.6 137.9L311.4 140.0L314.2 142.7L317.1 146.1L319.8 150.5L322.3 156.1L324.1 161.8L325.5 167.5L326.6 173.2L327.6 178.8L328.4 183.4L329.1 187.4L330.3 193.0L331.2 197.0L332.4 201.5L334.1 207.0L336.0 212.9L338.0 218.6L339.7 223.6L340.8 227.1L342.3 232.8L343.0 238.5L342.7 244.1L340.6 249.8L338.6 252.6L335.2 255.5L331.2 257.5L325.6 259.0L319.9 259.6L314.2 259.5L308.6 259.0L304.0 258.3L300.1 257.7L294.4 256.7L288.8 255.6L283.1 254.5L277.4 253.5L272.6 252.6L268.9 252.0L263.3 251.1L257.6 250.2L252.0 249.2L246.3 248.1L241.5 247.0L237.8 245.9L232.7 244.1L229.3 242.6L223.7 239.2L220.8 237.0L218.0 234.2L215.2 230.7L213.0 227.1L210.5 221.4L209.5 217.5L208.8 212.9L208.7 207.2L209.4 201.5L210.9 195.9L212.3 191.8L214.2 187.4L217.1 181.7L220.3 176.0L223.6 170.3L226.5 165.6L228.8 161.8L232.1 156.5L234.2 153.3L236.1 150.5L240.1 144.8L242.4 141.9L245.1 139.1L248.3 136.3L252.0 133.8L257.6 131.2Z"/><path d="M410.5 98.9L404.8 100.2L399.2 101.6L393.5 103.2L387.9 104.8L382.2 106.5L377.4 107.9L373.7 108.9L368.0 110.6L362.4 112.2L357.7 113.5L353.9 114.8L349.5 116.4L345.4 118.4L342.6 120.4L339.7 123.6L337.9 127.7L336.9 133.4L336.7 139.1L336.7 144.8L336.7 150.5L336.8 156.1L336.8 161.8L336.9 167.5L337.1 173.2L337.4 178.8L337.9 184.5L338.6 190.2L339.7 195.9L341.0 201.5L342.6 206.8L343.6 210.1L345.4 214.9L346.8 218.6L348.2 222.4L349.9 227.1L351.1 230.6L352.4 235.6L353.3 241.3L353.4 247.0L352.2 252.6L349.2 258.3L346.7 261.2L343.0 264.0L339.7 265.7L334.1 267.5L328.4 268.4L322.7 268.5L317.1 268.2L311.4 267.6L306.8 266.8L302.9 266.2L297.3 265.1L291.6 264.1L285.9 263.1L280.3 262.2L274.6 261.4L268.9 260.8L263.3 260.3L257.6 260.0L252.0 259.8L246.3 259.7L240.6 259.7L235.0 259.5L229.3 259.3L223.7 258.6L218.0 257.5L212.4 255.5L207.4 252.6L203.9 249.8L201.2 247.0L198.9 244.1L197.0 241.3L194.0 235.6L192.5 232.0L190.9 227.1L189.8 221.4L189.3 215.7L189.7 210.1L190.8 204.4L192.5 199.7L194.2 195.9L197.4 190.2L201.0 184.6L202.9 181.7L204.9 178.8L208.8 173.2L212.3 167.6L214.1 164.6L217.2 159.0L219.9 153.3L221.9 147.6L223.3 141.9L223.7 138.5L223.4 133.4L221.1 127.7L218.6 124.9L215.2 122.5L209.5 120.1L203.8 118.5L198.2 117.5L192.5 116.8L186.8 116.5L181.5 116.4L175.5 116.5L169.9 117.0L164.2 117.7L158.5 118.8L152.9 120.5L149.1 122.1L144.4 124.6L141.6 126.5L138.7 128.9L135.9 131.9L133.1 135.6L131.0 139.1L128.4 144.8L126.5 150.5L125.2 156.1L124.6 159.7L123.8 164.6L123.1 170.3L122.4 176.0L121.7 180.5L120.9 184.5L119.3 190.2L117.0 195.9L113.9 201.5L110.4 207.0L108.3 210.1L104.8 215.7L101.9 221.3L99.8 227.1L98.4 232.8L97.7 238.5L97.4 244.1L97.6 249.8L98.2 255.5L99.1 261.2L100.3 266.8L101.9 272.5L104.0 278.2L106.5 283.9L109.8 289.5L111.8 292.4L114.1 295.2L116.7 298.1L119.7 300.9L123.3 303.7L127.4 306.4L133.0 309.4L138.7 311.8L144.4 313.8L148.6 315.1L152.9 316.3L158.5 317.8L164.2 319.2L169.6 320.8L175.5 322.7L181.2 325.1L186.8 328.0L192.5 331.4L197.9 335.0L201.0 337.1L206.6 340.6L211.6 343.5L215.2 345.2L220.8 347.6L225.7 349.2L229.3 350.1L235.0 351.3L239.9 352.0L243.5 352.4L249.1 353.0L254.8 353.4L260.5 353.8L266.1 354.1L271.8 354.5L277.1 354.8L283.1 355.3L288.8 355.8L294.4 356.4L300.1 357.1L304.0 357.7L308.6 358.4L314.2 359.3L319.9 360.3L325.6 361.3L331.2 362.3L336.9 363.2L342.6 363.9L348.2 364.4L353.9 364.6L359.5 364.4L365.2 363.8L370.9 362.7L376.5 361.3L382.2 359.5L387.1 357.7L390.7 356.3L394.2 354.8L399.2 352.8L404.8 350.5L410.5 348.2L415.3 346.3L419.0 344.9L422.9 343.5L427.5 341.8L430.8 340.6L436.0 338.8L441.6 336.7L446.2 335.0L450.1 333.4L455.8 331.0L461.5 328.2L467.1 325.0L472.8 321.2L475.6 319.1L478.4 316.6L481.3 314.0L484.1 311.0L486.9 307.7L489.8 304.1L492.1 300.9L494.1 298.1L497.7 292.4L501.1 286.8L502.9 283.9L506.3 278.2L509.6 272.8L511.6 269.7L515.3 264.1L517.3 261.2L519.3 258.3L523.3 252.6L525.4 249.8L527.4 247.0L529.3 244.1L532.2 239.5L534.5 235.6L537.3 229.9L539.5 224.3L540.7 219.6L541.5 215.7L542.1 210.1L542.1 204.4L541.5 198.7L540.7 194.6L539.5 190.2L537.9 186.0L535.8 181.7L532.2 176.0L530.0 173.2L527.6 170.3L524.9 167.5L521.8 164.6L518.6 161.8L515.3 159.0L512.4 156.8L509.6 154.5L506.8 152.3L503.9 150.0L501.1 147.6L498.3 145.2L495.4 142.7L492.6 140.1L489.8 137.3L486.9 134.5L484.1 131.5L481.3 128.5L478.4 125.5L475.6 122.5L472.8 119.5L470.0 116.7L467.1 114.0L464.3 111.6L461.5 109.3L458.6 107.2L453.0 103.8L447.3 101.1L442.0 99.4L436.0 98.0L430.3 97.4L424.7 97.3L419.0 97.7L413.3 98.4Z"/><path d="M407.7 119.0L402.0 120.4L396.3 122.0L390.7 123.9L385.0 126.0L380.8 127.7L376.5 129.7L370.9 132.8L365.8 136.3L362.5 139.1L359.9 141.9L357.7 144.8L354.3 150.5L351.9 156.1L350.2 161.8L349.0 167.5L348.2 172.4L347.9 176.0L347.6 181.7L347.7 187.4L348.2 192.8L349.2 198.7L350.6 204.4L352.4 210.1L353.9 214.2L355.6 218.6L357.8 224.3L359.5 228.9L360.9 232.8L362.4 238.2L363.4 244.1L363.6 249.8L362.7 255.5L360.7 261.2L357.0 266.8L354.2 269.7L351.1 272.1L345.4 275.1L339.7 276.9L334.1 277.7L328.4 278.0L322.7 277.7L317.1 277.0L311.4 276.1L307.1 275.4L302.9 274.6L297.3 273.5L291.8 272.5L285.9 271.6L280.3 271.0L274.6 270.6L268.9 270.4L263.3 270.6L257.6 271.2L252.0 272.1L246.3 273.5L240.6 275.3L235.0 277.8L229.5 281.0L226.5 283.4L223.7 286.2L221.1 289.5L218.6 295.2L218.1 300.9L218.9 306.6L220.8 312.0L222.4 315.1L226.4 320.8L229.0 323.6L232.1 326.5L235.0 328.7L240.6 332.1L246.3 334.7L252.0 336.8L255.5 337.8L260.5 339.0L266.1 340.2L271.8 341.2L277.4 342.0L283.1 342.7L288.8 343.4L294.4 344.1L300.1 344.7L305.8 345.3L311.4 346.0L317.1 346.6L322.7 347.2L328.4 347.8L334.1 348.4L339.7 348.8L345.4 349.1L351.1 349.1L356.7 348.8L362.4 348.3L368.0 347.4L373.3 346.3L379.4 344.8L384.2 343.5L387.9 342.4L393.5 340.6L399.2 338.8L404.8 337.0L410.5 335.1L416.2 333.3L421.8 331.4L427.5 329.5L433.2 327.5L438.8 325.4L443.0 323.6L447.3 321.7L453.0 318.8L458.6 315.5L461.5 313.5L464.3 311.4L467.1 309.1L469.9 306.6L472.7 303.7L475.2 300.9L477.5 298.1L479.6 295.2L483.4 289.5L486.8 283.9L489.8 278.4L492.6 272.9L494.2 269.7L497.0 264.0L499.9 258.3L502.8 252.6L505.7 247.0L508.7 241.3L511.6 235.6L514.4 229.9L516.7 224.3L518.1 220.2L519.2 215.7L520.0 210.1L519.8 204.4L518.8 198.7L516.7 193.0L513.5 187.4L511.3 184.5L508.9 181.7L506.1 178.8L503.1 176.0L499.9 173.2L496.5 170.3L493.1 167.5L489.8 164.6L486.9 162.1L484.1 159.5L481.3 156.8L478.4 154.0L475.6 151.0L472.8 147.9L470.0 144.8L467.5 141.9L464.9 139.1L462.3 136.3L459.5 133.4L456.6 130.6L453.3 127.7L450.1 125.3L444.8 122.1L441.6 120.5L438.1 119.2L433.2 117.9L427.5 117.2L421.8 117.1L416.2 117.5L410.5 118.4Z"/><path d="M175.5 136.1L169.9 138.2L164.2 141.9L161.6 144.8L158.5 150.2L157.2 156.1L157.4 161.8L158.5 166.2L160.5 170.3L162.6 173.2L166.0 176.0L169.9 177.7L175.5 177.9L181.2 176.3L186.8 173.2L189.7 171.1L192.5 168.6L195.3 165.7L198.2 162.0L200.0 159.0L202.2 153.3L202.8 147.6L201.0 142.2L198.3 139.1L195.3 137.3L189.7 135.5L184.0 135.0L178.4 135.5Z"/><path d="M144.4 251.8L138.7 255.2L136.5 258.3L135.0 264.0L135.7 269.7L138.7 274.6L141.6 276.9L147.2 279.0L152.9 278.4L157.4 275.4L160.0 269.7L159.8 264.0L158.5 260.3L155.7 255.8L152.9 253.3L147.2 251.5Z"/><path d="M402.0 141.5L396.3 142.7L390.7 144.5L385.0 146.8L379.4 149.9L376.5 151.8L373.7 154.0L370.9 156.7L368.0 160.0L365.2 164.1L363.4 167.5L361.0 173.2L359.5 178.4L358.6 184.5L358.4 190.2L358.7 195.9L359.5 201.0L360.3 204.4L362.0 210.1L364.1 215.7L366.3 221.4L368.0 225.7L369.7 229.9L370.9 233.3L372.4 238.5L373.6 244.1L374.2 249.8L373.9 255.5L372.9 261.2L370.9 266.7L368.0 271.9L365.6 275.4L363.0 278.2L359.9 281.0L356.7 283.4L351.1 286.5L345.4 288.5L339.7 289.5L334.1 289.8L328.9 289.5L322.7 288.8L317.1 287.8L311.9 286.7L305.8 285.4L300.1 284.2L294.4 283.2L288.8 282.5L283.1 282.1L277.4 282.1L271.8 282.6L266.1 283.8L260.5 286.1L255.3 289.5L252.7 292.4L249.8 298.1L249.3 303.7L250.9 309.4L254.7 315.1L257.6 317.9L260.5 319.9L266.1 323.1L271.8 325.4L275.1 326.5L280.3 327.8L285.9 328.9L291.6 329.8L297.3 330.4L302.9 331.0L308.6 331.3L314.2 331.7L319.9 331.9L325.6 332.1L331.2 332.2L336.9 332.3L342.6 332.3L348.2 332.2L353.9 331.9L359.5 331.6L365.2 331.1L370.9 330.4L376.5 329.6L382.2 328.6L387.9 327.5L393.1 326.5L399.2 325.1L404.8 323.7L410.5 322.2L415.6 320.8L419.0 319.8L424.7 318.0L430.3 315.9L436.0 313.6L441.6 310.9L447.3 307.7L453.0 303.9L455.8 301.6L458.6 299.1L461.5 296.3L464.3 293.0L467.0 289.5L468.9 286.7L472.3 281.0L475.2 275.4L477.6 269.7L479.8 264.0L481.3 259.4L482.5 255.5L484.0 249.8L485.3 244.1L486.4 238.5L486.9 234.9L487.5 229.9L487.7 224.3L487.4 218.6L486.2 212.9L484.1 207.2L481.3 202.1L479.0 198.7L476.8 195.9L474.6 193.0L472.2 190.2L470.0 187.6L467.4 184.5L465.1 181.7L462.8 178.8L460.6 176.0L458.4 173.2L456.3 170.3L454.2 167.5L452.0 164.6L447.5 159.0L445.0 156.1L442.3 153.3L439.2 150.5L436.0 147.9L430.8 144.8L427.5 143.3L423.3 141.9L419.0 141.1L413.3 140.6L407.7 140.8L402.0 141.5Z"/><path d="M390.7 167.3L396.3 165.8L402.0 165.5L407.7 166.2L411.7 167.5L416.2 169.6L421.3 173.2L424.4 176.0L427.1 178.8L429.5 181.7L431.7 184.5L433.8 187.4L435.7 190.2L437.6 193.0L441.3 198.7L444.5 203.8L446.7 207.2L450.1 212.8L451.9 215.7L455.1 221.4L457.9 227.1L460.1 232.8L461.5 237.3L462.3 241.3L463.0 247.0L463.1 252.6L462.6 258.3L461.6 264.0L460.0 269.7L458.6 273.2L456.2 278.2L453.0 283.3L450.3 286.7L447.7 289.5L444.7 292.4L441.6 294.8L438.8 296.8L433.2 300.1L427.5 302.7L421.8 304.8L416.2 306.5L410.5 307.8L404.8 308.8L399.8 309.4L396.3 309.6L390.7 309.7L387.1 309.4L382.2 308.6L376.7 306.6L373.7 303.9L372.6 298.1L373.7 294.4L375.7 289.5L378.3 283.9L380.9 278.2L382.2 274.8L383.9 269.7L385.0 265.5L385.9 261.2L386.4 255.5L386.4 249.8L385.7 244.1L384.4 238.5L382.6 232.8L380.5 227.1L378.2 221.4L376.5 217.4L374.9 212.9L373.1 207.2L371.9 201.5L371.5 195.9L372.0 190.2L373.4 184.5L376.2 178.8L378.3 176.0L381.0 173.2L384.6 170.3L387.9 168.5Z"/></g>
+  <g class="fadeanno">
+    <path d="M249.1 116.4L252.0 116.1L254.8 116.1L257.6 116.3L260.5 116.5L263.3 116.8L266.1 117.1L268.9 117.4L271.8 117.7L274.6 118.1L277.4 118.4L280.3 118.8L283.0 119.2L285.9 119.6L288.8 120.1L291.6 120.5L294.4 121.1L297.3 121.7L300.1 122.3L302.9 123.1L305.8 124.0L308.6 125.1L311.4 126.4L313.8 127.7L317.1 130.1L319.9 132.8L322.5 136.3L324.2 139.1L325.5 141.9L326.7 144.8L327.6 147.6L328.4 150.5L329.0 153.3L329.6 156.1L330.1 159.0L330.5 161.8L330.9 164.6L331.2 167.5L331.5 170.3L331.9 173.2L332.2 176.0L332.5 178.8L332.9 181.7L333.2 184.5L333.7 187.4L334.2 190.2L334.7 193.0L335.3 195.9L336.0 198.7L336.7 201.5L337.5 204.4L338.4 207.2L339.4 210.1L340.4 212.9L341.4 215.7L342.4 218.6L343.5 221.4L344.5 224.3L345.4 227.0L346.3 229.9L347.1 232.8L347.7 235.6L348.1 238.5L348.3 241.3L348.3 244.1L347.9 247.0L347.2 249.8L346.0 252.6L344.1 255.5L341.2 258.3L336.9 261.1L334.1 262.2L331.2 263.0L328.4 263.6L325.6 263.9L322.7 264.1L319.9 264.1L317.1 263.9L314.2 263.7L311.4 263.4L308.6 263.1L305.8 262.6L302.9 262.2L300.1 261.7L297.3 261.2L294.4 260.6L291.6 260.1L288.8 259.6L285.9 259.1L283.1 258.6L280.3 258.1L277.4 257.6L274.6 257.2L271.8 256.8L268.9 256.4L266.1 256.0L263.3 255.7L260.5 255.3L257.6 255.0L254.8 254.7L252.0 254.4L249.1 254.1L246.3 253.8L243.5 253.5L240.6 253.1L237.8 252.6L235.0 252.1L232.1 251.5L229.3 250.8L226.5 249.9L223.7 248.9L220.8 247.6L218.0 246.0L215.2 244.1L212.3 241.7L209.5 238.7L207.1 235.6L205.4 232.8L203.9 229.9L202.7 227.1L201.8 224.3L201.1 221.4L200.5 218.6L200.2 215.7L200.1 212.9L200.1 210.1L200.4 207.2L200.9 204.4L201.5 201.5L202.3 198.7L203.4 195.9L204.5 193.0L205.9 190.2L207.3 187.4L208.9 184.5L210.5 181.7L212.2 178.8L213.9 176.0L215.7 173.2L217.4 170.3L219.1 167.5L220.8 164.6L222.4 161.8L225.6 156.1L227.1 153.3L228.5 150.5L229.9 147.6L231.2 144.8L233.8 139.1L235.0 136.3L236.2 133.4L237.4 130.6L238.7 127.7L240.1 124.9L241.7 122.1L243.5 119.4L246.3 117.1L249.1 116.4Z" fill="#e10600" fill-opacity="0.09" stroke="#e10600" stroke-width="2.1" stroke-linejoin="round"/>
+  </g>
+</g>
+<rect x="16" y="16" width="588" height="368" fill="none" stroke="#dddcd7"/>
+<g class="fadeanno" fill="none" stroke="#e10600" stroke-width="1.4"><path d="M192.1 124.1 V108.1 H208.1"/><path d="M340.3 108.1 H356.3 V124.1"/><path d="M192.1 256.1 V272.1 H208.1"/><path d="M340.3 272.1 H356.3 V256.1"/></g>
+<g class="fadeanno">
+  <path d="M356.3 136.1 H452" fill="none" stroke="#e10600" stroke-width="1"/>
+  <text x="458" y="132.1" font-family="Archivo, sans-serif" font-size="19" font-weight="700" fill="#000">43.6 cm²</text>
+  <text x="458" y="150.1" font-family="Archivo, sans-serif" font-size="12" fill="#575753">3D surface area</text>
+  <path d="M318.3 272.1 V318 H452" fill="none" stroke="#e10600" stroke-width="1"/>
+  <text x="458" y="314" font-family="Archivo, sans-serif" font-size="19" font-weight="700" fill="#000">4.2 mm</text>
+  <text x="458" y="332" font-family="Archivo, sans-serif" font-size="12" fill="#575753">maximum depth</text>
+</g>
+<g stroke="#e10600" stroke-width="1.2" fill="none">
+  <path d="M40 411 H233.8"/><path d="M40.0 408 V415"/><path d="M78.8 408 V415"/><path d="M117.5 408 V415"/><path d="M156.3 408 V415"/><path d="M195.0 408 V415"/><path d="M233.8 408 V415"/>
+</g>
+<text x="40" y="432" font-family="Archivo, sans-serif" font-size="11.5" fill="#575753">0</text>
+<text x="233.8" y="432" font-family="Archivo, sans-serif" font-size="11.5" fill="#575753" text-anchor="middle">100 mm</text>
+<text x="604" y="432" font-family="Archivo, sans-serif" font-size="11.5" fill="#575753" text-anchor="end">contour interval 0.3 mm</text>
+</svg>
+          <figcaption class="fig__cap">Depth contours from a handheld scan. The boundary is traced on the reconstructed surface, so curvature is included in the area.</figcaption>
+        </figure>
+      </div>
+      <div>
+        <h3 class="row__t">Healthcare</h3>
+        <p class="row__d">Millions of people suffer burn injuries every year. Treatment depends on two numbers: how much body surface is burned, and how deep. The hospitals that measure this properly use 3D laser scanners that cost between 20,000 and 100,000 euro, so most clinicians still estimate by eye.</p>
+        <p class="row__d">Our scanning technology measures burned surface area objectively and in real time, at low cost. Patients can also scan at home before and during treatment, so specialists can review the 3D area remotely instead of asking them to travel.</p>
+        <div class="row__m">
+          <div><b>20,000 to 100,000 euro</b>Cost of the laser rigs this replaces</div>
+          <div><b>at home</b>Patients can scan themselves</div>
+        </div>
+        <a class="row__lk" href="https://3duniversum.com/product/healthcare/">Read about healthcare</a>
+      </div>
+    </article>
+
+    <!-- Inspection -->
+    <article class="row row--b reveal">
+      <div class="row__fig">
+        <figure class="fig" style="margin:0">
+          <svg viewBox="0 0 620 430" role="img" aria-label="Scanned machine part with three located defects, each measured and classified">
+<title>Scanned part with located and quantified defects</title>
+<defs><clipPath id="icp"><rect x="60" y="70" width="500" height="290" rx="10"/></clipPath></defs>
+<rect x="0" y="0" width="620" height="430" fill="#ffffff"/>
+<rect x="60" y="70" width="500" height="290" rx="10" fill="#ececeA"/>
+<g clip-path="url(#icp)" stroke="#e1e1dc" stroke-width="1" fill="none"><path d="M60 78 H560"/><path d="M60 87 H560"/><path d="M60 96 H560"/><path d="M60 105 H560"/><path d="M60 114 H560"/><path d="M60 123 H560"/><path d="M60 132 H560"/><path d="M60 141 H560"/><path d="M60 150 H560"/><path d="M60 159 H560"/><path d="M60 168 H560"/><path d="M60 177 H560"/><path d="M60 186 H560"/><path d="M60 195 H560"/><path d="M60 204 H560"/><path d="M60 213 H560"/><path d="M60 222 H560"/><path d="M60 231 H560"/><path d="M60 240 H560"/><path d="M60 249 H560"/><path d="M60 258 H560"/><path d="M60 267 H560"/><path d="M60 276 H560"/><path d="M60 285 H560"/><path d="M60 294 H560"/><path d="M60 303 H560"/><path d="M60 312 H560"/><path d="M60 321 H560"/><path d="M60 330 H560"/><path d="M60 339 H560"/><path d="M60 348 H560"/></g>
+<g clip-path="url(#icp)">
+  <circle cx="140" cy="140" r="23" fill="#ffffff" stroke="#c9c8c2"/>
+  <circle cx="497" cy="313" r="18" fill="#ffffff" stroke="#c9c8c2"/>
+  <rect x="399" y="103" width="96" height="34" rx="17" fill="#ffffff" stroke="#c9c8c2"/>
+  <path d="M60 330 H560" stroke="#dcdbd5"/>
+</g>
+<rect x="60" y="70" width="500" height="290" rx="10" fill="none" stroke="#c9c8c2"/>
+
+<g class="fadeanno">
+  <g fill="none" stroke="#e10600" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M215 214 L232 224 L244 218 L261 232 L276 228 L292 243 L307 237 L320 252 L331 268"/>
+  </g>
+  <g fill="none" stroke="#e10600" stroke-width="1.3"><path d="M203 215 V202 H216"/><path d="M330 202 H343 V215"/><path d="M203 267 V280 H216"/><path d="M330 280 H343 V267"/></g>
+  <path d="M479.6 193.0 L478.0 202.8 L482.6 213.7 L471.9 219.9 L465.2 229.9 L452.2 227.9 L441.8 224.5 L429.5 222.6 L429.0 211.4 L421.0 203.2 L426.1 193.9 L428.5 183.1 L441.5 181.6 L451.8 177.2 L461.8 182.3 L474.5 183.4 Z" fill="#e10600" fill-opacity="0.10" stroke="#e10600" stroke-width="1.8"/>
+  <circle cx="152" cy="299" r="9" fill="none" stroke="#e10600" stroke-width="1.8"/>
+  <circle cx="152" cy="299" r="2" fill="#e10600"/>
+
+  <g fill="none" stroke="#e10600" stroke-width="1">
+    <path d="M152 308 V378 H100"/>
+    <path d="M273 280 V378"/>
+    <path d="M452 233.9 V378 H470"/>
+    <path d="M60 378 H560"/>
+  </g>
+  <g font-family="Archivo, sans-serif">
+    <text x="60" y="400" font-size="16" font-weight="700" fill="#000">pit</text>
+    <text x="60" y="418" font-size="12.5" fill="#575753">0.42 mm², depth 0.8 mm</text>
+    <text x="253" y="400" font-size="16" font-weight="700" fill="#000">crack</text>
+    <text x="253" y="418" font-size="12.5" fill="#575753">length 12.6 mm</text>
+    <text x="446" y="400" font-size="16" font-weight="700" fill="#000">dent</text>
+    <text x="446" y="418" font-size="12.5" fill="#575753">3.1 mm deep, 84 mm²</text>
+  </g>
+</g>
+<text x="60" y="52" font-family="Archivo, sans-serif" font-size="12.5" fill="#575753">part 18 of 240, cycle time 1.4 s</text>
+<text x="560" y="52" font-family="Archivo, sans-serif" font-size="12.5" fill="#575753" text-anchor="end">3 defects located</text>
+</svg>
+          <figcaption class="fig__cap">Defects located on the part, classified and quantified, with the line still running.</figcaption>
+        </figure>
+      </div>
+      <div>
+        <h3 class="row__t">Industrial inspection</h3>
+        <p class="row__d">Our software measures area, volume and colour on the production line and finds visual defects without removing parts or interrupting manufacturing. Once the 3D scan completes, it analyses the data and locates the deformity accurately.</p>
+        <p class="row__d">Built with industrial partners including AkzoNobel, where a defect that is caught on the line is worth more than a report written the following week.</p>
+        <div class="row__m">
+          <div><b>area, volume, colour</b>Quantified per defect</div>
+          <div><b>no teardown</b>Parts stay in place</div>
+        </div>
+        <a class="row__lk" href="https://3duniversum.com/product/visual-inspection/">Read about visual inspection</a>
+      </div>
+    </article>
+
+    <!-- Retail -->
+    <article class="row row--c reveal">
+      <div class="row__fig">
+        <figure class="fig" style="margin:0">
+          <svg viewBox="0 0 620 430" role="img" aria-label="Face landmarks recovered from a single camera, with face height, temple width and interpupillary distance measured in millimetres">
+<title>Facial landmarks with eyewear measurements</title>
+<rect x="0" y="0" width="620" height="430" fill="#ffffff"/>
+<g transform="translate(-46.5,17) scale(1.15)">
+  <g fill="none" stroke="#c9c8c2" stroke-width="1.3">
+    <path d="M215 122 C215 71 250 47 310 47 C370 47 405 71 405 122 C405 172 398 206 385 241 C372 276 345 313 310 313 C275 313 248 276 235 241 C222 206 215 172 215 122 Z"/>
+    <path d="M213 152 C201 148 197 168 205 180 C209 186 214 188 218 188"/>
+    <path d="M407 152 C419 148 423 168 415 180 C411 186 406 188 402 188"/>
+    <path d="M247 112 C258 102 278 101 288 108"/>
+    <path d="M332 108 C342 101 362 102 373 112"/>
+    <path d="M310 150 V196 C310 202 303 206 296 205"/>
+    <path d="M286 244 C296 237 324 237 334 244 C324 256 296 256 286 244"/>
+    <ellipse cx="266" cy="140" rx="19" ry="10"/>
+    <ellipse cx="354" cy="140" rx="19" ry="10"/>
+  </g>
+  <g fill="none" stroke="#b5b4ad" stroke-width="1.5">
+    <rect x="238" y="122" width="56" height="38" rx="14"/>
+    <rect x="326" y="122" width="56" height="38" rx="14"/>
+    <path d="M294 138 C300 133 320 133 326 138"/>
+    <path d="M238 132 L212 126"/>
+    <path d="M382 132 L408 126"/>
+  </g>
+  <g class="fadeanno">
+    <g fill="#e10600"><circle cx="215" cy="122" r="2.6"/><circle cx="218" cy="160" r="2.6"/><circle cx="226" cy="198" r="2.6"/><circle cx="237" cy="236" r="2.6"/><circle cx="253" cy="268" r="2.6"/><circle cx="275" cy="294" r="2.6"/><circle cx="310" cy="313" r="2.6"/><circle cx="345" cy="294" r="2.6"/><circle cx="367" cy="268" r="2.6"/><circle cx="383" cy="236" r="2.6"/><circle cx="394" cy="198" r="2.6"/><circle cx="402" cy="160" r="2.6"/><circle cx="405" cy="122" r="2.6"/><circle cx="243" cy="106" r="2.6"/><circle cx="266" cy="96" r="2.6"/><circle cx="290" cy="101" r="2.6"/><circle cx="330" cy="101" r="2.6"/><circle cx="354" cy="96" r="2.6"/><circle cx="377" cy="106" r="2.6"/><circle cx="266" cy="140" r="2.6"/><circle cx="354" cy="140" r="2.6"/><circle cx="310" cy="148" r="2.6"/><circle cx="310" cy="196" r="2.6"/><circle cx="292" cy="205" r="2.6"/><circle cx="328" cy="205" r="2.6"/><circle cx="286" cy="244" r="2.6"/><circle cx="310" cy="240" r="2.6"/><circle cx="334" cy="244" r="2.6"/><circle cx="310" cy="258" r="2.6"/></g>
+    <circle cx="266" cy="140" r="4.4" fill="#e10600"/>
+    <circle cx="354" cy="140" r="4.4" fill="#e10600"/>
+    <g fill="none" stroke="#e10600" stroke-width="1.2">
+      <path d="M266 140 H354"/><path d="M266 132 V148"/><path d="M354 132 V148"/>
+      <path d="M215 30 H405"/><path d="M215 22 V38"/><path d="M405 22 V38"/>
+      <path d="M190 47 V313"/><path d="M182 47 H198"/><path d="M182 313 H198"/>
+    </g>
+  </g>
+</g>
+<g class="fadeanno" fill="none" stroke="#e10600" stroke-width="1">
+  <path d="M419 51.5 H466"/>
+  <path d="M361 178 H466"/>
+</g>
+<g class="fadeanno" font-family="Archivo, sans-serif">
+  <text x="474" y="48" font-size="15" font-weight="700" fill="#e10600">138.1 mm</text>
+  <text x="474" y="65" font-size="11.5" fill="#575753">temple to temple</text>
+  <text x="474" y="174" font-size="15" font-weight="700" fill="#e10600">64.0 mm</text>
+  <text x="474" y="191" font-size="11.5" fill="#575753">interpupillary distance</text>
+  <text x="160" y="219" font-size="15" font-weight="700" fill="#e10600" text-anchor="end">193.4 mm</text>
+  <text x="160" y="236" font-size="11.5" fill="#575753" text-anchor="end">face height</text>
+</g>
+<text x="30" y="404" font-family="Archivo, sans-serif" font-size="11.5" fill="#575753">29 landmarks from a single camera, no depth sensor required</text>
+</svg>
+          <figcaption class="fig__cap">Facial landmarks and interpupillary distance recovered from an ordinary camera, in millimetres.</figcaption>
+        </figure>
+      </div>
+      <div>
+        <h3 class="row__t">Retail and eyewear</h3>
+        <p class="row__d">Accurate sizing and body measurement from ordinary cameras, for manufacturing personalised products, reducing returns on online orders, and running virtual try on in real time.</p>
+        <p class="row__d">For eyewear the geometry has to be right to the millimetre, since a frame that fits is a function of pupillary distance, bridge and temple length rather than a picture that looks convincing.</p>
+        <a class="row__lk" href="https://3duniversum.com/product/retail/">Read about retail and eyewear</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec prods">
+  <div class="wrap">
+    <h2>Products we built on the same stack.</h2>
+    <div class="prods__grid">
+      <article class="pmain">
+        <h3 class="pmain__n">weScan</h3>
+        <p class="pmain__d">Capture, measure and share 3D spaces using a LiDAR enabled iPhone or iPad. A room becomes geometry you can walk through, dimension and send to someone else, without a tripod or a survey crew.</p>
+        <a class="plk" href="https://wescan.io/">Go to wescan.io</a>
+        <div class="pmain__fig reveal"><svg viewBox="0 0 620 330" role="img" aria-label="Floor plan generated from a room scan, with wall lengths and floor area">
+<title>Floor plan generated from a room scan</title>
+<rect x="0" y="0" width="620" height="330" fill="#f2f2f0"/>
+<g>
+  <path d="M96 62 H502 V218 H408 V258 H96 Z" fill="#ffffff" stroke="#000000" stroke-width="7" stroke-linejoin="miter"/>
+  <g fill="#e8e8e4" stroke="#c9c8c2" stroke-width="1">
+    <rect x="120" y="186" width="118" height="58"/>
+    <rect x="396" y="82" width="42" height="112"/>
+    <rect x="270" y="80" width="86" height="40"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="7">
+    <path d="M276 62 H366"/>
+    <path d="M502 108 V162"/>
+  </g>
+  <g stroke="#000000" stroke-width="2" fill="none">
+    <path d="M276 62 H366"/>
+    <path d="M276 55 V69"/><path d="M366 55 V69"/>
+    <path d="M502 108 V162"/>
+    <path d="M126 258 V226"/>
+    <path d="M126 226 A32 32 0 0 0 158 258"/>
+  </g>
+</g>
+<g class="fadeanno" stroke="#e10600" stroke-width="1.2" fill="none">
+  <path d="M96 36 H502"/><path d="M96 29 V43"/><path d="M502 29 V43"/>
+  <path d="M542 62 V258"/><path d="M535 62 H549"/><path d="M535 258 H549"/>
+  <path d="M408 286 H502"/><path d="M408 279 V293"/><path d="M502 279 V293"/>
+</g>
+<g class="fadeanno" font-family="Archivo, sans-serif" font-weight="700" fill="#e10600">
+  <rect x="266" y="24" width="66" height="22" fill="#f2f2f0"/>
+  <text x="299" y="40" font-size="14" text-anchor="middle">5.20 m</text>
+  <text x="556" y="165" font-size="14">3.80 m</text>
+  <text x="455" y="304" font-size="14" text-anchor="middle">1.20 m</text>
+</g>
+<g font-family="Archivo, sans-serif" fill="#575753">
+  <text x="300" y="150" font-size="14" font-weight="700" fill="#000" text-anchor="middle">18.4 m²</text>
+  <text x="300" y="168" font-size="11.5" text-anchor="middle">floor area</text>
+  <text x="16" y="312" font-size="11.5">Plan derived from the LiDAR capture, walls squared automatically</text>
+</g>
+</svg></div>
+      </article>
+      <div class="pside">
+        <article class="pcard">
+          <h3 class="pcard__n">FairFake</h3>
+          <p class="pcard__d">High quality synthetic media for media, entertainment and government, plus seminars on how deepfakes are produced and how they are detected. Our work on this has been covered by NRC, de Volkskrant, VPRO Tegenlicht and NOS.</p>
+          <a class="plk" href="https://fairfake.ai/">Go to fairfake.ai</a>
+        </article>
+        <article class="pcard">
+          <h3 class="pcard__n">Deep Therapy</h3>
+          <p class="pcard__d">An online platform for practitioners to enter into conversation with people who have become hard to reach, using self controlled video animations over a normal video call.</p>
+          <a class="plk" href="https://deeptherapy.ai/">Go to deeptherapy.ai</a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="svc__head">
+      <h2>How we work with you</h2>
+      <p>We connect your business developers with our AI researchers. Some engagements end with a written recommendation and no code at all, which is a legitimate outcome.</p>
+    </div>
+    <ul class="ledger">
+      <li>
+        <h3>Project consultancy</h3>
+        <p>In depth advice on the AI options for the challenge you have in mind, including an honest view of what is not yet solvable.</p>
+        <span class="fit">Best for<span>Teams deciding whether computer vision fits at all</span></span>
+      </li>
+      <li>
+        <h3>Co-research</h3>
+        <p>Joint work on a specific research topic with our researchers, on the open questions that sit between your data and a working method.</p>
+        <span class="fit">Best for<span>Teams with a real research problem</span></span>
+      </li>
+      <li>
+        <h3>Develop AI solutions</h3>
+        <p>Prototyping, co-creation and full product development, through to software your people use.</p>
+        <span class="fit">Best for<span>Teams with a defined product to build</span></span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="steps">
+  <div class="wrap steps__in" id="stepsin">
+    <div class="step">
+      <div class="no">1</div>
+      <h3>Learn</h3>
+      <p>During an intake we go through the options for solving your challenge with AI, and what your data will support.</p>
+    </div>
+    <div class="step">
+      <div class="no">2</div>
+      <h3>Plan</h3>
+      <p>A step by step plan against your key business challenges, with the risks named rather than buried.</p>
+    </div>
+    <div class="step">
+      <div class="no">3</div>
+      <h3>Implement</h3>
+      <p>We build and deliver the solution, and hand over something your team can run.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<section class="sec press">
+  <div class="wrap press__in">
+    <div>
+      <h2>Our work has been covered by</h2>
+      <p class="press__note">Mostly for the deepfake research, which is also how the conversation about detecting it started in the Netherlands.</p>
+    </div>
+    <div class="press__list">
+      <a href="https://www.nrc.nl/nieuws/2019/05/23/ai-heeft-aan-een-blik-genoeg-om-mona-lisa-te-laten-praten-a3961335">NRC<em>Making the Mona Lisa speak</em></a>
+      <a href="https://www.volkskrant.nl/kijkverder/2018/nepvideos/">de Volkskrant<em>How fake videos are made</em></a>
+      <a href="https://www.vpro.nl/programmas/tegenlicht/kijk/afleveringen/2018-2019/deep-fake-news.html">VPRO Tegenlicht<em>Deep fake news</em></a>
+      <a href="https://www.bnr.nl/nieuws/technologie/10380664/we-zitten-op-kantelpunt-qua-herkenbaarheid-deepfake">BNR<em>The recognisability tipping point</em></a>
+      <a href="https://www.ad.nl/tech/groeiend-probleem-nepbeelden-niet-meer-van-echt-te-onderscheiden~a14247fe/">AD<em>Fake images you cannot tell apart</em></a>
+      <a href="https://www.lesechos.fr/idees-debats/sciences-prospective/comment-arreter-la-propagation-des-deepfakes-960208">Les Echos<em>Stopping the spread of deepfakes</em></a>
+      <a href="https://www.kijkmagazine.nl/tech/deepfakes/">KIJK<em>Deepfakes explained</em></a>
+      <a href="https://www.hetklokhuis.nl/tv-uitzending/4274/Beeldmanipulatie">Het Klokhuis<em>Image manipulation</em></a>
+      <a href="https://www.fisheyemagazine.fr/rdv/cest-dans-le-mag/deepfakes-peur-sur-lai/">Fisheye<em>Deepfakes and fear of AI</em></a>
+      <a href="https://dewerelddraaitdoor.bnnvara.nl/media/492573">De Wereld Draait Door<em>Studio demonstration</em></a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="dark sec ct" id="contact">
+  <div class="wrap">
+    <div class="ct__grid">
+      <div>
+        <h2>Tell us what you need to measure.</h2>
+        <p class="ct__lead">An intake takes about an hour. You leave with a straight answer on whether computer vision solves your problem, roughly what it would take, and whether it is worth doing at all.</p>
+        <div class="ct__cta">
+          <a class="btn btn--lg btn--onblack" href="https://3duniversum.com/book-ai-consultation">Book an AI consultation</a>
+          <a class="ct__ghost" href="https://3duniversum.com/contacts/">Other ways to reach us</a>
+        </div>
+      </div>
+      <ul class="ct__info">
+        <li><div class="lb">Office</div><div class="vl">Science Park 400<br>1098 XH Amsterdam</div></li>
+        <li><div class="lb">Phone</div><div class="vl"><a href="tel:+31205257516">+31 (0) 20 525 7516</a><br><a href="tel:+31202801840">+31 (0) 20 280 1840</a></div></li>
+        <li><div class="lb">Hours</div><div class="vl">Monday to Friday, 9:00 until 18:00</div></li>
+      </ul>
+    </div>
+
+    <div class="nl">
+      <div>
+        <strong>Newsletter</strong>
+        <p>Occasional notes on what we are building and where computer vision is actually getting better.</p>
+      </div>
+      <div>
+        <form class="nlform" id="nlform" novalidate>
+          <label class="sr" for="nlemail" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input id="nlemail" type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+          <button class="btn" type="submit">Subscribe</button>
+        </form>
+        <div class="nlmsg" id="nlmsg" role="status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft__grid">
+      <div class="ft__brand">
+        <svg viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M13 1.6 24.1 7.6v10.8L13 24.4 1.9 18.4V7.6z" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+          <path d="M13 8.2 19 11.5v6.5L13 21.3 7 18v-6.5z" fill="none" stroke="#e10600" stroke-width="1.6"/>
+          <circle cx="13" cy="14.7" r="1.9" fill="#e10600"/>
+        </svg>
+        <p>Computer vision and deep learning software, built in Amsterdam since the research that produced it.</p>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="https://wescan.io/">weScan</a></li>
+          <li><a href="https://fairfake.ai/">FairFake</a></li>
+          <li><a href="https://deeptherapy.ai/">Deep Therapy</a></li>
+          <li><a href="https://3duniversum.com/pricing/">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Industries</h4>
+        <ul>
+          <li><a href="https://3duniversum.com/product/healthcare/">Healthcare</a></li>
+          <li><a href="https://3duniversum.com/product/visual-inspection/">Visual inspection</a></li>
+          <li><a href="https://3duniversum.com/product/retail/">Retail and eyewear</a></li>
+          <li><a href="https://3duniversum.com/product/mobile-scanner/">Mobile scanner</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="https://3duniversum.com/about-us/">About us</a></li>
+          <li><a href="https://3duniversum.com/careers/">Careers</a></li>
+          <li><a href="https://3duniversum.com/news-2/">News</a></li>
+          <li><a href="https://www.linkedin.com/company/3duniversum/">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft__base">
+      <span>Copyright 3DUniversum, Amsterdam</span>
+      <span>
+        <a href="https://3duniversum.com/privacy-policy/">Privacy policy</a> &nbsp;&nbsp;
+        <a href="https://3duniversum.com/terms-and-conditions/">Terms and conditions</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* hero load sequence, once */
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      document.body.classList.remove('pre');
+      document.body.classList.add('go');
+    });
+  });
+
+  /* products dropdown */
+  var pbtn = document.getElementById('pbtn'), ppanel = document.getElementById('ppanel');
+  function closeMenu(){ pbtn.setAttribute('aria-expanded','false'); ppanel.dataset.open='false'; }
+  pbtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = pbtn.getAttribute('aria-expanded') === 'true';
+    pbtn.setAttribute('aria-expanded', String(!open));
+    ppanel.dataset.open = String(!open);
+  });
+  document.addEventListener('click', function(e){ if(!ppanel.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+
+  /* mobile drawer */
+  var burger = document.getElementById('burger'), drawer = document.getElementById('drawer');
+  burger.addEventListener('click', function(){
+    var open = drawer.dataset.open === 'true';
+    drawer.dataset.open = String(!open);
+    burger.setAttribute('aria-expanded', String(!open));
+    document.body.style.overflow = !open ? 'hidden' : '';
+  });
+  drawer.addEventListener('click', function(e){
+    if(e.target.tagName === 'A'){ drawer.dataset.open='false'; burger.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  });
+
+  /* newsletter, client side only */
+  var nlform = document.getElementById('nlform'), nlmsg = document.getElementById('nlmsg');
+  nlform.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = document.getElementById('nlemail').value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ nlmsg.textContent = 'Enter an email address we can reach you at.'; return; }
+    nlmsg.textContent = 'Subscribed. We will send the next one to ' + v + '.';
+    nlform.reset();
+  });
+
+  /* in view reveals, used on two kinds of element only */
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add('inview'); io.unobserve(en.target); }
+      });
+    }, {rootMargin:'0px 0px -12% 0px', threshold:0.15});
+    document.querySelectorAll('.reveal, #stepsin').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal, #stepsin').forEach(function(el){ el.classList.add('inview'); });
+  }
+
+  /* ---------------- point cloud ---------------- */
+  var cv = document.getElementById('cloud');
+  var ctx = cv.getContext('2d');
+
+  var RW = 5.2, RH = 2.7, RD = 3.8, hx = RW/2, hz = RD/2;
+  var EY = 1.52, EZ = 7.2, PITCH = 0.048;
+  var cp = Math.cos(PITCH), sp = Math.sin(PITCH);
+
+  var seed = 20180108;
+  function rnd(){ seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+  function jit(a){ return (rnd() - 0.5) * a; }
+  function shadow(a,b){ /* plausible scan dropout */
+    var v = Math.sin(a*1.9 + 1.3) * Math.cos(b*1.5 - 0.6) * 0.5 + 0.5;
+    return v > 0.13;
+  }
+
+  var xs = [], ys = [], zs = [];
+  function push(x,y,z){ xs.push(x); ys.push(y); zs.push(z); }
+
+  function face(n, f){ for(var i=0;i<n;i++){ f(); } }
+
+  /* floor */
+  face(4400, function(){
+    var x = -hx + rnd()*RW, z = -hz + rnd()*RD;
+    if(!shadow(x,z)) return;
+    push(x, jit(0.014), z);
+  });
+  /* ceiling, sparser */
+  face(620, function(){
+    var x = -hx + rnd()*RW, z = -hz + rnd()*RD;
+    if(rnd() < 0.3) return;
+    push(x, RH + jit(0.02), z);
+  });
+  /* back wall with a window opening */
+  face(2700, function(){
+    var x = -hx + rnd()*RW, y = rnd()*RH;
+    if(x > -0.55 && x < 1.35 && y > 0.95 && y < 2.05) return;
+    if(!shadow(x,y)) return;
+    push(x, y, -hz + jit(0.016));
+  });
+  /* left wall */
+  face(1950, function(){
+    var z = -hz + rnd()*RD, y = rnd()*RH;
+    if(!shadow(z,y)) return;
+    push(-hx + jit(0.016), y, z);
+  });
+  /* right wall */
+  face(1950, function(){
+    var z = -hz + rnd()*RD, y = rnd()*RH;
+    if(!shadow(z*1.3, y)) return;
+    push(hx + jit(0.016), y, z);
+  });
+
+  function box(cx,cy,cz,sx2,sy2,sz2,n){
+    var ax = sx2*sy2, ay = sx2*sz2, az = sy2*sz2;
+    var tot = 2*(ax+ay+az);
+    for(var i=0;i<n;i++){
+      var r = rnd()*tot, x,y,z;
+      if(r < ay){ x = cx + (rnd()-0.5)*sx2; z = cz + (rnd()-0.5)*sz2; y = cy + sy2/2; }
+      else if(r < 2*ay){ x = cx + (rnd()-0.5)*sx2; z = cz + (rnd()-0.5)*sz2; y = cy - sy2/2; }
+      else if(r < 2*ay + ax){ x = cx + (rnd()-0.5)*sx2; y = cy + (rnd()-0.5)*sy2; z = cz + sz2/2; }
+      else if(r < 2*ay + 2*ax){ x = cx + (rnd()-0.5)*sx2; y = cy + (rnd()-0.5)*sy2; z = cz - sz2/2; }
+      else if(r < 2*ay + 2*ax + az){ y = cy + (rnd()-0.5)*sy2; z = cz + (rnd()-0.5)*sz2; x = cx + sx2/2; }
+      else { y = cy + (rnd()-0.5)*sy2; z = cz + (rnd()-0.5)*sz2; x = cx - sx2/2; }
+      push(x + jit(0.008), y + jit(0.008), z + jit(0.008));
+    }
+  }
+
+  var SOFA = {cx:1.45, cy:0.42, cz:0.45, sx:0.92, sy:0.84, sz:1.9};
+  box(-1.15, 0.37, -0.25, 1.5, 0.74, 0.86, 1350); /* table */
+  box(SOFA.cx, SOFA.cy, SOFA.cz, SOFA.sx, SOFA.sy, SOFA.sz, 1550); /* sofa */
+  box(-1.95, 1.00, -1.70, 1.0, 2.0, 0.34, 1150); /* shelf */
+  /* stool */
+  face(400, function(){
+    var a = rnd()*Math.PI*2, r = 0.22;
+    push(0.35 + Math.cos(a)*r, rnd()*0.5, -1.15 + Math.sin(a)*r);
+  });
+
+  var N = xs.length;
+  var PX = new Float32Array(xs), PY = new Float32Array(ys), PZ = new Float32Array(zs);
+  var REV = new Float32Array(N);
+  for(var i=0;i<N;i++){ REV[i] = (PZ[i] + hz) / RD; }
+
+  var pc = document.getElementById('ptcount');
+  if(pc) pc.textContent = 'Room capture, ' + N.toLocaleString('en-GB') + ' depth samples';
+  var SX = new Float32Array(N), SY = new Float32Array(N), DP = new Float32Array(N);
+  var VIS = new Uint8Array(N);
+  var NB = 44, DMIN = 4.0, DMAX = 10.4;
+  var counts = new Int32Array(NB + 1), order = new Uint32Array(N), bkt = new Uint8Array(N);
+  var off = new Int32Array(NB), cur = new Int32Array(NB);
+  var fills = [];
+  for(var b=0;b<NB;b++){
+    var t = b/(NB-1);
+    var L = Math.round(8 + t*150);
+    fills.push('rgb(' + L + ',' + L + ',' + L + ')');
+  }
+
+  var FIT = (function(){
+    var yaws = [-0.46, 0, 0.46], umin = 1e9, umax = -1e9, vmin = 1e9, vmax = -1e9, pts = [];
+    for(var a=0;a<8;a++){ pts.push([(a&1)?hx:-hx, (a&2)?RH:0, (a&4)?hz:-hz]); }
+    for(var yi=0;yi<3;yi++){
+      var c = Math.cos(yaws[yi]), s2 = Math.sin(yaws[yi]);
+      for(var k=0;k<8;k++){
+        var x = pts[k][0], y = pts[k][1], z = pts[k][2];
+        var x1 = x*c - z*s2, z1 = x*s2 + z*c;
+        var Yv = y - EY, Zv = z1 - EZ;
+        var Y2 = Yv*cp - Zv*sp, Z2 = Yv*sp + Zv*cp;
+        var d = -Z2; if(d < 0.5) continue;
+        var u = x1/d, v = -Y2/d;
+        if(u<umin)umin=u; if(u>umax)umax=u; if(v<vmin)vmin=v; if(v>vmax)vmax=v;
+      }
+    }
+    return {u0:umin, u1:umax, v0:vmin, v1:vmax};
+  })();
+  var dpr = 1, W = 0, H = 0, F = 0, CX = 0, CY = 0, yawBase = 0.10, yawDrag = 0, scanP = reduce ? 2 : 0;
+  var t0 = 0, running = false, dirty = true;
+
+  function resize(){
+    var r = cv.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    var w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if(w === W && h === H) return;
+    W = w; H = h; cv.width = w; cv.height = h;
+    var fv = (H * 0.84) / (FIT.v1 - FIT.v0);
+    var fh = (W * 0.98) / (FIT.u1 - FIT.u0);
+    F = Math.min(fv, fh);
+    CX = W/2 - F*(FIT.u0 + FIT.u1)/2;
+    CY = H*0.485 - F*(FIT.v0 + FIT.v1)/2;
+    dirty = true;
+  }
+
+  var cy_ = 1, sy_ = 0;
+  function proj(x,y,z,out){
+    var x1 = x*cy_ - z*sy_, z1 = x*sy_ + z*cy_;
+    var Yv = y - EY, Zv = z1 - EZ;
+    var Y2 = Yv*cp - Zv*sp, Z2 = Yv*sp + Zv*cp;
+    var d = -Z2;
+    if(d < 0.35){ out[2] = -1; return out; }
+    out[0] = CX + (x1/d)*F;
+    out[1] = CY - (Y2/d)*F;
+    out[2] = d;
+    return out;
+  }
+  var _p = [0,0,0], _q = [0,0,0];
+
+  function label(txt, x, y, align){
+    ctx.textAlign = align || 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineWidth = 3.2 * dpr;
+    ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+    ctx.strokeText(txt, x, y);
+    ctx.fillStyle = '#e10600';
+    ctx.fillText(txt, x, y);
+  }
+  function line(ax,ay,bx,by,w){ ctx.strokeStyle = '#e10600'; ctx.lineWidth = (w || 1) * dpr; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke(); }
+
+  function annotate(alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#e10600';
+    ctx.lineWidth = 1 * dpr;
+    ctx.font = (600) + ' ' + Math.round(11.5*dpr) + 'px Archivo, system-ui, sans-serif';
+
+    var c = [[-hx,0,-hz],[hx,0,-hz],[hx,0,hz],[-hx,0,hz]].map(function(p){
+      var o = [0,0,0]; proj(p[0],p[1],p[2],o); return o;
+    });
+    if(c.every(function(o){ return o[2] > 0; })){
+      ctx.beginPath();
+      ctx.moveTo(c[0][0], c[0][1]);
+      for(var k=1;k<4;k++) ctx.lineTo(c[k][0], c[k][1]);
+      ctx.closePath();
+      ctx.stroke();
+      /* front edge width */
+      label('5.20 m', (c[2][0]+c[3][0])/2, (c[2][1]+c[3][1])/2 + 13*dpr);
+      /* left edge depth */
+      label('3.80 m', (c[0][0]+c[3][0])/2 + 10*dpr, (c[0][1]+c[3][1])/2, 'left');
+      /* height at back left */
+      proj(-hx,0,-hz,_p); proj(-hx,RH,-hz,_q);
+      line(_p[0],_p[1],_q[0],_q[1]);
+      line(_q[0]-5*dpr,_q[1],_q[0]+5*dpr,_q[1],1.4);
+      label('2.70 m', _q[0] + 8*dpr, (_p[1]+_q[1])/2, 'left');
+    }
+
+    /* bracket around the sofa */
+    var minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9, ok=true;
+    for(var a=0;a<8;a++){
+      var xx = SOFA.cx + ((a&1)?1:-1)*SOFA.sx/2;
+      var yy = SOFA.cy + ((a&2)?1:-1)*SOFA.sy/2;
+      var zz = SOFA.cz + ((a&4)?1:-1)*SOFA.sz/2;
+      proj(xx,yy,zz,_p);
+      if(_p[2] < 0){ ok = false; break; }
+      if(_p[0]<minx)minx=_p[0]; if(_p[0]>maxx)maxx=_p[0];
+      if(_p[1]<miny)miny=_p[1]; if(_p[1]>maxy)maxy=_p[1];
+    }
+    if(ok){
+      var L2 = 11*dpr, bw = 1.5;
+      line(minx,miny,minx+L2,miny,bw); line(minx,miny,minx,miny+L2,bw);
+      line(maxx,miny,maxx-L2,miny,bw); line(maxx,miny,maxx,miny+L2,bw);
+      line(minx,maxy,minx+L2,maxy,bw); line(minx,maxy,minx,maxy-L2,bw);
+      line(maxx,maxy,maxx-L2,maxy,bw); line(maxx,maxy,maxx,maxy-L2,bw);
+      ctx.font = (600) + ' ' + Math.round(10.5*dpr) + 'px Archivo, system-ui, sans-serif';
+      label('1.90 m', (minx+maxx)/2, miny - 10*dpr);
+    }
+    ctx.restore();
+  }
+
+  function draw(){
+    var yaw = yawBase + yawDrag;
+    cy_ = Math.cos(yaw); sy_ = Math.sin(yaw);
+    ctx.clearRect(0,0,W,H);
+
+    counts.fill(0);
+    var n = 0, i, d;
+    for(i=0;i<N;i++){
+      VIS[i] = 0;
+      if(REV[i] > scanP) continue;
+      var x1 = PX[i]*cy_ - PZ[i]*sy_, z1 = PX[i]*sy_ + PZ[i]*cy_;
+      var Yv = PY[i] - EY, Zv = z1 - EZ;
+      var Y2 = Yv*cp - Zv*sp, Z2 = Yv*sp + Zv*cp;
+      d = -Z2;
+      if(d < 0.6) continue;
+      var sx2 = CX + (x1/d)*F, sy2 = CY - (Y2/d)*F;
+      if(sx2 < -20 || sx2 > W+20 || sy2 < -20 || sy2 > H+20) continue;
+      SX[i] = sx2; SY[i] = sy2; DP[i] = d; VIS[i] = 1;
+      var t = (d - DMIN) / (DMAX - DMIN);
+      var b = t < 0 ? 0 : (t > 1 ? NB-1 : (t*(NB-1))|0);
+      bkt[i] = b; counts[b]++; n++;
+    }
+    var acc = 0;
+    for(var b2=NB-1;b2>=0;b2--){ off[b2] = acc; acc += counts[b2]; }
+    cur.set(off);
+    for(i=0;i<N;i++){ if(VIS[i]) order[cur[bkt[i]]++] = i; }
+
+    var idx = 0;
+    for(var b3=NB-1;b3>=0;b3--){
+      if(!counts[b3]) continue;
+      ctx.fillStyle = fills[b3];
+      var end = idx + counts[b3];
+      for(; idx < end; idx++){
+        var p = order[idx];
+        var s = F * 0.0062 / DP[p];
+        if(s < 0.9*dpr) s = 0.9*dpr; else if(s > 2.3*dpr) s = 2.3*dpr;
+        ctx.fillRect(SX[p] - s*0.5, SY[p] - s*0.5, s, s);
+      }
+    }
+
+    if(scanP < 1){
+      /* scan plane sweeping the room once */
+      var zc = -hz + scanP*RD;
+      var pts = [[-hx,0,zc],[hx,0,zc],[hx,RH,zc],[-hx,RH,zc]];
+      ctx.save();
+      ctx.globalAlpha = 0.75;
+      ctx.strokeStyle = '#e10600';
+      ctx.lineWidth = 1.2*dpr;
+      ctx.beginPath();
+      var okp = true;
+      for(var k2=0;k2<4;k2++){
+        proj(pts[k2][0],pts[k2][1],pts[k2][2],_p);
+        if(_p[2] < 0){ okp = false; break; }
+        if(k2===0) ctx.moveTo(_p[0],_p[1]); else ctx.lineTo(_p[0],_p[1]);
+      }
+      if(okp){ ctx.closePath(); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    var aA = scanP <= 1 ? 0 : Math.min(1, (scanP - 1) / 0.35);
+    if(aA > 0) annotate(aA);
+  }
+
+  var dragging = false, lastX = 0;
+  cv.addEventListener('pointerdown', function(e){
+    dragging = true; lastX = e.clientX; cv.setPointerCapture(e.pointerId); dirty = true;
+  });
+  cv.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    yawDrag += (e.clientX - lastX) * 0.0042;
+    if(yawDrag > 0.42) yawDrag = 0.42;
+    if(yawDrag < -0.42) yawDrag = -0.42;
+    lastX = e.clientX; dirty = true;
+    if(reduce) draw();
+  });
+  function endDrag(){ dragging = false; }
+  cv.addEventListener('pointerup', endDrag);
+  cv.addEventListener('pointercancel', endDrag);
+
+  function tick(ts){
+    if(!t0) t0 = ts;
+    var el = ts - t0;
+    if(scanP < 2 && !reduce){
+      scanP = Math.min(2, el / 1500);
+    }
+    if(!reduce){
+      yawBase = 0.10 + Math.sin(el * 0.00021) * 0.14;
+    }
+    resize();
+    if(!reduce || dirty){ draw(); dirty = false; }
+    if(running) requestAnimationFrame(tick);
+  }
+
+  function start(){ if(!running){ running = true; requestAnimationFrame(tick); } }
+  function stop(){ running = false; }
+
+  resize();
+  if(reduce){ draw(); }
+  window.addEventListener('resize', function(){ resize(); dirty = true; if(reduce) draw(); });
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){
+      if(en[0].isIntersecting){ if(reduce){ dirty = true; draw(); } else start(); }
+      else stop();
+    }, {threshold:0.02}).observe(cv);
+  } else { start(); }
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ dirty = true; if(reduce) draw(); });
+  }
+})();
+</script>
+</body>
+</html>

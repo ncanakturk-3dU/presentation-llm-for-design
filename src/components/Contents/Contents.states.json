@@ -4,7 +4,7 @@
   "group": "Parts",
   "order": 1,
   "mood": "capture",
-  "note": "The slide-in contents panel. The tab and the search box are internal state, so `initialTab` and `initialQuery` are what make each look declarable.",
+  "note": "The slide-in contents panel. The tab and the search box are internal state, so `initialTab` and `initialQuery` are what make each look declarable. `partAt` is the part each item sits in — the outline groups by it, and it is written out per index here because a states file is JSON and cannot share one part object across rows.",
   "states": [
     {
       "id": "outline",
@@ -201,6 +201,46 @@
             "quote": "A memorable **closing** line goes here.",
             "closer": "Thank you.",
             "byline": "Your name — Your talk title."
+          }
+        ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
           }
         ],
         "index": 0,
@@ -405,6 +445,46 @@
             "byline": "Your name — Your talk title."
           }
         ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
+          }
+        ],
         "index": 4,
         "still": true,
         "initialTab": "outline"
@@ -607,6 +687,46 @@
             "byline": "Your name — Your talk title."
           }
         ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
+          }
+        ],
         "index": 2,
         "still": true,
         "initialTab": "slides"
@@ -807,6 +927,46 @@
             "quote": "A memorable **closing** line goes here.",
             "closer": "Thank you.",
             "byline": "Your name — Your talk title."
+          }
+        ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
           }
         ],
         "index": 0,
@@ -1012,6 +1172,46 @@
             "byline": "Your name — Your talk title."
           }
         ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
+          }
+        ],
         "index": 0,
         "still": true,
         "initialTab": "outline",
@@ -1213,6 +1413,46 @@
             "quote": "A memorable **closing** line goes here.",
             "closer": "Thank you.",
             "byline": "Your name — Your talk title."
+          }
+        ],
+        "partAt": [
+          {
+            "id": "intro",
+            "label": "Intro"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "part-1",
+            "label": "Section one",
+            "number": "01"
+          },
+          {
+            "id": "closing",
+            "label": "Closing"
           }
         ],
         "index": 0,

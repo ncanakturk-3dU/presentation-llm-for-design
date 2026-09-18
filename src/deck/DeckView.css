@@ -43,9 +43,15 @@
 .partref__tag { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); line-height: 1; }
 .partref__name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; color: var(--ink); line-height: 1.15; max-width: 44ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* The page number, moved out of the top corner to sit quietly bottom-right. */
+/* The page number, moved out of the top corner to sit quietly bottom-right.
+   The two step buttons beside it are for the phone, where the page turns on a
+   gesture nothing on screen announces; a laptop has arrow keys and a click on
+   either half of the stage, so here the bar is the number and nothing else. */
 .chrome--bottom { justify-content: flex-end; align-items: flex-end; }
-.pageref__index { color: var(--ink-soft); letter-spacing: 0.1em; white-space: nowrap; }
+.pageref__step { display: none; }
+.pageref__jump { padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.pageref__index { color: var(--ink-soft); letter-spacing: 0.1em; white-space: nowrap; transition: color var(--dur) var(--ease); }
+.pageref__jump:hover .pageref__index { color: var(--ink); }
 
 .stage {
   flex: 1;
@@ -109,15 +115,45 @@
        a sliver that scrolls. */
     --chrome-fade: clamp(22px, 7vw, 38px);
     --chrome-h: calc(var(--pad-y) + 34px + var(--chrome-fade));
-    /* Room under the last line for the page-number pill fixed at bottom-right,
-       subtracted from the fill below so a short slide still does not scroll. */
-    --page-clear: 32px;
+    /* The page bar's own height, reserved by the stage whether the bar is on
+       screen or retracted. Reserving it always is the point: the bar can then
+       come and go as a transform, and a slide never reflows under a thumb
+       mid-scroll. It is also what stopped the last line of a slide — a
+       showcase caption, the last call on a reference sheet — from being read
+       through a translucent pill sitting on top of it. */
+    --bar-h: 52px;
+    --page-clear: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px));
   }
 
+  /* Retracting chrome. The reader going down the slide is the one signal that
+     the bars are in the way, and coming back up, either end, a new slide or a
+     tap on the slide is the signal that they are wanted again (DeckView.tsx).
+     Transform only, and never `display` or height: the room is already booked
+     above, so nothing below moves as they go. */
+  .chrome--top,
+  .chrome--bottom {
+    transition: transform 260ms var(--ease), opacity 200ms var(--ease);
+  }
+  .deck[data-chrome='hidden'] .chrome--top { transform: translateY(-100%); opacity: 0; }
+  .deck[data-chrome='hidden'] .chrome--bottom { transform: translateY(100%); opacity: 0; }
+  /* A reader who asked for less motion gets the bar and not the slide of it. */
+  .deck[data-reduced] .chrome--top,
+  .deck[data-reduced] .chrome--bottom { transition: none; }
+
+  /* Stacked, because side by side the two of them had 160px each and the deck
+     name spent every slide of the deck ellipsised. The button keeps the left,
+     and the column beside it gets the full width twice over: the deck's name
+     on top, the part you are in under it — the same order a reader of anything
+     serialised already knows, the work over the chapter. */
   .chrome--top {
     position: sticky;
     top: 0;
     z-index: 5;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 1px;
     padding: var(--pad-y) var(--pad) var(--chrome-fade);
     /* Opaque ground behind the button, fading out across the tail below it, so
        content scrolling up passes under the header and dissolves. The opaque
@@ -150,26 +186,89 @@
     min-height: calc(100dvh - var(--chrome-h) - var(--pad-y) - var(--page-clear));
   }
 
-  /* The part label shares the header row with the deck name, so it gives back
-     size and width here and lets the name ellipsise beside it. */
-  .partref__tag { font-size: 10px; }
-  .partref__name { font-size: 12px; max-width: 42vw; }
+  /* `display: contents` so the button and the name become grid items of the
+     header itself rather than a box the part label has to sit outside of. */
+  .brand { display: contents; }
+  /* Spanning both rows only when there is a second row to span. On a divider
+     or the cover the part label is not drawn, and a button still reserving its
+     row sat a line lower than the name it belongs to. */
+  .brand__menu { grid-column: 1; grid-row: 1; align-self: center; }
+  .chrome--top[data-part] .brand__menu { grid-row: 1 / span 2; }
+  .brand__name { grid-column: 2; grid-row: 1; font-size: 14px; }
+  /* Under the name, and a row rather than a stack: the tag and the part's own
+     name read as one line here ('Part 03 · How to know what is wrong'), which
+     is what leaves the name above it the whole width. */
+  .partref {
+    grid-column: 2;
+    grid-row: 2;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 7px;
+    min-width: 0;
+    text-align: left;
+  }
+  .partref__tag { flex: none; font-size: 10px; }
+  .partref__name { font-size: 12px; max-width: 100%; font-weight: 500; color: var(--ink-soft); }
 
-  /* The page number leaves the flow and pins to the corner, on a ground-tinted
-     pill so it stays legible over whatever scrolls beneath it. */
+  /* The page bar: the full width of the phone, pinned to the bottom, with the
+     step either side of the counter. The page turns on a swipe here and a
+     swipe is not something a screen can say, so the bar is what tells a reader
+     the deck goes somewhere — and the counter in the middle is the way back
+     into the contents without reaching for the button in the far corner. */
   .chrome--bottom {
     position: fixed;
+    left: 0;
     right: 0;
     bottom: 0;
     z-index: 6;
-    padding: 0 var(--pad) max(var(--pad-y), env(safe-area-inset-bottom, 0px));
+    height: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px));
+    padding: 0 8px env(safe-area-inset-bottom, 0px);
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--ground) 84%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
-  .chrome--bottom .pageref__index {
-    padding: 5px 10px;
+  /* The same fade the header draws, the other way up: a line of the slide
+     meeting the bar's edge reads as cut, and a tail above it dissolves into
+     the bar instead. It rides on the bar, so it retracts with it. */
+  .chrome--bottom::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: clamp(18px, 5vw, 30px);
+    pointer-events: none;
+    background: linear-gradient(to top, var(--ground), transparent);
+  }
+
+  /* 44px square: this is a thumb's target, not a pointer's. */
+  .pageref__step {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    color: var(--ink);
+    transition: background-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  .pageref__step:active { background: var(--panel-2); }
+  /* At either end the step stays in place and stops being a control, so the
+     bar does not change shape on the first and last slide. */
+  .pageref__step:disabled { opacity: 0.22; }
+  .pageref__jump {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--ground) 76%, transparent);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
+    border: 1px solid var(--hairline);
   }
+  .pageref__jump:active { background: var(--panel-2); }
 }
 

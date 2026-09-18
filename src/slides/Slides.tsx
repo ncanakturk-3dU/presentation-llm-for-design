@@ -1,13 +1,18 @@
 import type { ReactNode } from 'react'
-import CoverSphere from '../components/CoverSphere/CoverSphere'
+import CopyButton from '../components/CopyButton/CopyButton'
+import CoverOrb from '../components/CoverOrb/CoverOrb'
 import { renderInline, highlightCode, pad, stripMarks } from '../lib/text'
+import { useLightbox } from '../components/Lightbox/Lightbox'
+import { promptText } from '../lib/prompts'
 import type {
   CalloutsItem,
   CodeUIItem,
+  CommandsItem,
   CoverItem,
   DividerItem,
   KeyPointsItem,
   ProcessItem,
+  PromptRunItem,
   CardsItem,
   QuoteItem,
   ShowcaseItem,
@@ -36,23 +41,6 @@ export function slideTitle(item: SlideItem): string {
   return stripMarks(named || item.chapter || item.type)
 }
 
-/**
- * The part a slide sits in: the nearest `divider` at or before it, whose
- * `number` and short `chapter` name the section. A `standalone` slide belongs
- * to no part — that is what the field is for, and it is how the closing lines
- * stay out of Part 5. A slide before the first divider (the cover, the intro)
- * has none either.
- */
-export function partOf(items: SlideItem[], index: number): { number?: string; label: string } | null {
-  const item = items[index]
-  if (!item || item.standalone) return null
-  for (let i = index; i >= 0; i--) {
-    const it = items[i]
-    if (it.type === 'divider') return { number: it.number, label: it.chapter ?? stripMarks(it.title) }
-  }
-  return null
-}
-
 export function slideOutline(item: SlideItem): string[] {
   switch (item.type) {
     case 'divider':
@@ -67,6 +55,11 @@ export function slideOutline(item: SlideItem): string[] {
       return (item.steps || []).map((s) => s.title)
     case 'cards':
       return (item.cards || []).map((c) => c.title)
+    case 'commands':
+      return [
+        ...(item.commands || []).map((c) => `${c.run} — ${c.detail}`),
+        ...(item.rules || []),
+      ]
     case 'table':
       return (item.rows || []).map((r) => `${r.severity} — ${r.meaning}`)
     case 'codeui':
@@ -74,6 +67,8 @@ export function slideOutline(item: SlideItem): string[] {
         ...(item.preview?.buttons || []).map((b) => b.label),
         ...(item.preview?.rows || []).map((r) => `${r.label} — ${r.detail}`),
       ]
+    case 'promptrun':
+      return (item.results || []).map((r) => (r.detail ? `${r.label} — ${r.detail}` : r.label))
     case 'cover':
       return item.subtitle ? [item.subtitle] : []
     case 'quote':
@@ -97,15 +92,23 @@ function Head({ kicker, title, note }: HeadProps) {
   )
 }
 
+/**
+ * The title card: the line the talk is called, and the orb behind it.
+ *
+ * `art` is the phone's copy of the laptop's reading. Unset is `overlap`,
+ * because the laptop's is the one the deck was designed at: the orb too big
+ * for its frame, running off the right edge, the title in front of it. `stack`
+ * is the way out for a title long enough that the two argue.
+ */
 function Cover({ item, reduced, still }: { item: CoverItem; reduced: boolean; still: boolean }) {
   return (
-    <div className="cover">
+    <div className="cover" data-art={item.art ?? 'overlap'}>
       <div className="cover__text">
         <h1 className="cover__title">{renderInline(item.title)}</h1>
         {item.subtitle && <p className="cover__sub">{renderInline(item.subtitle)}</p>}
       </div>
       <div className="cover__art">
-        <CoverSphere reduced={reduced} still={still} />
+        <CoverOrb state="connecting" dark={itemTheme(item) === 'dark'} reduced={reduced} still={still} />
       </div>
     </div>
   )
@@ -218,10 +221,12 @@ function Callouts({ item }: { item: CalloutsItem }) {
               the wrong thing — and by a different amount per image. */}
           <div className="callouts__stage">
             {src ? (
-              <img
+              <Shot
                 className="callouts__img"
                 src={/^(https?:|data:|\/)/.test(src) ? src : base + src}
                 alt={item.image.alt || ''}
+                label={item.image.label}
+                lightbox={item.image.lightbox}
               />
             ) : (
               <span className="callouts__placeholder mono">{item.image?.alt || 'no image'}</span>
@@ -302,7 +307,7 @@ function TwoColumn({ item }: { item: TwoColumnItem }) {
 
 function Process({ item }: { item: ProcessItem }) {
   return (
-    <div className="process">
+    <div className="process" data-mark={item.mark || undefined}>
       <Head kicker={item.kicker} title={item.title} />
       <ol className="process__flow" style={{ '--steps': (item.steps || []).length || 4 } as CSSVars}>
         {(item.steps || []).map((s, i) => (
@@ -314,7 +319,16 @@ function Process({ item }: { item: ProcessItem }) {
                   boundary. */}
               <div className="process__cardhead">
                 <span className="process__chip mono">{s.n}</span>
-                <span className="process__steptitle">{renderInline(s.title)}</span>
+                <span className="process__cardtext">
+                  <span className="process__steptitle">{renderInline(s.title)}</span>
+                  {/* The step said again in the title's words. It sits on the
+                      band with the name rather than at the top of the list,
+                      because a restatement read as a point is a point the
+                      step does not have. */}
+                  {s.subtitle && (
+                    <span className="process__stepsub">{renderInline(s.subtitle)}</span>
+                  )}
+                </span>
               </div>
               <ul className="process__points">
                 {(s.points || []).map((p, j) => (
@@ -436,6 +450,7 @@ function CodeUI({ item }: { item: CodeUIItem }) {
             ) : (
               item.file || 'Button.tsx'
             )}
+            {item.copy && <CopyButton code={item.copyText || item.code || ''} />}
           </div>
           <div className="codeui__body">
             <div className="codeui__gutter" aria-hidden="true">
@@ -495,8 +510,13 @@ function CodeUI({ item }: { item: CodeUIItem }) {
 
 function TableSlide({ item }: { item: TableItem }) {
   const cols = item.columns || []
+  const rows = item.rows || []
   return (
-    <div className="tableslide">
+    // Eight rows or more and the matrix drops a step: a severity ladder is
+    // three or four rows, a reference list is ten, and the slide is clipped
+    // rather than scrolled. The count decides it, the way it decides `cards`
+    // and `commands` density — there is nothing to author.
+    <div className="tableslide" data-dense={rows.length >= 8 ? '' : undefined}>
       <Head kicker={item.kicker} title={item.title} note={item.note} />
       <table className="matrix">
         <thead>
@@ -509,7 +529,7 @@ function TableSlide({ item }: { item: TableItem }) {
           </tr>
         </thead>
         <tbody>
-          {(item.rows || []).map((r, i) => (
+          {rows.map((r, i) => (
             <tr key={i}>
               <td>
                 <span className={`sev sev--${r.tone}`}>{r.severity}</span>
@@ -569,22 +589,43 @@ function Showcase({ item }: { item: ShowcaseItem }) {
      as what was sent, what came back about it, and what came back instead. A
      list under the images would be a caption for both and point at neither. */
   const findings = images.length === 2 ? item.points || [] : []
-  const figures = images.map((im, i) => (
-    <figure key={i} className="showcase__fig">
-      <div className="showcase__frame">
+  const url = (path: string) => (/^(https?:|data:|\/)/.test(path) ? path : base + path)
+  const figures = images.map((im, i) => {
+    const frame = (
+      <>
         {im.src ? (
-          <img
+          <Shot
             className="showcase__img"
-            src={/^(https?:|data:|\/)/.test(im.src) ? im.src : base + im.src}
+            src={url(im.src)}
             alt={im.alt || im.label || ''}
+            label={im.label}
+            href={im.href ? url(im.href) : undefined}
+            lightbox={im.lightbox}
           />
         ) : (
           <span className="showcase__placeholder mono">{im.alt || 'no image'}</span>
         )}
-      </div>
-      {im.label && <figcaption className="showcase__cap mono">{im.label}</figcaption>}
-    </figure>
-  ))
+      </>
+    )
+    return (
+      <figure key={i} className="showcase__fig">
+        {/* A still of a page nobody can read from the back of the room. The
+            click opens it full size; the `href` to the real page rides along
+            inside that overlay, because the room needs the picture bigger far
+            more often than it needs the site. A picture with no `src` is a
+            placeholder, and a placeholder that is a link is a dead end. */}
+        {im.href && !im.src ? (
+          <a className="showcase__frame showcase__frame--link" href={url(im.href)} target="_blank" rel="noreferrer">
+            {frame}
+            <span className="showcase__open mono" aria-hidden="true">open ↗</span>
+          </a>
+        ) : (
+          <div className="showcase__frame">{frame}</div>
+        )}
+        {im.label && <figcaption className="showcase__cap mono">{im.label}</figcaption>}
+      </figure>
+    )
+  })
   return (
     <div className="showcase">
       <Head kicker={item.kicker} title={item.title} note={item.note} />
@@ -604,7 +645,134 @@ function Showcase({ item }: { item: ShowcaseItem }) {
       </div>
       <div className="showcase__foot">
         {item.status && <span className="showcase__status mono">{item.status}</span>}
-        {item.link && <span className="showcase__link mono">{item.link}</span>}
+        {item.link && <span className="showcase__link mono">{renderInline(item.link)}</span>}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * A still that opens full size when it is clicked.
+ *
+ * Every picture in the deck is evidence of a screen nobody can read from the
+ * back of the room, so the click is the default and `lightbox: false` is the
+ * opt-out. Outside the deck — a designlab component variant — there is no
+ * overlay to open, so the picture renders as a plain `img` rather than a
+ * cursor promising something that cannot happen.
+ */
+function Shot({
+  className,
+  src,
+  alt,
+  label,
+  href,
+  lightbox,
+}: {
+  className: string
+  src: string
+  alt: string
+  label?: string
+  href?: string
+  lightbox?: boolean
+}) {
+  const { open, enabled } = useLightbox()
+  const img = <img className={className} src={src} alt={alt} />
+  if (!enabled || lightbox === false) return img
+  return (
+    <button
+      type="button"
+      className="shot"
+      aria-label={`Open full size: ${label || alt || 'image'}`}
+      onClick={() => open({ src, alt, label, href })}
+    >
+      {img}
+    </button>
+  )
+}
+
+/**
+ * A reference of calls: one row per command, and the rules under them.
+ *
+ * The row is a grid rather than a sentence: the command holds the first column
+ * at its own measure, what it writes sits beside it, and the line that says
+ * what it is for takes the rest. Three columns because they answer three
+ * questions — what do I type, what do I get, why — and a reader scanning for
+ * one of them should not have to read the other two.
+ */
+function Commands({ item }: { item: CommandsItem }) {
+  const commands = item.commands || []
+  const rules = item.rules || []
+  const base = import.meta.env.BASE_URL || '/'
+  const imageUrl = (path: string) => (/^(https?:|data:|\/)/.test(path) ? path : base + path)
+  return (
+    /* Four calls or more is a reference sheet rather than a pair of examples:
+       the blocks go to three columns and one step down in size, the way a
+       five-card `cards` slide does. The count decides it, so a deck never has
+       to set a density by hand. */
+    <div
+      className="commands"
+      data-dense={commands.length >= 4 ? '' : undefined}
+      data-figure={item.image ? '' : undefined}
+      data-split={item.image ? item.split || 'golden-flip' : undefined}
+    >
+      <Head kicker={item.kicker} title={item.title} note={item.note} />
+      <div className="commands__body">
+        <div className="commands__main">
+      <ul className="commands__grid" style={{ '--commands': item.image ? 1 : commands.length || 2 } as CSSVars}>
+        {commands.map((c, i) => (
+          <li key={i} className="commands__item">
+            {/* The console, drawn as the thing it is: a prompt and a line to
+                type at it. The chevron is what says "this is typed, not read" —
+                without it the pane is a filename in a box. */}
+            <div className="commands__console">
+              <span className="commands__chev mono" aria-hidden="true">&rsaquo;</span>
+              <code className="commands__run">{c.run}</code>
+              {/* The call is meant to be taken away, not transcribed off a
+                  projector, so the button is on unless a deck turns it off. */}
+              {item.copy !== false && <CopyButton code={c.run} />}
+            </div>
+            {/* What comes back, on its own line under the prompt rather than
+                beside it: a result that shares a row with the call reads as
+                part of what you type. */}
+            {c.writes && (
+              <p className="commands__out">
+                <span className="commands__arrow" aria-hidden="true" />
+                <span className="commands__writes">{c.writes}</span>
+              </p>
+            )}
+            <p className="commands__detail">{renderInline(c.detail)}</p>
+          </li>
+        ))}
+      </ul>
+      {rules.length > 0 && (
+        <ul className="commands__rules">
+          {rules.map((r, i) => (
+            <li key={i} className="commands__rule">{renderInline(r)}</li>
+          ))}
+        </ul>
+      )}
+        </div>
+        {/* What the call puts on screen, framed the way `showcase` frames a
+            still: the calls argue, the picture is the evidence. An image with
+            no `src` draws its alt in a dashed frame rather than a broken one. */}
+        {item.image && (
+          <figure className="commands__fig">
+            <div className="commands__frame">
+              {item.image.src ? (
+                <Shot
+                  className="commands__img"
+                  src={imageUrl(item.image.src)}
+                  alt={item.image.alt || item.image.label || ''}
+                  label={item.image.label}
+                  lightbox={item.image.lightbox}
+                />
+              ) : (
+                <span className="commands__placeholder mono">{item.image.alt || 'no image'}</span>
+              )}
+            </div>
+            {item.image.label && <figcaption className="commands__cap mono">{item.image.label}</figcaption>}
+          </figure>
+        )}
       </div>
     </div>
   )
@@ -615,6 +783,116 @@ function Showcase({ item }: { item: ShowcaseItem }) {
  * `type`, so an archetype added to `content/types.ts` and left out here is a
  * compile error rather than a slide that renders as a divider on stage.
  */
+/**
+ * One prompt beside what each model returned for it.
+ *
+ * The prompt column is the tall one on purpose: it is the only column with
+ * something to read, and it scrolls rather than shrinking its type, because a
+ * prompt shown at eight pixels is a prompt nobody in the room can check against
+ * what came back. The two result columns are stills — the pages are full
+ * landing pages and there is no size at which one is readable inside a third of
+ * a slide — so each frame is a link to the page itself.
+ */
+function PromptRun({ item }: { item: PromptRunItem }) {
+  const base = import.meta.env.BASE_URL || '/'
+  const url = (path: string) => (/^(https?:|data:|\/)/.test(path) ? path : base + path)
+  const text = promptText(item.prompt.source)
+  const { open, enabled } = useLightbox()
+  const linkLabel = (href: string, given?: string) => {
+    if (given) return given
+    try {
+      return new URL(href, 'https://x.invalid').host || 'open'
+    } catch {
+      return 'open'
+    }
+  }
+
+  return (
+    <div className="promptrun">
+      <Head kicker={item.kicker} title={item.title} note={item.note} />
+      <div className="promptrun__grid">
+        <section className="promptrun__col promptrun__col--prompt">
+          <header className="promptrun__head">
+            <span className="promptrun__label mono">{item.prompt.label}</span>
+            {item.prompt.detail && <span className="promptrun__detail">{renderInline(item.prompt.detail)}</span>}
+          </header>
+          {/* The pane on the slide is a specimen — nobody past the third row
+              reads 9px mono. Clicking it hands the same text to the overlay,
+              where the reader sets the size. Outside the deck (designlab's
+              component host) there is no overlay, so it stays a pane. */}
+          {text !== null && enabled ? (
+            <button
+              type="button"
+              className="promptrun__pane promptrun__pane--open"
+              onClick={() => open({ kind: 'text', text: text.trimEnd(), label: item.prompt.label, href: item.prompt.href ? url(item.prompt.href) : undefined })}
+            >
+              <pre className="promptrun__text">{text.trimEnd()}</pre>
+              <span className="promptrun__open mono" aria-hidden="true">read it big ↗</span>
+            </button>
+          ) : (
+            <div className="promptrun__pane">
+              {text === null ? (
+                <span className="promptrun__missing mono">
+                  no prompt at content/prompts/{item.prompt.source}
+                </span>
+              ) : (
+                <pre className="promptrun__text">{text.trimEnd()}</pre>
+              )}
+            </div>
+          )}
+          <footer className="promptrun__foot">
+            {text !== null && <CopyButton code={text.trimEnd()} />}
+            {item.prompt.href && (
+              <a className="promptrun__link mono" href={url(item.prompt.href)} target="_blank" rel="noreferrer">
+                {linkLabel(item.prompt.href, item.prompt.hrefLabel)} ↗
+              </a>
+            )}
+          </footer>
+        </section>
+
+        {(item.results || []).map((r, i) => (
+          <section key={i} className="promptrun__col">
+            <header className="promptrun__head">
+              <span className="promptrun__label mono">{r.label}</span>
+              {r.detail && <span className="promptrun__detail">{renderInline(r.detail)}</span>}
+            </header>
+            {/* Same rule as `showcase`: the still opens full size, and the
+                page it is of goes with it into the overlay. Only a result with
+                no screenshot yet keeps the frame-as-link. */}
+            {r.href && !r.image?.src ? (
+              <a className="promptrun__shot promptrun__shot--link" href={url(r.href)} target="_blank" rel="noreferrer">
+                <ResultImage image={r.image} label={r.label} />
+                <span className="promptrun__open mono" aria-hidden="true">open ↗</span>
+              </a>
+            ) : (
+              <div className="promptrun__shot">
+                <ResultImage image={r.image} label={r.label} href={r.href ? url(r.href) : undefined} />
+              </div>
+            )}
+            <footer className="promptrun__foot">
+              {r.href && (
+                <a className="promptrun__link mono" href={url(r.href)} target="_blank" rel="noreferrer">
+                  open the page ↗
+                </a>
+              )}
+            </footer>
+          </section>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** The still, or the alt text in a dashed frame while there is no still yet. */
+function ResultImage({ image, label, href }: { image?: { src?: string; alt: string; lightbox?: boolean }; label?: string; href?: string }) {
+  const base = import.meta.env.BASE_URL || '/'
+  if (!image?.src) {
+    return <span className="promptrun__placeholder mono">{image?.alt || 'no screenshot yet'}</span>
+  }
+  const src = /^(https?:|data:|\/)/.test(image.src) ? image.src : base + image.src
+  return <Shot className="promptrun__img" src={src} alt={image.alt} label={label} href={href} lightbox={image.lightbox} />
+}
+
 const MAP: { [K in SlideType]: (props: { item: Extract<SlideItem, { type: K }>; reduced: boolean; still: boolean }) => ReactNode } = {
   cover: Cover,
   divider: Divider,
@@ -624,6 +902,8 @@ const MAP: { [K in SlideType]: (props: { item: Extract<SlideItem, { type: K }>; 
   process: Process,
   cards: Cards,
   codeui: CodeUI,
+  commands: Commands,
+  promptrun: PromptRun,
   table: TableSlide,
   quote: Quote,
   showcase: Showcase,

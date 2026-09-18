@@ -86,18 +86,23 @@
 .toc__input::placeholder { color: var(--ink-faint); }
 .toc__input:focus { outline: none; }
 
+/* The last row clears the phone's home indicator rather than sitting under
+   it: the panel is the full height of the screen, so the inset is the panel's
+   to pay and nothing else pays it. */
 .toc__body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 12px 14px 22px;
+  padding: 12px 14px calc(22px + env(safe-area-inset-bottom, 0px));
   scrollbar-width: thin;
   scrollbar-color: var(--hairline-strong) transparent;
 }
 
-/* Generous separation between slides; a slide's title and its own points stay
-   tight together (see .ol__subs) so each reads as one group. */
-.ol { margin-bottom: 14px; }
+/* One row per slide now, so the rows sit on each other and the list reads as a
+   list. The separation that matters is between parts, and .ol--part below is
+   what draws it; a margin here as well would space every row apart and leave
+   the part break with nothing louder to say. */
+.ol { margin-bottom: 0; }
 /* A part opener: a rule and the room above break the run of slides into
    sections, and the accent Part tag names the one you are scanning for. This is
    the nav panel, not a slide, so the terracotta here is a scanning aid, not a
@@ -127,34 +132,27 @@
 .ol__row:hover { background: var(--panel-2); }
 .ol__num { flex: none; color: var(--ink-faint); font-size: 12px; min-width: 2ch; }
 .ol__title { flex: 1; font-weight: 600; font-size: 15px; line-height: 1.3; color: var(--ink); }
-.ol__count { flex: none; color: var(--ink-faint); font-size: 11px; }
 .ol.is-current .ol__num { color: var(--accent); }
 .ol.is-current .ol__title { color: var(--accent); }
-.ol__subs { list-style: none; margin: 4px 0 0; padding: 0 0 0 32px; }
-.ol__sub {
-  width: 100%;
-  display: flex;
-  gap: 12px;
-  padding: 7px 14px;
-  border-radius: var(--r-md);
-  text-align: left;
-  transition: background-color var(--dur) var(--ease);
-}
-.ol__sub:hover { background: var(--panel-2); }
-.ol__subn { flex: none; color: var(--ink-faint); font-size: 11px; min-width: 3ch; }
-.ol__subt { font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
-.ol__sub:hover .ol__subt { color: var(--ink); }
 
+/* `minmax(0, 1fr)`, not `1fr`: a grid track's automatic minimum is the widest
+   min-content in it, and the kicker below does not wrap. Left at `1fr` the two
+   columns grew to fit 'Part 1 — takeaway' on one line and the right one ran off
+   the panel. */
 .toc__slides {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 14px;
   padding: 6px 4px;
 }
-.thumb { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.thumb { min-width: 0; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+/* `min-height`, not a fixed `aspect-ratio`: the card is a label, and a long
+   chapter name in a phone-narrow column needs a fourth line more than the row
+   needs to stay 16 : 9. Grid stretches the cards in a row to match, so the
+   sheet still reads as a grid. */
 .thumb__frame {
   position: relative;
-  aspect-ratio: 16 / 9;
+  min-height: 108px;
   border-radius: var(--r-md);
   border: 1px solid var(--hairline);
   background: var(--ground);
@@ -168,18 +166,31 @@
 }
 .thumb:hover .thumb__frame { transform: translateY(-2px); }
 .thumb.is-current .thumb__frame { box-shadow: 0 0 0 2px var(--accent); border-color: transparent; }
-.thumb__kicker { font-size: 8px; letter-spacing: 0.12em; color: var(--accent); }
+/* One line, ellipsised. A two-line kicker ('Part 1 — takeaway') pushed the
+   title down inside a 16 : 9 frame that cannot grow, and the last line of the
+   title was cut across the middle of its letters. */
+.thumb__kicker {
+  flex: none;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .thumb__title {
+  flex: 1;
+  min-height: 0;
   font-weight: 600;
   font-size: 13px;
   line-height: 1.22;
   letter-spacing: -0.01em;
   color: var(--ink);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.thumb__foot { display: flex; align-items: center; justify-content: space-between; }
+.thumb__foot { flex: none; display: flex; align-items: center; justify-content: space-between; }
 .thumb__n { color: var(--ink); font-size: 10px; }
 .thumb__type { color: var(--ink-faint); font-size: 10px; }

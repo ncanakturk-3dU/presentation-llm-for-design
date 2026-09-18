@@ -1,0 +1,41 @@
+{
+  "component": "CoverOrb",
+  "title": "Cover orb",
+  "group": "Parts",
+  "order": 2,
+  "mood": "capture",
+  "note": "The orb behind the cover. `thinking-orbs`' own `connecting` animation, painted through the package's engine at cover scale rather than at its 64px preset.",
+  "states": [
+    {
+      "id": "still",
+      "label": "Held frame",
+      "device": "desktop",
+      "note": "The frame held at t = 0.6. This is what a capture should show every time.",
+      "props": {
+        "still": true,
+        "standalone": true
+      }
+    },
+    {
+      "id": "reduced",
+      "label": "Reduced motion",
+      "device": "desktop",
+      "note": "What a reader with prefers-reduced-motion gets: the orb is there, it does not wire itself.",
+      "props": {
+        "reduced": true,
+        "standalone": true
+      }
+    },
+    {
+      "id": "light",
+      "label": "Light ground",
+      "device": "desktop",
+      "note": "Dark ink on paper — the ground a cover gets when the item overrides its theme.",
+      "props": {
+        "still": true,
+        "standalone": true,
+        "dark": false
+      }
+    }
+  ]
+}

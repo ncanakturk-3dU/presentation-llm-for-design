@@ -115,6 +115,7 @@
               "n": "1",
               "tone": "teal",
               "title": "Step one",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -125,6 +126,7 @@
               "n": "2",
               "tone": "blue",
               "title": "Step two",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -135,6 +137,7 @@
               "n": "3",
               "tone": "violet",
               "title": "Step three",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -145,6 +148,7 @@
               "n": "4",
               "tone": "ink",
               "title": "Step four",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -232,6 +236,46 @@
             ]
           },
           "note": "A short caption describing the code and its preview."
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "commands",
+      "label": "Commands",
+      "device": "desktop",
+      "note": "Dark. One row per call — the command in mono, what it writes beside it, and the line that says what it is for — over the rules that hold for the whole set.",
+      "props": {
+        "item": {
+          "type": "commands",
+          "id": "commands",
+          "chapter": "Commands",
+          "kicker": "COMMANDS",
+          "title": "What you type, and what you **get**.",
+          "image": {
+            "alt": "A capture of what the calls put on screen. Drop a file in public/ and point src at it.",
+            "label": "what the call opens"
+          },
+          "commands": [
+            {
+              "run": "/command init",
+              "writes": "FILE.md",
+              "detail": "One line saying what this call is for."
+            },
+            {
+              "run": "/command build <target>",
+              "writes": "dist/",
+              "detail": "A second call, with an argument in it."
+            },
+            {
+              "run": "/command check",
+              "detail": "A call that writes nothing, so the row draws no arrow."
+            }
+          ],
+          "rules": [
+            "A rule that holds for every row above — when it is run, or how often.",
+            "A second rule: what the set assumes is already true before any of it runs."
+          ]
         },
         "still": true
       }
@@ -380,6 +424,236 @@
           "quote": "A memorable **closing** line goes here.",
           "closer": "Thank you.",
           "byline": "Your name — Your talk title."
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "promptrun",
+      "label": "promptrun",
+      "device": "desktop",
+      "note": "The promptrun archetype.",
+      "props": {
+        "item": {
+          "type": "promptrun",
+          "id": "promptrun",
+          "chapter": "Prompt and results",
+          "title": "One prompt, two **results**.",
+          "note": "The prompt on the left, what each model returned beside it. The prompt itself lives in content/prompts/ — this slide names the file, it does not repeat the text.",
+          "prompt": {
+            "label": "The prompt",
+            "source": "sample.md",
+            "detail": "Copy it, change the URL, run it yourself.",
+            "href": "https://example.com",
+            "hrefLabel": "the page it redesigns"
+          },
+          "results": [
+            {
+              "label": "Model one",
+              "detail": "How it was run",
+              "image": {
+                "alt": "A still of what the first model returned"
+              },
+              "href": "results/sample-one.html"
+            },
+            {
+              "label": "Model two",
+              "detail": "How it was run",
+              "image": {
+                "alt": "A still of what the second model returned"
+              },
+              "href": "results/sample-two.html"
+            }
+          ]
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "process-block",
+      "label": "Process · The process, block marks",
+      "device": "desktop",
+      "note": "A second process from the reference deck: the variant its first slide does not show.",
+      "props": {
+        "item": {
+          "type": "process",
+          "id": "process-block",
+          "chapter": "The process, block marks",
+          "kicker": "THE PROCESS",
+          "title": "A flow whose **marks** are the point.",
+          "mark": "block",
+          "steps": [
+            {
+              "n": "A",
+              "tone": "teal",
+              "title": "Step A",
+              "subtitle": "What the step is called",
+              "points": [
+                "Detail",
+                "Detail"
+              ]
+            },
+            {
+              "n": "B",
+              "tone": "blue",
+              "title": "Step B",
+              "subtitle": "What the step is called",
+              "points": [
+                "Detail",
+                "Detail"
+              ]
+            },
+            {
+              "n": "C",
+              "tone": "violet",
+              "title": "Step C",
+              "subtitle": "What the step is called",
+              "points": [
+                "Detail",
+                "Detail"
+              ]
+            }
+          ],
+          "loop": "what the return is called"
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "commands-dense",
+      "label": "Commands · Commands, as a sheet",
+      "device": "desktop",
+      "note": "A second commands from the reference deck: the variant its first slide does not show.",
+      "props": {
+        "item": {
+          "type": "commands",
+          "id": "commands-dense",
+          "chapter": "Commands, as a sheet",
+          "kicker": "COMMANDS",
+          "title": "The same archetype, as a **reference sheet**.",
+          "commands": [
+            {
+              "run": "/command init",
+              "writes": "FILE.md",
+              "detail": "One line per call."
+            },
+            {
+              "run": "/command document",
+              "writes": "OTHER.md",
+              "detail": "One line per call."
+            },
+            {
+              "run": "/command build <target>",
+              "writes": "dist/",
+              "detail": "A call with an argument in it."
+            },
+            {
+              "run": "/command check",
+              "detail": "A call that writes nothing."
+            },
+            {
+              "run": "/command watch",
+              "detail": "A call that writes nothing."
+            },
+            {
+              "run": "/command ship",
+              "writes": "a release",
+              "detail": "The sixth, which fills the second row."
+            }
+          ],
+          "rules": [
+            "A rule that holds for every call above."
+          ]
+        },
+        "still": true
+      }
+    },
+    {
+      "id": "table-dense",
+      "label": "Table · Reference list",
+      "device": "desktop",
+      "note": "A second table from the reference deck: the variant its first slide does not show.",
+      "props": {
+        "item": {
+          "type": "table",
+          "id": "table-dense",
+          "chapter": "Reference list",
+          "kicker": "REFERENCE",
+          "title": "A **reference** list.",
+          "note": "A short caption for the table.",
+          "columns": [
+            "Command",
+            "What it does",
+            "Group"
+          ],
+          "rows": [
+            {
+              "severity": "first",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Create"
+            },
+            {
+              "severity": "second",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Evaluate"
+            },
+            {
+              "severity": "third",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Evaluate"
+            },
+            {
+              "severity": "fourth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Refine"
+            },
+            {
+              "severity": "fifth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Refine"
+            },
+            {
+              "severity": "sixth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Simplify"
+            },
+            {
+              "severity": "seventh",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Harden"
+            },
+            {
+              "severity": "eighth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "Harden"
+            },
+            {
+              "severity": "ninth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "System"
+            },
+            {
+              "severity": "tenth",
+              "tone": "ink",
+              "meaning": "One line saying what this row does, long enough to wrap.",
+              "examples": "System"
+            },
+            {
+              "severity": "+14 more",
+              "tone": "ink",
+              "meaning": "The last row, where the rest of the set is linked.",
+              "examples": "[the source page](https://example.com)"
+            }
+          ]
         },
         "still": true
       }
@@ -534,6 +808,7 @@
               "n": "1",
               "tone": "teal",
               "title": "Step one",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -544,6 +819,7 @@
               "n": "2",
               "tone": "blue",
               "title": "Step two",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -554,6 +830,7 @@
               "n": "3",
               "tone": "violet",
               "title": "Step three",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",
@@ -564,6 +841,7 @@
               "n": "4",
               "tone": "ink",
               "title": "Step four",
+              "subtitle": "What the step is called",
               "points": [
                 "Detail",
                 "Detail",

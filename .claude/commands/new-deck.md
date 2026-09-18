@@ -7,7 +7,7 @@ Author or extend a deck for this presentation app. Work from the user's actual c
 ## Steps
 
 1. **Get the content.** If `$ARGUMENTS` has a topic/outline, use it. Otherwise ask the user for the content — a topic, an outline, or raw material (notes, copy, a doc). Keep copy real and specific; never invent facts, metrics, or quotes the user didn't provide — leave a placeholder instead.
-2. **Map content to existing types.** For each beat of the content, pick the existing slide type whose layout fits best (see the schema below). Open with a `cover`, use a `divider` between sections, close with a `quote`; reach for the rest as needed. Most content fits the ten existing types — prefer them.
+2. **Group the content into parts, then map each beat to a type.** A deck's top level is its parts, so decide the sections first — an `intro`, the numbered parts, a `closing` — and write each beat into the part it belongs to. Then, for each beat, pick the existing slide type whose layout fits best (see the schema below). Open with a `cover`, open each numbered part with a `divider`, close with a `quote`; reach for the rest as needed. Most content fits the eleven existing types — prefer them.
 3. **Only if a beat doesn't fit any existing type well:** describe the new slide type you have in mind (its purpose, layout, and fields, in one short paragraph) and **ask the user's permission** before building it. Do not create a new type unprompted. If they approve, implement it per **"Adding a new slide type"** below, then use it.
 4. **Write the deck.** Emit a TypeScript module to `content/<kebab-name>.ts`, shaped like the others:
 
@@ -16,7 +16,11 @@ Author or extend a deck for this presentation app. Work from the user's actual c
 
    const deck = {
      meta: { mark: "<name shown top-left>" },
-     items: [ … ],
+     parts: [
+       { id: "intro", label: "Intro", slides: [ … ] },
+       { id: "part-1", label: "<short name>", slides: [ { type: "divider", … }, … ] },
+       { id: "closing", label: "Closing", slides: [ … ] },
+     ],
    } satisfies Deck
 
    export default deck
@@ -31,7 +35,15 @@ Author or extend a deck for this presentation app. Work from the user's actual c
 
 `meta`: `{ mark: "<name shown top-left>" }`
 
-Every item: `{ type: <type>, id: "<unique>", chapter: "<short label for the Contents outline>", …type fields }`. `id` is required — designlab states pin ids, never indexes.
+`parts`: the deck's top level. Each is `{ id: "<unique>", label: "<short name>", slides: [ … ] }`.
+
+- A slide belongs to the part whose `slides` array it is written in. Nothing infers it, so a slide cannot drift into the part above when you reorder.
+- A part has no `number` of its own. A numbered part opens on a `divider` and that divider's `number` is the numeral — asked for once, drawn on the slide, and read back by the chrome and the Contents outline. A part with no divider (`intro`, `closing`, a bonus section) has no number and shows its `label` alone.
+- `slides: []` is allowed. A part that is named but not yet written renders nothing and lists nothing, so the slot can exist in the file before the content does.
+
+Every slide: `{ type: <type>, id: "<unique>", chapter: "<short label for the Contents outline>", …type fields }`. `id` is required — designlab states pin ids, never indexes. `chapter` is the slide's own name, one level below the part that holds it.
+
+- `standalone: true` draws no part reference in the corner. It does **not** change which part the slide is in — nesting decides that. Use it only where the slide's own title is the whole slide: the cover, a full-bleed reference list.
 
 - Emphasise exactly ONE word in a `title` / `quote` by wrapping it in `**double asterisks**` → it renders in the accent color.
 - Ground: `cover` and `keypoints` are dark by default, the rest light. Override per item with `theme: "light" | "dark"`.
@@ -60,7 +72,7 @@ Only after the user approves. A slide type is a small, data-driven layout compon
    - Add a `<Name>Item` type — `Base & { type: '<type>'; …fields }` — and add it to the `SlideItem` union. Required means the layout cannot render without it; optional means optional in the layout, not "not written yet". Do this first: the union is what the rest of the steps are checked against, and `MAP` in `Slides.tsx` will not compile until the new type has a component.
 
 2. **`src/slides/Slides.tsx`**
-   - Add a component `function <Name>({ item }: { item: <Name>Item }) { … }` that renders purely from `item` fields (take `reduced` / `still` too if it animates). `reduced` is the reader's `prefers-reduced-motion`; `still` is designlab asking for a frame that is identical every capture, so anything animated or random must read it (see `CoverSphere`, whose dot cloud is seeded under `still`). A static type can ignore both. Reuse the shared pieces: `renderAccent(item.title)` for the accent word, the `<Head kicker title note />` helper for the standard eyebrow+heading, `pad`/`highlightCode` from `../lib/text` as needed. Keep it a single root element that fills the stage (`height: 100%`).
+   - Add a component `function <Name>({ item }: { item: <Name>Item }) { … }` that renders purely from `item` fields (take `reduced` / `still` too if it animates). `reduced` is the reader's `prefers-reduced-motion`; `still` is designlab asking for a frame that is identical every capture, so anything animated or random must read it (see `CoverOrb`, which holds one frame under `still`). A static type can ignore both. Reuse the shared pieces: `renderAccent(item.title)` for the accent word, the `<Head kicker title note />` helper for the standard eyebrow+heading, `pad`/`highlightCode` from `../lib/text` as needed. Keep it a single root element that fills the stage (`height: 100%`).
    - Register it in `const MAP = { …, <type>: <Name> }`.
    - Add a `case '<type>':` to `slideOutline(item)` returning the array of sub-item strings for the Contents outline (return `[]` if none).
    - `slideTitle` already falls back to `item.title || item.quote || item.chapter || item.type`, so give the type a `title` or `chapter`. If the type should default to a **dark** ground, add it to `slideTheme` alongside `cover`/`keypoints`.

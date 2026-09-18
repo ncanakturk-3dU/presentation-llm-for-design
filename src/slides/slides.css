@@ -55,8 +55,7 @@
   transform: translateY(-50%);
   z-index: 1;
 }
-.cover__art { --coversphere-width: 100%; --coversphere-height: 100%; }
-.cover__canvas { width: 100% !important; height: 100% !important; display: block; }
+.cover__art { --coverorb-width: 100%; --coverorb-height: 100%; }
 
 .divider {
   height: 100%;
@@ -416,6 +415,11 @@
 .mock--plain .mock__brandrow { opacity: 0.5; }
 
 .process { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+/* A wider measure than the 15ch default: the flow underneath is the full
+   width of the stage, so a title set to a third of it leaves the top half of
+   the slide empty on the right and spends four lines saying what two would.
+   The phone rule below hands the measure back to the viewport. */
+.process .shead__title { max-width: 26ch; }
 .process__flow {
   list-style: none;
   margin: clamp(24px, 2.8vw, 40px) 0 0;
@@ -589,9 +593,54 @@
 .process__step[data-tone='blue'] { --tone: #3768c9; }
 .process__step[data-tone='violet'] { --tone: #7a5af0; }
 .process__step[data-tone='ink'] { --tone: #2b2c31; }
+
+/* The block mark. On a numbered flow the chip orders the cards and then gets
+   out of the way, so 30px is right. On a flow whose marks are the takeaway —
+   a framework the room is meant to leave with — the mark is the slide, so it
+   is a tile the height of the band with the letter set at headline size in it.
+   Everything else about the card is unchanged: same band, same tone, same
+   list under it. */
+.process[data-mark='block'] { --mark-size: clamp(52px, 5.2vw, 76px); }
+/* The connector reads the chip's centre off the card's top edge, and the band
+   is now the tile's height rather than a line of text plus padding. */
+.process[data-mark='block'] .process__flow { --chip-y: calc(var(--mark-size) / 2); }
+.process[data-mark='block'] .process__cardhead {
+  /* No padding of its own: the tile is flush to the card's edge on three
+     sides, which is what makes it read as a mark rather than as a big chip
+     sitting inside a band. */
+  padding: 0;
+  gap: clamp(12px, 1.3vw, 18px);
+  align-items: stretch;
+}
+.process[data-mark='block'] .process__chip {
+  width: var(--mark-size);
+  height: auto;
+  min-height: var(--mark-size);
+  border-radius: 0;
+  /* The deck's own family, not the mono the numeral uses: at this size the
+     letter is read as a word's initial, and mono makes it a code fragment. */
+  font-family: inherit;
+  font-weight: 600;
+  font-size: calc(var(--mark-size) * 0.82);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.process[data-mark='block'] .process__cardtext {
+  justify-content: center;
+  padding: clamp(10px, 1vw, 14px) clamp(13px, 1.3vw, 17px) clamp(10px, 1vw, 14px) 0;
+}
 /* The phase name is the slide's whole takeaway, so it is set at title weight
    for a projected room rather than at caption size. */
+.process__cardtext { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .process__steptitle { font-weight: 600; font-size: clamp(17px, 1.5vw, 23px); color: #f3f2ee; line-height: 1.15; letter-spacing: -0.01em; }
+/* The restatement, one grey down from the name and on the same band:
+   near-white at 72% measures about 8:1 on it, so it is read, not decoration. */
+.process__stepsub {
+  font-size: clamp(12px, 0.95vw, 14px);
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: color-mix(in srgb, #f3f2ee 72%, transparent);
+}
 .process__points {
   list-style: none;
   margin: 0;
@@ -759,6 +808,10 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   overflow: hidden;
 }
 .codeui__tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 11px 16px;
   color: var(--ink-soft);
   border-bottom: 1px solid var(--panel-line);
@@ -901,6 +954,18 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
 .act--muted { color: var(--ink-soft); }
 .act--ink { color: var(--ink-soft); }
 
+/* The dense step, at eight rows and up. A three-row severity ladder carries
+   fragments and can afford the room; a reference list carries a sentence per
+   row and ten of them, so the padding, the type and the chip all come down a
+   step and the whole table stays on the stage. */
+.tableslide[data-dense] .matrix { margin-top: clamp(16px, 1.8vw, 26px); font-size: clamp(12px, min(0.92vw, 1.6vh), 15px); }
+.tableslide[data-dense] .matrix th { padding: 0 14px 9px 0; }
+.tableslide[data-dense] .matrix td { padding: clamp(6px, 0.85vh, 11px) 14px clamp(6px, 0.85vh, 11px) 0; }
+/* 500, not 600: ten rows of full sentences at 600 is a wall of bold, and the
+   column beside it is already the quieter one. */
+.tableslide[data-dense] .matrix__strong { font-weight: 500; }
+.tableslide[data-dense] .sev { padding: 3px 9px; font-size: clamp(10px, min(0.78vw, 1.35vh), 12px); }
+
 .quoteslide { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 /* The measure belongs on the text, not on this wrapper. `ch` resolves against
    the element's own font size, and this wrapper inherits the ~15px body size,
@@ -987,6 +1052,29 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   overflow: hidden;
 }
 .showcase__grid[data-count='2'] .showcase__frame { height: clamp(180px, 38vh, 410px); }
+/* A frame that is a link: quiet until it is pointed at, and it says where it
+   goes only then. The cue sits inside the frame's own padding rather than
+   under it, so a linked picture and a plain one keep the same height and the
+   two-picture row stays level. */
+.showcase__frame--link { position: relative; cursor: zoom-in; text-decoration: none; }
+.showcase__frame--link:hover,
+.showcase__frame--link:focus-visible { border-color: var(--accent); }
+.showcase__open {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  padding: 2px 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--r-sm);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.showcase__frame--link:hover .showcase__open,
+.showcase__frame--link:focus-visible .showcase__open { opacity: 1; color: var(--accent); border-color: var(--accent); }
 /* Sent, said, suggested. The middle column is narrower than the pictures on
    purpose: it is what was found in the left one, not a third exhibit. */
 .showcase__grid[data-count='2'][data-mid] {
@@ -1049,7 +1137,387 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
    breaks at its spaces instead of splitting the last word in half. */
 .showcase__link { color: var(--ink-soft); overflow-wrap: anywhere; }
 
+/* ------------------------------------------------------------------ commands
+   A reference of calls: what you type, what it leaves behind, what it is for.
+   Paper, with the consoles dark on it: the slide is a page about commands, not
+   a terminal, and a whole dark stage for two calls says the opposite. The panes
+   carry the terminal, the way a screenshot carries a screen.
+
+   One block per call, not one row: the call sits in a console pane of its own,
+   the result under it, and the line that says what it is for under that. A row
+   puts all three on one line and the eye reads a sentence; three stacked parts
+   are read as three answers — what do I type, what do I get, why. */
+.commands { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.commands .shead__title { max-width: 20ch; }
+.commands__grid {
+  list-style: none;
+  margin: clamp(26px, 3vw, 44px) 0 0;
+  padding: 0;
+  display: grid;
+  /* One column per call, like the process flow: two calls should not leave a
+     dead third column. */
+  grid-template-columns: repeat(var(--commands, 2), minmax(0, 1fr));
+  /* Column gap only: the blocks below span three of this grid's rows, so a row
+     gap would open inside a block rather than between two of them. The dense
+     case, which has a second row of blocks, adds its own row gap back. */
+  column-gap: clamp(20px, 2.4vw, 40px);
+  row-gap: 0;
+  align-items: start;
+}
+/* Subgrid, not a flex column: the console, the result and the detail take
+   their heights from rows the whole row of blocks shares, so a call that wraps
+   to two lines does not push its own result down out of line with its
+   neighbours'. The same trade `cards` makes for its header bands. */
+.commands__item {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  align-content: start;
+}
+/* The reference-sheet case: six calls in one column each would give every block
+   a measure too narrow for its own command. Three columns, two rows, and one
+   step down in type — the same trade `cards` makes at five. */
+.commands[data-dense] .commands__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(16px, 1.8vw, 30px);
+  margin-top: clamp(20px, 2.2vw, 32px);
+}
+/* The gap between the two rows of blocks, put on the block instead of the grid
+   so it never lands between a call and its own result. */
+.commands[data-dense] .commands__item + .commands__item { margin-top: 0; }
+.commands[data-dense] .commands__grid > .commands__item:nth-child(n + 4) { margin-top: clamp(12px, 1.3vw, 20px); }
+.commands[data-dense] .commands__console { padding: clamp(9px, 0.95vw, 13px) clamp(11px, 1.1vw, 15px); }
+.commands[data-dense] .commands__run { font-size: clamp(13px, 1.05vw, 16px); }
+.commands[data-dense] .commands__out { margin-top: clamp(7px, 0.75vw, 11px); }
+.commands[data-dense] .commands__writes { font-size: clamp(12px, 0.95vw, 14px); }
+.commands[data-dense] .commands__detail { margin-top: clamp(5px, 0.6vw, 8px); font-size: clamp(13px, 1.02vw, 15px); }
+.commands[data-dense] .commands__rules { margin-top: clamp(13px, 1.4vw, 20px); }
+
+/* With a picture: the calls take the narrow column and the capture takes the
+   wide one — the calls argue, the picture is what they put on screen. The
+   blocks stack in their column, so the grid's own column count is forced to
+   one whatever the call count is. */
+.commands[data-figure] .commands__body {
+  display: grid;
+  /* Unset is `golden-flip`: the capture is what needs the width. The other two
+     are the deviations, and they are the same three steps the list archetypes
+     take — see `ListSplit`. */
+  grid-template-columns: 1fr var(--phi);
+  gap: clamp(22px, 2.6vw, 44px);
+  align-items: start;
+  margin-top: clamp(22px, 2.4vw, 36px);
+}
+.commands[data-figure][data-split='golden-flip'] .commands__body { grid-template-columns: 1fr var(--phi); }
+.commands[data-figure][data-split='even'] .commands__body { grid-template-columns: 1fr 1fr; }
+/* The calls take the wide column and the picture proves the screen exists. */
+.commands[data-figure][data-split='golden'] .commands__body { grid-template-columns: var(--phi) 1fr; }
+.commands[data-figure][data-split='golden'] .commands__frame { height: clamp(170px, 34vh, 360px); }
+.commands[data-figure] .commands__grid { margin-top: 0; }
+.commands[data-figure] .commands__grid > .commands__item + .commands__item { margin-top: clamp(14px, 1.5vw, 22px); }
+.commands__fig { margin: 0; display: flex; flex-direction: column; }
+/* The frame `showcase` uses, at the height this slide can spare: a capture of
+   a full screen is unreadable at the back of the room either way, so it is
+   here as evidence that the screen exists, not as something to read. */
+.commands__frame {
+  height: clamp(200px, 46vh, 480px);
+  border-radius: var(--r-md);
+  border: 1px solid var(--panel-line);
+  background: var(--panel-2);
+  padding: clamp(8px, 0.8vw, 13px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* `contain`, never `cover`: this is an informational still, and a crop that
+   makes the layout tidier is a crop that hides a control the list points at. */
+.commands__img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.commands__placeholder {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  height: 100%;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--r-sm);
+  padding: 14px;
+  text-align: center;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.commands__cap { margin-top: 10px; color: var(--ink-faint); }
+/* The console. Darker than the slide's own ground and outlined, so it reads as
+   a surface you type into rather than as a tinted paragraph. */
+.commands__console {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(9px, 0.9vw, 13px);
+  padding: clamp(14px, 1.4vw, 20px) clamp(15px, 1.5vw, 22px);
+  border-radius: var(--r-md);
+  /* The same near-black `process` and `cards` give their header bands, not a
+     token: the pane is dark in either ground, so an --ink mix would invert it
+     with the theme and stop being a terminal on the light one. */
+  background: color-mix(in srgb, #2b2c31 15%, #17181c);
+  /* A long call wraps inside its pane rather than pushing the column wider. */
+  min-width: 0;
+}
+.commands__chev {
+  flex: none;
+  font-size: clamp(14px, 1.2vw, 17px);
+  letter-spacing: 0;
+  color: color-mix(in srgb, #f3f2ee 55%, transparent);
+}
+/* The typed thing, and the only mono at reading size on the slide: it is what
+   the room is meant to copy down. The mono family, not the `.mono` utility —
+   that one uppercases and tracks out for labels, and a command typed back in
+   capitals is a command that does not run. */
+/* On the dark console the button's own tokens would invert with the theme, so
+   it takes the pane's near-white directly — the same trade the step cards make
+   for their titles. */
+.commands[data-dense] .commands__console .copybtn { font-size: 0.8em; padding: 2px 7px; }
+.commands__console .copybtn {
+  /* Pinned to the pane's far end, so a one-line call and a wrapped one put
+     their button in the same place. */
+  margin-left: auto;
+  align-self: center;
+  color: color-mix(in srgb, #f3f2ee 62%, transparent);
+  border-color: color-mix(in srgb, #f3f2ee 22%, transparent);
+}
+.commands__console .copybtn:hover,
+.commands__console .copybtn:focus-visible,
+.commands__console .copybtn[data-state='copied'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.commands__console .copybtn[data-state='failed'] { color: #f3f2ee; }
+.commands__run {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(15px, 1.4vw, 21px);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: #f3f2ee;
+  overflow-wrap: anywhere;
+}
+/* What comes back. The arrow is drawn rather than typed: a glyph sits off the
+   baseline at this size, and this is the same mark the process connectors use. */
+.commands__out {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: clamp(12px, 1.2vw, 17px) 0 0;
+  padding-left: clamp(4px, 0.5vw, 8px);
+}
+.commands__arrow {
+  flex: none;
+  width: clamp(18px, 1.8vw, 28px);
+  height: 1px;
+  background: color-mix(in srgb, var(--ink) 38%, transparent);
+  position: relative;
+}
+.commands__arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 38%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--ink) 38%, transparent);
+  transform: rotate(45deg);
+}
+.commands__writes {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(13px, 1.15vw, 17px);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.commands__detail {
+  margin: clamp(8px, 0.9vw, 12px) 0 0;
+  padding-left: clamp(4px, 0.5vw, 8px);
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+/* The caveat: what is true of the whole set, and what it costs. Set as one
+   block against a rule rather than as a bulleted list — three dashes under a
+   console read as three more things to run, and these are the opposite, the
+   conditions on running any of them. Faint is wrong for it too: a caveat
+   nobody reads is a caveat that was not made. --ink-soft, indented off a
+   hairline, the way an aside is set in print. */
+.commands__rules {
+  list-style: none;
+  margin: clamp(20px, 2.2vw, 32px) 0 0;
+  padding: 0 0 0 clamp(14px, 1.4vw, 20px);
+  border-left: 1px solid var(--hairline-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 72ch;
+}
+.commands__rule {
+  font-size: clamp(13px, 1.02vw, 15px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+
+
+/* ---- promptrun: one prompt, and what each model returned for it ---- */
+.promptrun { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.promptrun .shead__title { max-width: 20ch; }
+.promptrun__grid {
+  margin-top: clamp(18px, 2vw, 30px);
+  display: grid;
+  /* The prompt is the only column with text to read, so it is the wide one;
+     the two results are stills and a still gets no better for being wider. */
+  grid-template-columns: 1.16fr 1fr 1fr;
+  gap: clamp(14px, 1.6vw, 26px);
+  align-items: stretch;
+  /* A definite height on the row, so the prompt scrolls inside its column
+     instead of growing the column until the three of them run off the stage.
+     Everything inside is `min-height: 0` for the same reason: a flex item's
+     default minimum is its content, which is exactly what must not win here. */
+  height: clamp(240px, 52vh, 520px);
+}
+.promptrun__col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--r-md);
+  border: 1px solid var(--panel-line);
+  background: var(--panel-2);
+  overflow: hidden;
+}
+.promptrun__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--panel-line);
+  background: var(--panel);
+}
+.promptrun__label { font-size: clamp(11px, 0.8vw, 13px); color: var(--ink); letter-spacing: 0.04em; }
+.promptrun__detail { font-size: clamp(11px, 0.8vw, 13px); line-height: 1.4; color: var(--ink-soft); }
+/* The pane scrolls rather than scaling its type down: a prompt is checked
+   against the pages beside it, and type too small to read checks nothing. The
+   height is shared with the result columns, which is what keeps the row level. */
+.promptrun__pane {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px 14px;
+}
+/* The pane as a control: a button, so it is reachable by keyboard and says so
+   under the pointer, but drawn as the pane it already was. */
+.promptrun__pane--open {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: zoom-in;
+}
+.promptrun__pane--open .promptrun__open { right: 14px; bottom: 10px; }
+.promptrun__pane--open:hover .promptrun__open,
+.promptrun__pane--open:focus-visible .promptrun__open { opacity: 1; color: var(--accent); border-color: var(--accent); }
+.promptrun__text {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 0.66vw, 11px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.promptrun__missing,
+.promptrun__placeholder {
+  display: block;
+  padding: 16px;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--ink-faint);
+}
+.promptrun__shot {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10px;
+  overflow: hidden;
+  text-decoration: none;
+}
+.promptrun__placeholder {
+  align-self: center;
+  border: 1px dashed var(--panel-line);
+  border-radius: var(--r-sm);
+  width: 100%;
+}
+/* Top-aligned, not contained: these are full landing pages, and the top of one
+   is the part that carries the decision. The rest is what the link is for. */
+.promptrun__img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--panel-line);
+}
+.promptrun__shot--link { cursor: zoom-in; }
+.promptrun__shot--link:hover .promptrun__img,
+.promptrun__shot--link:focus-visible .promptrun__img { border-color: var(--accent); }
+.promptrun__open {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--r-sm);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.promptrun__shot--link:hover .promptrun__open,
+.promptrun__shot--link:focus-visible .promptrun__open { opacity: 1; color: var(--accent); border-color: var(--accent); }
+.promptrun__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 7px 12px;
+  border-top: 1px solid var(--panel-line);
+  background: var(--panel);
+}
+.promptrun__link {
+  font-size: clamp(10px, 0.74vw, 12px);
+  color: var(--ink-soft);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.promptrun__link:hover,
+.promptrun__link:focus-visible { color: var(--accent); text-decoration: underline; }
+
 @media (max-width: 940px) {
+  /* Three columns on a 393px phone is three unreadable columns. Stacked, the
+     prompt keeps a pane worth scrolling and each result keeps its own frame. */
+  .promptrun__grid { grid-template-columns: 1fr; gap: 12px; margin-top: clamp(12px, 2.4vw, 20px); }
+  .promptrun__grid { height: auto; }
+  .promptrun__pane { height: clamp(150px, 26vh, 240px); flex: none; padding: 10px 12px; }
+  .promptrun__text { font-size: 10px; }
+  .promptrun__shot { flex: none; max-height: 34vh; }
+  .promptrun__foot { min-height: 38px; padding: 6px 10px; }
+  .promptrun .shead__title { font-size: clamp(22px, 6.6vw, 30px); max-width: 100%; }
   /* The `[data-split]` variants are listed by name because a bare class cannot
      outrank them: `.keypoints[data-split='golden-flip']` is one step more
      specific than `.keypoints`, so without this the split kept its two
@@ -1069,17 +1537,54 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .callouts__frame { max-width: 82%; margin-inline: auto; }
   .callouts__pin { width: 20px; height: 20px; font-size: 9px; box-shadow: 0 0 0 2px var(--panel-2); }
   .cover__text { max-width: 100%; }
-  /* Stacked, `.cover__art` is a flex item, and a flex item's aspect-ratio
-     yields to the main-axis size — the box came out portrait and squished the
-     sphere. An explicit square height (matching the width) and flex: none pin
-     it back to 1 : 1. */
-  .cover__art { position: relative; top: auto; right: auto; transform: none; flex: none; width: clamp(200px, 46vw, 320px); height: clamp(200px, 46vw, 320px); aspect-ratio: auto; margin-top: 20px; }
   .cover { justify-content: center; }
+  /* `overlap` — the laptop's reading, kept, and the axis is the part of it that
+     matters. There the orb sits beside the text and centred on it, too big
+     for the frame and cut by the right edge; the text clears it because it only
+     takes the left two thirds. A phone's text takes the whole width, so what
+     gives is how much of the orb is on screen — pushed out to `-68vw`, only
+     its left arc is, and the title crosses that arc the way it crosses nothing
+     on the laptop. What does not give is `top: 50%`: dropping it into the
+     bottom corner instead would dodge the same dots and leave a different
+     composition wearing the same picture. */
+  .cover[data-art='overlap'] .cover__art {
+    position: absolute;
+    top: 50%;
+    right: -68vw;
+    bottom: auto;
+    width: 112vw;
+    height: 112vw;
+    aspect-ratio: auto;
+    transform: translateY(-50%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* `stack` — the orb fully inside the column, under the subtitle, nothing
+     behind any text. Here `.cover__art` is a flex item, and a flex item's
+     aspect-ratio yields to the main-axis size — the box came out portrait and
+     squished the orb. An explicit square height and flex: none pin it back
+     to 1 : 1. */
+  .cover[data-art='stack'] .cover__art {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    flex: none;
+    width: clamp(200px, 46vw, 320px);
+    height: clamp(200px, 46vw, 320px);
+    aspect-ratio: auto;
+    margin-top: 20px;
+  }
   .twocol__grid { grid-template-columns: 1fr; }
   /* One column, and the stair flattened to nothing: stacked, an indent per
      step is margin eaten out of a 393px-wide card, and the descent it drew is
      already carried by the order. Two columns left phase three orphaned under
      a half-empty row and wrapped every line of it. */
+  .process .shead__title { max-width: 100%; }
+  /* Stacked: at phone width the detail column has no room beside a command,
+     so the row becomes two lines — the call with what it writes, then what it
+     is for under them. */
+  .process[data-mark='block'] { --mark-size: 46px; }
   .process__flow { grid-template-columns: 1fr; --stair: 0px; gap: 12px; margin-top: clamp(16px, 3vw, 24px); }
   /* Stacked, the label is what carries the return; the two dashed runs either
      side of it have no width left to be read as a path. */
@@ -1136,6 +1641,15 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .matrix td { padding: 0; border: 0; white-space: normal; }
   .matrix td + td { margin-top: 4px; }
   .matrix td:first-child { margin-bottom: 8px; }
+  /* `[data-dense]` outranks a bare class, so the stacked layout has to name
+     it or the desk-width padding and type win here. Stacked, a row is already
+     a record of its own and the only thing the dense step is still buying is
+     a little height back. */
+  .tableslide[data-dense] .matrix { margin-top: clamp(16px, 3.6vw, 22px); font-size: 13px; }
+  .tableslide[data-dense] .matrix th { padding: 0; }
+  .tableslide[data-dense] .matrix td { padding: 0; }
+  .tableslide[data-dense] .matrix tr { padding: 11px 0; }
+  .tableslide[data-dense] .sev { font-size: 11px; }
   .showcase__grid[data-count='2'],
   .showcase__grid[data-count='2'][data-mid] { grid-template-columns: 1fr; }
   /* Stacked, the findings sit between the two pictures in reading order
@@ -1145,6 +1659,22 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
   .showcase__fnum { width: 22px; height: 22px; font-size: 10px; }
   .showcase__frame,
   .showcase__grid[data-count='2'] .showcase__frame { height: clamp(120px, 21vh, 210px); }
+  /* Stacked: at phone width two consoles side by side leave neither enough
+     room for a call to stay on one line. */
+  /* `[data-dense]` outranks a bare class, so the stacked rule has to name it
+     too or a six-call sheet keeps its three columns on a 393px phone. The gap
+     stays 0 and the space goes on the block: every block is three rows of this
+     grid, so a row gap would open between a call and its own result. */
+  .commands__grid,
+  .commands[data-dense] .commands__grid { grid-template-columns: 1fr; row-gap: 0; column-gap: 0; }
+  .commands__grid > .commands__item + .commands__item { margin-top: 20px; }
+  /* Stacked, the picture goes under the calls it belongs to. */
+  .commands[data-figure] .commands__body,
+  .commands[data-figure][data-split] .commands__body { grid-template-columns: 1fr; gap: 18px; }
+  .commands__frame { height: clamp(150px, 26vh, 240px); }
+  .commands[data-dense] .commands__grid > .commands__item:nth-child(n + 4) { margin-top: 20px; }
+  .commands__run { font-size: 14px; }
+  .commands__detail { font-size: 15px; }
 }
 
 /* Laptop height: the process loop ran past an 836px stage; 1080p is untouched. */

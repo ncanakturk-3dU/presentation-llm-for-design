@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weScan | BENG-detailsrapport</title>
+<meta name="description" content="Productaankondiging: het interactieve BENG-detailsrapport van weScan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#111111;
+  --muted:#686868;
+  --paper:#ffffff;
+  --soft:#f5f3ef;
+  --line:#dedbd5;
+  --red:#a51523;
+  --red-dark:#86101b;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:"Poppins","Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+.site-header{max-width:var(--max);margin:0 auto;padding:28px 28px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.logo{font-size:28px;font-weight:700;letter-spacing:-1.2px;text-decoration:none;line-height:1}
+.logo__s{color:var(--red)}
+.header-link{font-size:14px;color:var(--muted);text-decoration:none;transition:opacity 180ms ease}
+.header-link:hover{opacity:.58}
+main{overflow:hidden}
+.hero{max-width:var(--max);margin:0 auto;padding:72px 28px 84px;display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.14fr);gap:52px;align-items:center}
+.hero__copy h1{font-size:clamp(38px,4.2vw,60px);line-height:1;letter-spacing:-.045em;margin:0 0 28px;max-width:720px;overflow-wrap:break-word}
+.hero__copy p{font-size:18px;line-height:1.72;color:#3c3c3c;margin:0 0 14px;max-width:660px}
+.hero__copy strong{color:var(--ink)}
+.included{font-size:14px!important;color:var(--muted)!important;margin-top:20px!important}
+.cta-row{display:flex;align-items:center;gap:18px;margin-top:32px;flex-wrap:wrap}
+.primary-cta{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 22px;background:var(--red);color:#fff;text-decoration:none;font-weight:600;font-size:15px;border-radius:3px;box-shadow:0 10px 24px rgba(165,21,35,.16);transition:transform 180ms cubic-bezier(.2,.8,.2,1),background-color 180ms ease}
+.primary-cta:hover{transform:translateY(-2px);background:var(--red-dark)}
+.cta-note{font-size:13px;color:var(--muted)}
+.hero__visual{margin:0;position:relative}
+.hero__visual::before{content:"";position:absolute;left:-26px;bottom:-18px;width:52%;height:72%;background:var(--soft);z-index:-1}
+.hero__visual img{width:100%;padding:14px 12px;background:var(--paper);border:1px solid var(--line);box-shadow:0 22px 70px rgba(17,17,17,.10)}
+.hero__visual figcaption,.feature__visual figcaption{font-size:12px;line-height:1.55;color:#7a7a7a;margin-top:10px}
+.reason{background:var(--ink);color:#fff}
+.reason__inner{max-width:var(--max);margin:0 auto;padding:76px 28px;display:grid;grid-template-columns:.7fr 1.3fr;gap:72px;align-items:start}
+.reason h2{font-size:clamp(34px,4vw,58px);line-height:1.04;letter-spacing:-.045em;margin:0}
+.reason__text p{font-size:18px;line-height:1.75;color:#d7d7d7;margin:0 0 16px;max-width:760px}
+.reason__text strong{color:#fff}
+.features{max-width:var(--max);margin:0 auto;padding:100px 28px 40px}
+.feature{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:74px;align-items:center;padding:0 0 112px}
+/* The tracks swap with the order, so the picture is the wide column in every
+   row: `order` alone moved the visual into the narrow track and the exhibits
+   alternated 620px and 431px down the page. */
+.feature--reverse{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr)}
+.feature--reverse .feature__copy{order:2}
+.feature--reverse .feature__visual{order:1}
+.feature__copy h2{font-size:clamp(34px,3.8vw,56px);line-height:1.05;letter-spacing:-.045em;margin:0 0 22px;max-width:520px}
+.feature__copy p{font-size:16px;line-height:1.75;color:#4a4a4a;margin:0;max-width:550px}
+.feature__visual{margin:0}
+.feature__visual img{width:100%;border:1px solid var(--line);background:var(--soft);transition:transform 220ms cubic-bezier(.2,.8,.2,1),box-shadow 220ms ease}
+.feature__visual:hover img{transform:translateY(-3px);box-shadow:0 18px 46px rgba(17,17,17,.08)}
+.promises{background:var(--soft);margin-top:16px}
+.promises__inner{max-width:var(--max);margin:0 auto;padding:86px 28px 92px}
+.promises h2{font-size:clamp(38px,4.3vw,62px);line-height:1.02;letter-spacing:-.05em;margin:0 0 46px}
+.promise-list{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid #cfcac2}
+.promise{padding:30px 34px 8px 0;border-right:1px solid #cfcac2;margin-right:34px}
+.promise:last-child{border-right:0;margin-right:0;padding-right:0}
+.promise h3{font-size:19px;line-height:1.35;margin:0 0 12px}
+.promise p{font-size:14px;line-height:1.7;color:#555;margin:0}
+.outro{max-width:var(--max);margin:0 auto;padding:86px 28px 96px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
+.outro h2{font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-.05em;margin:0 0 16px;max-width:760px}
+.outro p{font-size:16px;line-height:1.7;color:#555;margin:0;max-width:650px}
+.outro__action{padding-bottom:7px}
+.outro__action a{font-weight:600;color:var(--red);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;transition:opacity 180ms ease}
+.outro__action a:hover{opacity:.65}
+footer{border-top:1px solid var(--line)}
+.footer__inner{max-width:var(--max);margin:0 auto;padding:28px;display:flex;justify-content:space-between;gap:24px;color:#777;font-size:13px}
+.footer__brand{color:var(--ink);font-weight:600}
+.footer__brand .logo__s{color:var(--red)}
+@media (max-width:920px){
+  .site-header{padding:22px 20px 18px}
+  .hero{padding:52px 20px 68px;grid-template-columns:1fr;gap:44px}
+  .hero__copy h1{font-size:clamp(34px,10vw,56px);max-width:680px}
+  .hero__visual{width:calc(100% + 40px);margin-left:-20px}
+  .hero__visual::before{display:none}
+  .hero__visual figcaption{padding:0 20px}
+  .reason__inner{padding:62px 20px;grid-template-columns:1fr;gap:26px}
+  .features{padding:74px 20px 24px}
+  .feature,.feature--reverse{grid-template-columns:1fr;gap:28px;padding-bottom:82px}
+  .feature--reverse .feature__copy,.feature--reverse .feature__visual{order:initial}
+  .feature__visual{width:calc(100% + 40px);margin-left:-20px}
+  .feature__visual figcaption{padding:0 20px}
+  .promises__inner{padding:68px 20px 72px}
+  .promise-list{grid-template-columns:1fr}
+  .promise{padding:26px 0;border-right:0;border-bottom:1px solid #cfcac2;margin:0}
+  .promise:last-child{border-bottom:0}
+  .outro{padding:70px 20px 74px;grid-template-columns:1fr;align-items:start}
+  .footer__inner{padding:24px 20px;flex-direction:column}
+}
+@media (max-width:520px){
+  .header-link{display:none}
+  .hero{padding-top:40px}
+  .hero__copy h1{font-size:40px;letter-spacing:-.04em}
+  .hero__copy p{font-size:16px;line-height:1.68}
+  .primary-cta{width:100%}
+  .cta-note{width:100%}
+  .reason h2,.feature__copy h2,.promises h2,.outro h2{font-size:38px}
+  .feature__copy p{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="https://wescan.io/" aria-label="weScan home">we<span class="logo__s">S</span>can</a>
+  <a class="header-link" href="https://wescan.io/">wescan.io</a>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero__copy">
+      <h1>Uw opname volledig controleerbaar</h1>
+      <p>weScan levert voortaan een interactief <strong>BENG-detailsrapport</strong> bij uw energielabelproject. Elk geveldeel, dakvlak, vloerveld en iedere opening is getekend en aanklikbaar. Zo herleidt u maten en uitgangspunten tot op de m².</p>
+      <p class="included">Het rapport is inbegrepen bij uw energielabelproject, zonder extra kosten.</p>
+      <div class="cta-row">
+        <a class="primary-cta" href="https://wescan.b-cdn.net/wescan.io/email/beng_details/beng_details_example.html" target="_blank" rel="noopener">Bekijk een voorbeeldrapport</a>
+        <span class="cta-note">Interactief rapport in de browser</span>
+      </div>
+    </div>
+    <figure class="hero__visual">
+      <img src="00.png" alt="Aanzicht van de gevel met de gemeten hoogtes: begane grond 2,68 m, eerste verdieping 1,85 m, nok 5,39 m, en een gevelbreedte van 13,97 m. Elke opening is apart ingetekend.">
+      <figcaption>Elke gevel getekend, met de maten waarop het label is gerekend.</figcaption>
+    </figure>
+  </section>
+
+  <section class="reason">
+    <div class="reason__inner">
+      <h2>Waarom we dit hebben toegevoegd</h2>
+      <div class="reason__text">
+        <p>Vanaf dag één draait weScan om twee dingen: <strong>transparantie</strong> en <strong>robuustheid</strong>. U meldt het label af op basis van de opname. Daarom moet de onderbouwing helder en controleerbaar zijn.</p>
+        <p>Het BENG-detailsrapport maakt de opname inzichtelijk. In de tekeningen klikt u door tot het geveldeel, de kozijnmaat en de regel waarop een toeslag is gebaseerd.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="features">
+    <section class="feature" id="overview">
+      <div class="feature__copy">
+        <h2>Het hele pand op één pagina</h2>
+        <p>Bekijk het hele pand in één oogopslag: plattegrond, aanzicht, daken en vloeren als miniaturen. U ziet het verliesoppervlak per onderdeel; gevels, daken, vloeren en openingen. Plus een doorsnede van de schil en de constructietabel met Rc/U en isolatiekwaliteit. Klik op een deel van de balk voor de uitsplitsing per constructie.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="01.png" alt="Overzicht-tabblad met het projectadres, miniaturen van plattegrond, aanzicht, daken en vloeren, de verliesoppervlak-balk met gevels 32%, daken 34%, vloeren 25% en openingen 9%, en de constructietabel met Rc-waarden en isolatiekwaliteit." loading="lazy">
+        <figcaption>Overzicht van het pand, het verliesoppervlak en de constructies.</figcaption>
+      </figure>
+    </section><section class="feature feature--reverse" id="gevel">
+      <div class="feature__copy">
+        <h2>Klik een geveldeel aan om de opbouw te bekijken</h2>
+        <p>Elk vlak heeft een eigen ‘paspoort’: een kaart met alle maten en regels. Daarin staat het netto verliesoppervlak met de rekenregel eronder (“bruto 37,31 − deelvlakken 8,51 m²”), de maten, de windrichting met azimut, de delen waaruit het geveldeel bestaat en elk deelvlak met kozijn en beglazing. De hoogte-toeslag van 10 cm, hart-op-hart gemeten ten opzichte van de verwarmde verdieping, staat apart vermeld.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="02.png" alt="Plattegrond-tabblad met de Constructies-overlay. Geveldeel 04 Linkergevel is geselecteerd; rechts het paspoort met 28,80 m² netto verliesoppervlak, de rekenregel bruto 37,31 minus deelvlakken 8,51 m², de maten 13,98 bij 2,76 m, zes delen en zeven deelvlakken met glassoort." loading="lazy">
+        <figcaption>Plattegrond met het geselecteerde geveldeel en het bijbehorende paspoort.</figcaption>
+      </figure>
+    </section><section class="feature" id="aanzicht">
+      <div class="feature__copy">
+        <h2>De gevelopstand zoals opgenomen</h2>
+        <p>Per zijde een echte opstand met dakpannen, kozijnen op hun plek, verdiepingslijnen met hoogte, breedtemaat en nokmaat. De kerngetallen bovenaan geven het bruto geveloppervlak, de windrichting met azimut en het aandeel ramen en deuren.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="03.png" alt="Aanzichten-tabblad: linker zijaanzicht op noord, 359°, gevel 41,0 m² bruto, ramen en deuren 21%, dak 42,9 m² bruto. De opstand toont dakpannen, kozijnen, verdiepingshoogtes 1,85 en 2,66 m, breedte 13,97 m en nok 5,39 m." loading="lazy">
+        <figcaption>Zijaanzicht met kozijnen, verdiepingslijnen en kerngetallen.</figcaption>
+      </figure>
+    </section><section class="feature feature--reverse" id="schil">
+      <div class="feature__copy">
+        <h2>De hele thermische schil in één beeld</h2>
+        <p>Verdiepingen uiteengetrokken, elk vlaktype in zijn eigen kleur: gevelvlak, dakvlak, vloerveld, raam, deur, dakraam en de hoogte-toeslag van 10 cm. Wat niet meetelt is doorzichtig, zodat de schil overblijft. Zo controleert u snel of alle onderdelen aanwezig zijn.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="04.png" alt="3D-tabblad: de thermische schil in 3D met verdiepingen uiteengetrokken, dakvlakken in terracotta, gevelvlakken in zandkleur, ramen en deuren in blauw en de hoogte-toeslag van 10 cm als gele band, met kleurlegenda linksonder." loading="lazy">
+        <figcaption>3D-weergave met vaste standpunten: voor, achter, links, rechts en boven.</figcaption>
+      </figure>
+    </section><section class="feature" id="daken">
+      <div class="feature__copy">
+        <h2>De werkelijke maat en oriëntatie van elk dakvlak</h2>
+        <p>Het dakenplan toont van bovenaf de valrichting per vlak en de buitenmaat. Links staat de oriëntatieroos: dakoppervlak per windrichting, met de totalen eronder. Elk dakvlak heeft een paspoort met de werkelijke maat, in het dakvlak gemeten, een doorsnede op ware verhouding en de bijbehorende dakramen.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="05.png" alt="Daken-tabblad: dakenplan van bovenaf met zeven dakvlakken, elk met eigen kleur en oppervlak, valrichtingspijlen en de buitenmaat 7,9 bij 14,0 m. Links de oriëntatieroos met dakoppervlak per windrichting en de totalen 124,8 m² bruto, 7 dakvlakken, 26,7 m² plat dak en 1 dakraam." loading="lazy">
+        <figcaption>Dakenplan met valrichtingen, buitenmaat en oriëntatieroos.</figcaption>
+      </figure>
+    </section><section class="feature feature--reverse" id="vloeren">
+      <div class="feature__copy">
+        <h2>Waar elk vloerveld aan grenst</h2>
+        <p>Elk vloerveld staat weergegeven met omtrek, buitenmaat en begrenzing: grond, kruipruimte, onverwarmde kelder of buitenlucht. Links de m² per begrenzing, zodat u in één blik ziet hoe het vloeroppervlak is verdeeld.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="06.png" alt="Vloeren-tabblad met de Grenst aan-overlay: vloerveld 1 boven onverwarmde kelder 10,63 m² in roze en vloerveld 2 boven kruipruimte 82,27 m² in paars, met maatlijnen. Links de totalen 94,2 m² en 3 vloervelden, en de uitsplitsing kruipruimte 82,3 m², onverwarmde kelder 10,6 m² en buitenlucht 1,3 m²." loading="lazy">
+        <figcaption>Vloervelden ingekleurd naar de ruimte waaraan ze grenzen.</figcaption>
+      </figure>
+    </section><section class="feature" id="leidingen">
+      <div class="feature__copy">
+        <h2>Uittapleidingen</h2>
+        <p>Van de opwekker naar elk tappunt wordt de horizontale afstand hemelsbreed bepaald en het verticale deel erbij opgeteld; de route loopt dus niet om wanden heen. Klik op een maatlabel voor de uitsplitsing in een horizontaal en verticaal deel. De norm en de herkomst van de lengte staan eronder vermeld.</p>
+      </div>
+      <figure class="feature__visual">
+        <img src="07.png" alt="Leidingen-tabblad: begane grond en eerste verdieping naast elkaar op een schaal, met de boiler en gestippelde leidingen naar spoelbak 7,48 m, hoekbad 5,38 m en douche 2,62 m. Rechts de lijst met de meetlat per tappunt en de verwijzing naar ISSO 82.1 paragraaf 13.6." loading="lazy">
+        <figcaption>Leidinglengtes naar de keuken-spoelbak en bad/douche.</figcaption>
+      </figure>
+    </section>
+  </div>
+
+  <section class="promises">
+    <div class="promises__inner">
+      <h2>Waar u op kunt rekenen</h2>
+      <div class="promise-list">
+        <article class="promise">
+          <h3>Exacte maten binnen handbereik</h3>
+          <p>Wanneer u op een vlak, balk of rij klikt, verschijnt de bijbehorende maat, zoals netto m², b × h, windrichting, helling en begrenzing.</p>
+        </article>
+        <article class="promise">
+          <h3>Herleidbaar tot de norm</h3>
+          <p>De hoogte-toeslag van 10 cm staat als aparte band in de aanzichten en wordt in het paspoort toegelicht. U ziet over welke breedte en aan welke zijde de toeslag geldt, met de grondslag volgens ISSO 82.1. Ook de 11 cm-toeslag bij verwarmde belendingen staat apart vermeld bij gevels en vloeren.</p>
+        </article>
+        <article class="promise">
+          <h3>Het detailsrapport blijft offline beschikbaar</h3>
+          <p>U kunt het BENG-detailsrapport als één HTML-bestand in uw eigen projectdossier opslaan. Zo blijft de inhoudelijke onderbouwing van uw opname offline beschikbaar voor het bewijsdossier en een eventuele steekproefcontrole, ook jaren later.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="outro">
+    <div>
+      <h2>Bekijk het BENG-detailsrapport</h2>
+      <p>Heeft u vragen of mist u iets? Reageer op deze e-mail. We horen graag wat u nodig heeft.</p>
+    </div>
+    <div class="outro__action"><a href="https://wescan.b-cdn.net/wescan.io/email/beng_details/beng_details_example.html" target="_blank" rel="noopener">Open het voorbeeldrapport</a></div>
+  </section>
+</main>
+<footer>
+  <div class="footer__inner">
+    <div>Met vriendelijke groet, <span class="footer__brand">Team we<span class="logo__s">S</span>can</span></div>
+    <div>weScan by 3DUniversum</div>
+  </div>
+</footer>
+</body>
+</html>
