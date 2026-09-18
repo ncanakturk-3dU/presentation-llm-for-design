@@ -47,9 +47,25 @@
    The two step buttons beside it are for the phone, where the page turns on a
    gesture nothing on screen announces; a laptop has arrow keys and a click on
    either half of the stage, so here the bar is the number and nothing else. */
-.chrome--bottom { justify-content: flex-end; align-items: flex-end; }
-.pageref__step { display: none; }
-.pageref__jump { padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.chrome--bottom { justify-content: flex-start; align-items: center; gap: 2px; }
+/* Bottom-left step pair: with the slide no longer taking a click, the page
+   turns here or on the keyboard. Pointer-sized, not the phone's 44px thumb
+   target. */
+.pageref__step {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+.pageref__step:hover { background: var(--panel-2); color: var(--ink); }
+/* At either end the step stays in place and stops being a control, so the bar
+   does not change shape on the first and last slide. */
+.pageref__step:disabled { opacity: 0.28; pointer-events: none; }
+/* The steps keep the left; the page number sits alone at the far right. */
+.pageref__jump { order: 1; margin-left: auto; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
 .pageref__index { color: var(--ink-soft); letter-spacing: 0.1em; white-space: nowrap; transition: color var(--dur) var(--ease); }
 .pageref__jump:hover .pageref__index { color: var(--ink); }
 
@@ -261,6 +277,10 @@
      bar does not change shape on the first and last slide. */
   .pageref__step:disabled { opacity: 0.22; }
   .pageref__jump {
+    /* The desktop pushes this to the far right; on the phone it goes back to
+       the centre, between the two steps of the full-width bar. */
+    order: 0;
+    margin-left: 0;
     min-height: 40px;
     display: inline-flex;
     align-items: center;

@@ -269,18 +269,12 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
     if (contentsOpen) return
     // A slide may carry a real control — a card's reference link, a codeui tab
     // pointing at the file on GitHub, the copy button on a prompt, the still
-    // that opens full size. Without this the click does its own job *and*
-    // turns the page, so the presenter lands on the wrong slide behind the
-    // thing they just opened.
+    // that opens full size. The tap must not fight those.
     if ((e.target as HTMLElement).closest('a, button, [role="button"], input, select, textarea')) return
-    // On a phone the surface scrolls and the swipe turns the page, so a tap
-    // turns no page — otherwise reading past the fold jumps a slide per tap.
-    // It calls the chrome back instead, or sends it away: the same guard above
-    // is what keeps that off the pictures, so tapping a still still opens it
-    // full size rather than arguing with the bars.
-    if (window.innerWidth <= 940) { setChromeHidden((v) => !v); return }
-    if (e.clientX < window.innerWidth * 0.28) prev()
-    else next()
+    // The page turns on the bottom-bar steps and the keyboard, never on the
+    // slide itself. A phone tap only calls the chrome back or sends it away;
+    // on the desktop the tap does nothing.
+    if (window.innerWidth <= 940) setChromeHidden((v) => !v)
   }
 
   if (total === 0) {
@@ -347,12 +341,13 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
           </AnimatePresence>
         </section>
 
-        {/* The page bar. On the desktop it is the page number it always was,
-            bottom-right and quiet. On a phone the two steps either side of it
-            come out of hiding, because there the page turns on a swipe and a
-            swipe is a thing you have to already know about — the bar is what
-            tells a reader the deck goes somewhere, and the counter in the
-            middle opens the contents rather than only reporting a number. */}
+        {/* The page bar. On the desktop the steps sit at the bottom-left and
+            the page number stays bottom-right, because the slide itself no
+            longer takes a click — the steps and the keyboard are how the page
+            turns. On a phone the same two steps flank the counter across a
+            full-width bar, since there the page also turns on a swipe and a
+            swipe is a thing you have to already know about. The counter opens
+            the contents rather than only reporting a number. */}
         <footer className="chrome chrome--bottom">
           <button
             type="button"
