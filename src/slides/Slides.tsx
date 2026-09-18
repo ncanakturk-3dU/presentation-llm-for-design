@@ -3,12 +3,14 @@ import CopyButton from '../components/CopyButton/CopyButton'
 import CoverOrb from '../components/CoverOrb/CoverOrb'
 import { renderInline, highlightCode, pad, stripMarks } from '../lib/text'
 import { useLightbox } from '../components/Lightbox/Lightbox'
+import type { Shot } from '../components/Lightbox/Lightbox'
 import { promptText } from '../lib/prompts'
 import type {
   CalloutsItem,
   CodeUIItem,
   CommandsItem,
   CoverItem,
+  CoverQR,
   DividerItem,
   KeyPointsItem,
   ProcessItem,
@@ -107,10 +109,94 @@ function Cover({ item, reduced, still }: { item: CoverItem; reduced: boolean; st
         <h1 className="cover__title">{renderInline(item.title)}</h1>
         {item.subtitle && <p className="cover__sub">{renderInline(item.subtitle)}</p>}
       </div>
+      {item.qr && <CoverQRMark qr={item.qr} />}
       <div className="cover__art">
         <CoverOrb state="connecting" dark={itemTheme(item) === 'dark'} reduced={reduced} still={still} />
       </div>
     </div>
+  )
+}
+
+/**
+ * The cover's scannable mark.
+ *
+ * Drawn rather than shrunk: the code itself at 44px is a grey smudge no phone
+ * will decode, so the mark is a QR glyph — three finder squares and a scatter
+ * of modules, the shape everyone reads as "scan me" — and the tap is what puts
+ * the real code up at the size the room needs. Inside designlab's component
+ * host there is no lightbox, so the mark renders as a plain, inert badge: a
+ * variant should show what the slide looks like, not pretend to a deck that is
+ * not around it.
+ */
+function CoverQRMark({ qr }: { qr: CoverQR }) {
+  const { open, enabled } = useLightbox()
+  // Same rule every other picture in the deck takes: a `public/` path written
+  // without a leading slash, resolved against Vite's BASE_URL, so one string
+  // works on the dev server designlab renders through and in the relative-base
+  // build GitHub Pages serves.
+  const base = import.meta.env.BASE_URL || '/'
+  const url = (path: string) => (/^(https?:|data:|\/)/.test(path) ? path : base + path)
+  const label = qr.label || 'Scan to open'
+  /**
+   * Which exhibit the tap opens, decided at the tap rather than at render.
+   * The frame is a desktop reading — 940px is the same width the deck's own
+   * layouts stack at — and the still is the phone's, and what is in front of
+   * the audience does not change mid-talk.
+   */
+  const shot = (): Shot => {
+    const wide = typeof window !== 'undefined' && !window.matchMedia('(max-width: 940px)').matches
+    const href = qr.href ? url(qr.href) : undefined
+    if (qr.embed && wide) return { kind: 'embed', src: qr.embed, alt: qr.alt, label: qr.label, href: href || qr.embed }
+    return { src: url(qr.src), alt: qr.alt, label: qr.label, href }
+  }
+  const body = (
+    <>
+      <QRGlyph />
+      <span className="cover__qrlabel mono">{label}</span>
+    </>
+  )
+  if (!enabled) return <div className="cover__qr">{body}</div>
+  return (
+    <button
+      type="button"
+      className="cover__qr"
+      aria-label={`${label}: open the code full size`}
+      onClick={() => open(shot())}
+    >
+      {body}
+    </button>
+  )
+}
+
+/**
+ * The glyph: a 21-module QR grid drawn at three modules per square, with the
+ * three finder eyes where a real code carries them. Nothing here encodes
+ * anything — it is the silhouette of a code, which is what makes it legible at
+ * 20px where a real one is noise.
+ */
+function QRGlyph() {
+  const eye = (x: number, y: number) => (
+    <>
+      <rect x={x} y={y} width="7" height="7" rx="1" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <rect x={x + 2.5} y={y + 2.5} width="2" height="2" fill="currentColor" />
+    </>
+  )
+  // A fixed scatter rather than a random one: the mark is the same on every
+  // capture, so a diff between two of them is a real change.
+  const dots = [
+    [10, 1], [12, 1], [10, 3], [14, 3], [12, 5], [10, 7], [13, 7],
+    [1, 10], [3, 10], [5, 12], [1, 14], [3, 12], [7, 10],
+    [10, 10], [12, 10], [14, 12], [10, 13], [13, 14], [16, 10], [10, 16], [16, 16], [13, 11],
+  ]
+  return (
+    <svg className="cover__qrglyph" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+      {eye(0.7, 0.7)}
+      {eye(10.3, 0.7)}
+      {eye(0.7, 10.3)}
+      {dots.map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width="1.4" height="1.4" fill="currentColor" />
+      ))}
+    </svg>
   )
 }
 

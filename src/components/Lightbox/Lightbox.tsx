@@ -14,9 +14,21 @@ import './Lightbox.css'
  */
 export type ImageShot = { kind?: 'image'; src: string; alt: string; label?: string; href?: string }
 export type TextShot = { kind: 'text'; text: string; label?: string; href?: string }
-export type Shot = ImageShot | TextShot
+/**
+ * A third kind: a page, live, in the overlay.
+ *
+ * Some exhibits are not a still of anything — the cover's QR is drawn by a
+ * page that animates it, and a screenshot of that is the one frame the picture
+ * was taken on. `src` is framed as it is, so what the room sees is the running
+ * thing rather than a photograph of it. It costs a network: a slide that has
+ * to load something is a slide that can fail in a room with no wifi, which is
+ * why the caller decides when to hand one over.
+ */
+export type EmbedShot = { kind: 'embed'; src: string; alt: string; label?: string; href?: string }
+export type Shot = ImageShot | TextShot | EmbedShot
 
 const isText = (shot: Shot): shot is TextShot => shot.kind === 'text'
+const isEmbed = (shot: Shot): shot is EmbedShot => shot.kind === 'embed'
 
 /**
  * The sizes the prompt can be read at, in pixels.
@@ -68,14 +80,20 @@ export default function Lightbox({ shot, onClose, reduced = false }: { shot: Sho
     <div
       className="lightbox"
       data-reduced={reduced ? '' : undefined}
-      data-kind={isText(shot) ? 'text' : 'image'}
+      data-kind={isText(shot) ? 'text' : isEmbed(shot) ? 'embed' : 'image'}
       role="dialog"
       aria-modal="true"
       aria-label={label}
       onClick={onClose}
     >
       <figure className="lightbox__fig" onClick={(e) => e.stopPropagation()}>
-        {isText(shot) ? <TextBody shot={shot} /> : <img className="lightbox__img" src={shot.src} alt={shot.alt} />}
+        {isText(shot) ? (
+          <TextBody shot={shot} />
+        ) : isEmbed(shot) ? (
+          <iframe className="lightbox__frame" src={shot.src} title={shot.alt} loading="eager" />
+        ) : (
+          <img className="lightbox__img" src={shot.src} alt={shot.alt} />
+        )}
         <figcaption className="lightbox__bar">
           {shot.label && <span className="lightbox__cap mono">{shot.label}</span>}
           <span className="lightbox__spacer" />

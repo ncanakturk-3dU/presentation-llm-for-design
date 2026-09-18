@@ -121,12 +121,40 @@ type Base = {
   standalone?: boolean
 }
 
+/**
+ * The code the room scans off the title card.
+ *
+ * `src` is a path inside `public/` written without a leading slash, the same
+ * rule `showcase` takes. On the slide it is a small mark under the subtitle
+ * rather than the code itself: a QR printed at icon size is a decoration
+ * nobody can scan, so the mark is the invitation and the tap is what puts the
+ * code on the wall at the size a phone across the room can read. `label` is
+ * what the overlay captions it with, and `href` is the same address in text,
+ * for the reader who is looking at the deck rather than at the projector.
+ */
+export type CoverQR = {
+  src: string
+  alt: string
+  label?: string
+  href?: string
+  /**
+   * A page that draws the code live, framed in the overlay instead of the
+   * still — desktop only. The phone keeps `src`: an iframe of a whole page is
+   * a layout inside a layout on a 393px screen, and the code is what is
+   * wanted there. A room with no network gets nothing from a frame either, so
+   * `src` stays required and stays the fallback.
+   */
+  embed?: string
+}
+
 export type CoverItem = Base & {
   type: 'cover'
   title: string
   subtitle?: string
   /** Phone only; unset is `overlap`. See `CoverArt`. */
   art?: CoverArt
+  /** A code to scan, shown as a mark that opens it full size. See `CoverQR`. */
+  qr?: CoverQR
 }
 
 export type DividerItem = Base & {

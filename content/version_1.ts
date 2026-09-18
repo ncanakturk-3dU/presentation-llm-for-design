@@ -26,6 +26,12 @@ const deck = {
 					title: "Designing with AI, **opinionated**.",
 					subtitle:
 						"For developers who enslave the AI-agents, and art is not their way of life.",
+					qr: {
+						src: "qr/qr-code.png",
+						alt: "QR code for the deck",
+						label: "Scan for the deck",
+						embed: "https://findexu.github.io/qr-4-seasons/#eyJ1IjoiaHR0cHM6Ly9uY2FuYWt0dXJrLTNkdS5naXRodWIuaW8vcHJlc2VudGF0aW9uLWxsbS1mb3ItZGVzaWduLyIsIm0iOiJjb2RlIiwiYiI6ImJsdXNoIiwidHMiOiJzcHJpbmciLCJ0biI6MX0",
+					},
 				},
 				{
 					type: "keypoints",

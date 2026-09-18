@@ -28,6 +28,12 @@ const deck = {
           chapter: "Cover",
           title: "Your **headline** goes here.",
           subtitle: "A short supporting line for your talk.",
+          qr: {
+            src: "qr/qr-code.png",
+            alt: "QR code for this deck",
+            label: "Scan for the deck",
+            embed: "https://findexu.github.io/qr-4-seasons/#eyJ1IjoiaHR0cHM6Ly9uY2FuYWt0dXJrLTNkdS5naXRodWIuaW8vcHJlc2VudGF0aW9uLWxsbS1mb3ItZGVzaWduLyIsIm0iOiJjb2RlIiwiYiI6ImJsdXNoIiwidHMiOiJzcHJpbmciLCJ0biI6MX0",
+          },
         },
       ],
     },

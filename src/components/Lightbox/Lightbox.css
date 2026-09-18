@@ -36,6 +36,25 @@
   border-radius: var(--r-md);
   background: #111215;
 }
+/* The framed page: a window, not a picture. It takes the room the still would
+   have taken, and the page inside it lays itself out to that box — which is
+   why the frame is given a wide one rather than a square. `color-scheme` is
+   set so a page that follows the system theme is not handed the overlay's
+   dark as if it were its own ground. */
+.lightbox__frame {
+  display: block;
+  /* A phone-shaped window, not a desktop one: the page lays itself out to the
+     box it is given, and its narrow layout puts the code across most of the
+     width — where the wide layout spends that width on a season picker and a
+     player and leaves the code small. So the overlay hands it a phone. */
+  width: min(400px, 92vw);
+  aspect-ratio: 9 / 16;
+  max-height: calc(100vh - clamp(80px, 12vh, 140px));
+  border: 0;
+  border-radius: var(--r-md);
+  background: #f3f2ee;
+  color-scheme: light;
+}
 .lightbox__bar {
   display: flex;
   align-items: center;
