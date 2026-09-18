@@ -30,7 +30,8 @@ const deck = {
 						src: "qr/qr-code.png",
 						alt: "QR code for the deck",
 						label: "Scan for the deck",
-						embed: "https://findexu.github.io/qr-4-seasons/#eyJ1IjoiaHR0cHM6Ly9uY2FuYWt0dXJrLTNkdS5naXRodWIuaW8vcHJlc2VudGF0aW9uLWxsbS1mb3ItZGVzaWduLyIsIm0iOiJjb2RlIiwiYiI6ImJsdXNoIiwidHMiOiJzcHJpbmciLCJ0biI6MX0",
+						embed:
+							"https://findexu.github.io/qr-4-seasons/#eyJ1IjoiaHR0cHM6Ly9uY2FuYWt0dXJrLTNkdS5naXRodWIuaW8vcHJlc2VudGF0aW9uLWxsbS1mb3ItZGVzaWduLyIsIm0iOiJjb2RlIiwiYiI6ImJsdXNoIiwidHMiOiJzcHJpbmciLCJ0biI6MX0",
 					},
 				},
 				{
@@ -623,7 +624,8 @@ const deck = {
 					type: "commands",
 					id: "comp-led-session",
 					chapter: "A comp-led session",
-					title: "**COMP-LED**: You approve a **picture**, then it builds to match.",
+					title:
+						"**COMP-LED**: You approve a **picture**, then it builds to match.",
 					split: "golden",
 					image: {
 						src: "showcase/impeccable-directions.jpg",
@@ -634,7 +636,8 @@ const deck = {
 						{
 							run: "/impeccable use comp-led as this project's default for new design work",
 							writes: "mockups, then code",
-							detail: "Several compositions come back as pictures before any code exists. You approve one, and it becomes the target the build is measured against.",
+							detail:
+								"Several compositions come back as pictures before any code exists. You approve one, and it becomes the target the build is measured against.",
 						},
 					],
 					rules: [
@@ -652,7 +655,8 @@ const deck = {
 						{
 							run: "/impeccable use code-led as this project's default for new design work",
 							writes: "code, first pass",
-							detail: "The options are layouts — a ledger, a board, a pipeline map. You choose one, and the structure is the brief it writes from.",
+							detail:
+								"The options are layouts — a ledger, a board, a pipeline map. You choose one, and the structure is the brief it writes from.",
 						},
 					],
 					rules: [
@@ -688,31 +692,36 @@ const deck = {
 						{
 							severity: "critique",
 							tone: "ink",
-							meaning: "Find what\u2019s holding the design back and what to improve first.",
+							meaning:
+								"Find what\u2019s holding the design back and what to improve first.",
 							examples: "Evaluate",
 						},
 						{
 							severity: "layout",
 							tone: "ink",
-							meaning: "Arrange the page so people know where to look and what belongs together.",
+							meaning:
+								"Arrange the page so people know where to look and what belongs together.",
 							examples: "Refine",
 						},
 						{
 							severity: "typeset",
 							tone: "ink",
-							meaning: "Make text easier to read, scan, and recognize across the product.",
+							meaning:
+								"Make text easier to read, scan, and recognize across the product.",
 							examples: "Refine",
 						},
 						{
 							severity: "adapt",
 							tone: "ink",
-							meaning: "Make an existing design work on a different screen, device, or platform.",
+							meaning:
+								"Make an existing design work on a different screen, device, or platform.",
 							examples: "Simplify",
 						},
 						{
 							severity: "harden",
 							tone: "ink",
-							meaning: "Keep the interface usable when data, connections, or actions go wrong.",
+							meaning:
+								"Keep the interface usable when data, connections, or actions go wrong.",
 							examples: "Harden",
 						},
 						{
@@ -724,20 +733,23 @@ const deck = {
 						{
 							severity: "document",
 							tone: "ink",
-							meaning: "Record your visual system so future work can follow it.",
+							meaning:
+								"Record your visual system so future work can follow it.",
 							examples: "System",
 						},
 						{
 							severity: "init",
 							tone: "ink",
-							meaning: "Give Impeccable the context to design for your project.",
+							meaning:
+								"Give Impeccable the context to design for your project.",
 							examples: "System",
 						},
 						{
 							severity: "+14 more",
 							tone: "ink",
 							meaning: "Every other verb is the same shape.",
-							examples: "[impeccable.style/docs](https://impeccable.style/docs)",
+							examples:
+								"[impeccable.style/docs](https://impeccable.style/docs)",
 						},
 					],
 				},
@@ -941,7 +953,7 @@ const deck = {
 					chapter: "Everything here has a link",
 					standalone: true,
 					title: "Everything here has a **link**.",
-          split: "golden-flip",
+					split: "golden-flip",
 					points: [
 						"[moelkholy1995.medium.com](https://moelkholy1995.medium.com/beyond-make-it-beautiful-the-anti-slop-framework-for-ai-frontend-craftsmanship-c99bbee6c994) — the anti-slop framework this talk follows",
 						"[emilkowalski/skills](https://github.com/emilkowalski/skills) · [cathrynlavery/diagram-design](https://github.com/cathrynlavery/diagram-design)",
@@ -1017,12 +1029,42 @@ const deck = {
 				},
 				{
 					type: "promptrun",
-					id: "bonus-landing-page-prompting",
-					chapter: "1 · Landing page prompt example",
-					title: "Landing page **prompt** example",				
+					id: "bonus-landing-page-no-constraints",
+					chapter: "1 · Landing page prompt, no constraints",
+					title: "Landing page prompt **without** constraints",
 					prompt: {
 						label: "The prompt",
-						source: "landing-page.md"						
+						source: "landing-page-simple.md",
+					},
+					results: [
+						{
+							label: "ChatGPT · GPT-5.6",
+							detail: "High effort, single prompt",
+							image: {
+								src: "showcase/prompt-1-gpt-5-6-simple.png",
+								alt: "The 3DUniversum landing page GPT-5.6 returned with no rules: a red eyebrow label over 'We make machines see' in gradient type, beside a fake scene-analysis dashboard.",
+							},
+							href: "results/prompt-1-gpt-5-6-simple.html",
+						},
+						{
+							label: "Claude Opus 5",
+							detail: "High effort, single prompt",
+							image: {
+								src: "showcase/prompt-1-claude-opus-5-simple.png",
+								alt: "The 3DUniversum landing page Claude Opus 5 returned with no rules: 'Computer vision for the physical world' set large over a grid, beside a depth-capture point cloud.",
+							},
+							href: "results/prompt-1-claude-opus-5-simple.html",
+						},
+					],
+				},
+				{
+					type: "promptrun",
+					id: "bonus-landing-page-prompting",
+					chapter: "2 · Landing page prompt, with constraints",
+					title: "Landing page prompt **with** constraints",
+					prompt: {
+						label: "The prompt",
+						source: "landing-page.md",
 					},
 					results: [
 						{
@@ -1045,16 +1087,44 @@ const deck = {
 						},
 					],
 				},
-
+				{
+					type: "promptrun",
+					id: "bonus-newsletter-no-constraints",
+					chapter: "3 · Newsletter prompt, no constraints",
+					title: "Newsletter prompt **without** constraints",
+					prompt: {
+						label: "The prompt",
+						source: "newsletter-simple.md",
+					},
+					results: [
+						{
+							label: "ChatGPT · GPT-5.6",
+							detail: "High effort, single prompt",
+							image: {
+								src: "showcase/prompt-2-gpt-5-6-simple.png",
+								alt: "The weScan BENG announcement GPT-5.6 returned with no rules: a pill label over 'Uw opname. Volledig controleerbaar.', beside the report window on a coral blob.",
+							},
+							href: "results/prompt-2-gpt-5-6-simple.html",
+						},
+						{
+							label: "Claude Opus 5",
+							detail: "High effort, single prompt",
+							image: {
+								src: "showcase/prompt-2-claude-opus-5-simple.png",
+								alt: "The weScan BENG announcement Claude Opus 5 returned with no rules: 'Uw opname, tot op de vierkante meter na te rekenen' beside the intro, over a full-width 3D view of the house.",
+							},
+							href: "results/prompt-2-claude-opus-5-simple.html",
+						},
+					],
+				},
 				{
 					type: "promptrun",
 					id: "bonus-newsletter-prompting",
-					chapter: "2 · Newsletter prompt example",
-					title: "Newsletter **prompt** example",				
+					chapter: "4 · Newsletter prompt, with constraints",
+					title: "Newsletter prompt **with** constraints",
 					prompt: {
 						label: "The prompt",
-						source: "newsletter.md"						
-						
+						source: "newsletter.md",
 					},
 					results: [
 						{
@@ -1076,7 +1146,7 @@ const deck = {
 							href: "results/prompt-2-claude-opus-5.html",
 						},
 					],
-				}
+				},
 			],
 		},
 	],

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f5ef">
+<meta name="description" content="Productaankondiging van weScan: het interactieve BENG-detailsrapport voor een volledig controleerbare energielabelopname.">
+<title>weScan · BENG-detailsrapport</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #101010;
+  --ink-soft: #2a2a2a;
+  --muted: #6d6a65;
+  --line: #dedbd3;
+  --paper: #fffdfa;
+  --canvas: #f3f0e9;
+  --accent: #b9202f;
+  --accent-dark: #8f1421;
+  --accent-soft: #f7e7e8;
+  --warm: #f0b45c;
+  --success: #5f9771;
+  --violet: #7b6bc6;
+  --radius-sm: 14px;
+  --radius: 24px;
+  --radius-lg: 38px;
+  --shadow: 0 22px 70px rgba(17,17,17,.12);
+  --max: 1180px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; }
+a { color:inherit; }
+img { max-width:100%; display:block; }
+button { font:inherit; }
+.container { width:min(var(--max), calc(100% - 48px)); margin-inline:auto; }
+.site-header { position:sticky; top:0; z-index:40; border-bottom:1px solid transparent; transition:.25s ease; }
+.site-header.is-scrolled { background:rgba(255,253,250,.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-color:rgba(222,219,211,.8); }
+.nav { min-height:82px; display:flex; align-items:center; gap:28px; }
+.logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; font-size:22px; line-height:1; font-weight:780; letter-spacing:-.9px; margin-right:auto; }
+.logo__mark { width:18px; height:18px; border-radius:5px 5px 5px 1px; background:var(--accent); box-shadow:7px 7px 0 rgba(185,32,47,.15); transform:rotate(-6deg); }
+.logo em { color:var(--accent); font-style:normal; }
+.nav__links { display:flex; align-items:center; gap:26px; }
+.nav__links a { text-decoration:none; font-size:14px; font-weight:650; color:#4d4a46; }
+.nav__links a:hover { color:var(--ink); }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:50px; padding:0 22px; border:1px solid transparent; border-radius:999px; text-decoration:none; font-weight:720; font-size:15px; transition:.2s ease; }
+.button:hover { transform:translateY(-1px); }
+.button--primary { background:var(--accent); color:white; box-shadow:0 10px 24px rgba(185,32,47,.2); }
+.button--primary:hover { background:var(--accent-dark); }
+.button--dark { background:var(--ink); color:white; }
+.button--ghost { border-color:var(--line); background:rgba(255,255,255,.6); }
+.hero { overflow:hidden; padding:76px 0 104px; }
+.hero__grid { display:grid; grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); gap:70px; align-items:center; }
+.kicker { display:inline-flex; align-items:center; gap:10px; padding:8px 12px 8px 9px; border:1px solid #e5c8cb; background:#fff7f7; border-radius:999px; color:var(--accent-dark); font-size:12px; text-transform:uppercase; letter-spacing:.12em; font-weight:760; }
+.kicker::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 5px rgba(185,32,47,.09); }
+h1 { margin:24px 0 24px; max-width:720px; font-size:clamp(48px,6.2vw,78px); line-height:.96; letter-spacing:-.058em; font-weight:820; }
+.hero__lead { margin:0; max-width:690px; font-size:clamp(18px,2vw,21px); line-height:1.56; color:#55514c; }
+.hero__lead strong { color:var(--ink); }
+.hero__actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+.hero__meta { display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:28px; color:#6d6964; font-size:13px; font-weight:600; }
+.hero__meta span { display:inline-flex; align-items:center; gap:8px; }
+.hero__meta span::before { content:"✓"; display:grid; place-items:center; width:20px; height:20px; border-radius:50%; background:#eef5ef; color:#4e825f; font-size:12px; font-weight:900; }
+.hero__visual { position:relative; min-width:0; }
+.hero__visual::before { content:""; position:absolute; inset:-44px -70px -46px 18%; background:radial-gradient(circle at 40% 35%, #f3c98e 0, #efb15e 24%, #c14849 55%, #652839 83%); filter:saturate(.9); border-radius:48% 52% 60% 40% / 46% 40% 60% 54%; transform:rotate(-6deg); z-index:0; opacity:.9; }
+.hero-window { position:relative; z-index:1; border:1px solid rgba(255,255,255,.6); background:rgba(255,255,255,.84); border-radius:24px; box-shadow:0 35px 80px rgba(29,20,16,.23); padding:10px; transform:rotate(1.5deg); backdrop-filter:blur(6px); }
+.hero-window__top { height:42px; display:flex; align-items:center; gap:7px; padding:0 10px; color:#7c7771; font-size:11px; font-weight:650; }
+.hero-window__top i { width:8px; height:8px; border-radius:50%; background:#d4d0ca; }
+.hero-window__top b { margin-left:8px; font-weight:650; }
+.hero-window img { width:100%; border-radius:15px; background:#f1efea; }
+.hero-badge { position:absolute; z-index:2; right:-22px; bottom:38px; width:154px; padding:18px; border-radius:20px; background:var(--ink); color:white; box-shadow:0 22px 42px rgba(0,0,0,.2); transform:rotate(-3deg); }
+.hero-badge strong { display:block; font-size:26px; letter-spacing:-.04em; }
+.hero-badge span { display:block; margin-top:4px; color:#c9c5bf; font-size:12px; line-height:1.4; }
+.intro { padding:0 0 112px; }
+.intro-card { position:relative; overflow:hidden; border-radius:var(--radius-lg); background:#111; color:white; padding:74px; display:grid; grid-template-columns:1.1fr .9fr; gap:80px; }
+.intro-card::after { content:""; position:absolute; right:-100px; bottom:-140px; width:390px; height:390px; border:78px solid rgba(185,32,47,.55); border-radius:50%; }
+.section-label { margin-bottom:24px; color:#d7aaa9; font-size:12px; font-weight:760; letter-spacing:.13em; text-transform:uppercase; }
+.intro-card h2 { position:relative; z-index:1; margin:0; max-width:650px; font-size:clamp(38px,5vw,58px); line-height:1.04; letter-spacing:-.045em; }
+.intro-card__body { position:relative; z-index:1; align-self:end; }
+.intro-card__body p { margin:0 0 18px; color:#c9c7c3; font-size:17px; line-height:1.7; }
+.principles { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:28px; }
+.principle { padding:18px; border:1px solid #333; border-radius:16px; background:#181818; }
+.principle strong { display:block; font-size:15px; }
+.principle span { display:block; margin-top:5px; color:#aaa6a0; font-size:12px; line-height:1.45; }
+.features-wrap { background:var(--canvas); border-radius:48px 48px 0 0; padding:112px 0 124px; }
+.features-head { display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:end; padding-bottom:76px; border-bottom:1px solid #d8d4cb; }
+.features-head h2 { margin:0; font-size:clamp(42px,5vw,64px); line-height:1; letter-spacing:-.05em; }
+.features-head p { margin:0; color:var(--muted); font-size:18px; line-height:1.65; max-width:650px; }
+.feature { display:grid; grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr); gap:72px; align-items:center; padding:110px 0; border-bottom:1px solid #d8d4cb; }
+.feature--reverse { grid-template-columns:minmax(0,1.24fr) minmax(0,.76fr); }
+.feature--reverse .feature__copy { order:2; }
+.feature--reverse .product-frame { order:1; }
+.eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:18px; color:var(--accent); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; }
+.eyebrow span { display:inline-grid; place-items:center; width:34px; height:34px; border-radius:50%; border:1px solid rgba(185,32,47,.3); background:#fff8f7; letter-spacing:0; }
+.feature__copy h3 { margin:0 0 20px; font-size:clamp(34px,4.1vw,50px); line-height:1.06; letter-spacing:-.045em; max-width:520px; }
+.feature__copy p { margin:0; color:#625e58; font-size:17px; line-height:1.72; max-width:520px; }
+.product-frame { margin:0; overflow:hidden; border:1px solid #dbd7cf; border-radius:20px; background:#fff; box-shadow:0 18px 42px rgba(22,19,15,.08); }
+.product-frame__bar { height:44px; display:flex; align-items:center; gap:7px; padding:0 16px; border-bottom:1px solid #ece9e3; background:#fbfaf8; color:#9a958f; font-size:10px; }
+.product-frame__bar span { width:8px; height:8px; border-radius:50%; background:#d7d3cc; }
+.product-frame__bar b { margin-left:8px; font-weight:650; }
+.image-button { display:block; width:100%; padding:0; border:0; background:#f2f0ec; cursor:zoom-in; }
+.report-shot { width:100%; height:auto; transition:transform .35s ease; }
+.image-button:hover .report-shot { transform:scale(1.008); }
+figcaption { padding:14px 16px 16px; color:#7b7771; font-size:12px; line-height:1.5; }
+.promises { padding:120px 0; }
+.promises__head { display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:end; margin-bottom:54px; }
+.promises__head h2 { margin:0; font-size:clamp(40px,5vw,62px); line-height:1; letter-spacing:-.05em; }
+.promises__head p { margin:0; color:var(--muted); font-size:18px; line-height:1.65; }
+.promise-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.promise { min-height:290px; padding:30px; border:1px solid var(--line); border-radius:24px; display:flex; flex-direction:column; background:white; }
+.promise__icon { width:50px; height:50px; display:grid; place-items:center; border-radius:16px; font-size:20px; font-weight:800; margin-bottom:auto; }
+.promise:nth-child(1) .promise__icon { background:#edf5ef; color:var(--success); }
+.promise:nth-child(2) .promise__icon { background:#fbf0dc; color:#a56a13; }
+.promise:nth-child(3) .promise__icon { background:#f0edfa; color:var(--violet); }
+.promise h3 { margin:34px 0 10px; font-size:22px; letter-spacing:-.025em; }
+.promise p { margin:0; color:#67635e; font-size:15px; line-height:1.65; }
+.final-cta { padding:0 0 60px; }
+.final-cta__card { position:relative; overflow:hidden; border-radius:var(--radius-lg); background:var(--accent); color:white; padding:76px; }
+.final-cta__card::after { content:""; position:absolute; width:430px; height:430px; right:-150px; top:-210px; border-radius:50%; border:92px solid rgba(255,255,255,.11); }
+.final-cta__content { position:relative; z-index:1; max-width:760px; }
+.final-cta h2 { margin:0 0 18px; font-size:clamp(44px,5.8vw,70px); line-height:.98; letter-spacing:-.055em; }
+.final-cta p { margin:0 0 30px; max-width:620px; color:#f8dcdf; font-size:18px; line-height:1.65; }
+.final-cta .button--dark { min-height:56px; padding:0 28px; }
+.signoff { display:flex; justify-content:space-between; gap:24px; align-items:flex-end; padding:36px 0 76px; }
+.signoff p { margin:0; color:#68645e; line-height:1.6; }
+.signoff strong { color:var(--ink); }
+.signoff a { color:#5e5a55; text-decoration:none; font-size:13px; }
+.lightbox { position:fixed; inset:0; z-index:100; display:none; place-items:center; padding:24px; background:rgba(10,10,10,.88); }
+.lightbox.is-open { display:grid; }
+.lightbox__inner { position:relative; max-width:min(1200px,96vw); max-height:92vh; }
+.lightbox img { max-width:100%; max-height:88vh; border-radius:14px; box-shadow:0 24px 80px rgba(0,0,0,.4); }
+.lightbox__close { position:absolute; right:-12px; top:-12px; width:42px; height:42px; border:0; border-radius:50%; background:white; color:#111; font-size:24px; line-height:1; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+[data-reveal] { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+[data-reveal].is-visible { opacity:1; transform:none; }
+@media (max-width: 960px) {
+  .nav__links { display:none; }
+  .hero { padding-top:54px; }
+  .hero__grid, .intro-card, .features-head, .feature, .feature--reverse, .promises__head { grid-template-columns:1fr; }
+  .hero__grid { gap:62px; }
+  .hero__visual { width:min(760px, 94%); margin-inline:auto; }
+  .intro-card { gap:44px; padding:56px; }
+  .features-head { gap:24px; }
+  .feature, .feature--reverse { gap:42px; padding:80px 0; }
+  .feature--reverse .feature__copy, .feature--reverse .product-frame { order:initial; }
+  .feature__copy h3, .feature__copy p { max-width:760px; }
+  .promise-grid { grid-template-columns:1fr; }
+  .promise { min-height:230px; }
+}
+@media (max-width: 640px) {
+  .container { width:min(100% - 28px, var(--max)); }
+  .nav { min-height:68px; }
+  .nav .button { display:none; }
+  .hero { padding:40px 0 76px; }
+  h1 { font-size:clamp(43px,14vw,62px); }
+  .hero__lead { font-size:17px; }
+  .hero__actions .button { width:100%; }
+  .hero__visual { width:100%; }
+  .hero__visual::before { inset:-30px -70px -28px 12%; }
+  .hero-window { border-radius:18px; padding:7px; }
+  .hero-window__top { height:34px; }
+  .hero-window img { border-radius:12px; }
+  .hero-badge { right:-4px; bottom:-34px; width:140px; padding:14px; }
+  .intro { padding-bottom:74px; }
+  .intro-card { padding:38px 24px; border-radius:28px; }
+  .principles { grid-template-columns:1fr; }
+  .features-wrap { padding:78px 0 88px; border-radius:32px 32px 0 0; }
+  .features-head { padding-bottom:48px; }
+  .feature, .feature--reverse { padding:64px 0; gap:30px; }
+  .feature__copy p { font-size:16px; }
+  .product-frame { border-radius:16px; }
+  .product-frame__bar b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .promises { padding:84px 0; }
+  .promises__head { margin-bottom:36px; }
+  .promise { padding:24px; }
+  .final-cta__card { padding:46px 24px; border-radius:28px; }
+  .final-cta .button { width:100%; }
+  .signoff { align-items:flex-start; flex-direction:column; padding-bottom:48px; }
+  .lightbox { padding:12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior:auto; }
+  *, *::before, *::after { animation:none!important; transition:none!important; }
+  [data-reveal] { opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container nav">
+    <a class="logo" href="https://wescan.io/nl/" target="_blank" rel="noopener" aria-label="weScan website"><span class="logo__mark" aria-hidden="true"></span><span>we<em>S</em>can</span></a>
+    <nav class="nav__links" aria-label="Pagina navigatie">
+      <a href="#waarom">Waarom</a><a href="#inhoud">Inhoud</a><a href="#zekerheden">Zekerheden</a>
+    </nav>
+    <a class="button button--primary" href="https://wescan.b-cdn.net/wescan.io/email/beng_details/beng_details_example.html" target="_blank" rel="noopener">Bekijk voorbeeldrapport ↗</a>
+  </div>
+</header>
+<main>
+<section class="hero">
+  <div class="container hero__grid">
+    <div data-reveal>
+      <div class="kicker">Nieuw · inbegrepen bij uw energielabelproject</div>
+      <h1>Uw opname.<br>Volledig controleerbaar.</h1>
+      <p class="hero__lead">weScan levert voortaan een interactief <strong>BENG-detailsrapport</strong> bij uw energielabelproject. Elk geveldeel, dakvlak, vloerveld en iedere opening is getekend en aanklikbaar. Zo herleidt u maten en uitgangspunten tot op de m².</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href="https://wescan.b-cdn.net/wescan.io/email/beng_details/beng_details_example.html" target="_blank" rel="noopener">Bekijk een voorbeeldrapport ↗</a>
+        <a class="button button--ghost" href="#inhoud">Ontdek wat erin zit ↓</a>
+      </div>
+      <div class="hero__meta"><span>Zonder extra kosten</span><span>Interactief</span><span>Offline op te slaan</span></div>
+    </div>
+    <div class="hero__visual" data-reveal>
+      <div class="hero-window">
+        <div class="hero-window__top"><i></i><i></i><i></i><b>BENG-detailsrapport · Overzicht</b></div>
+        <img src="01.png" alt="Overzicht-tabblad met het projectadres, miniaturen van plattegrond, aanzicht, daken en vloeren, de verliesoppervlak-balk met gevels 32%, daken 34%, vloeren 25% en openingen 9%, en de constructietabel met Rc-waarden en isolatiekwaliteit.">
+      </div>
+      <div class="hero-badge"><strong>7</strong><span>controleerbare onderdelen in één interactief rapport</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="intro" id="waarom">
+  <div class="container">
+    <div class="intro-card" data-reveal>
+      <div>
+        <div class="section-label">Waarom we dit hebben toegevoegd</div>
+        <h2>Onderbouwing die u zelf kunt nalopen.</h2>
+      </div>
+      <div class="intro-card__body">
+        <p>Vanaf dag één draait weScan om twee dingen: <strong>transparantie</strong> en <strong>robuustheid</strong>. U meldt het label af op basis van de opname. Daarom moet de onderbouwing helder en controleerbaar zijn.</p>
+        <p>Het BENG-detailsrapport maakt de opname inzichtelijk. In de tekeningen klikt u door tot het geveldeel, de kozijnmaat en de regel waarop een toeslag is gebaseerd.</p>
+        <div class="principles">
+          <div class="principle"><strong>Transparantie</strong><span>Van totaalbeeld tot maat, vlak en rekenregel.</span></div>
+          <div class="principle"><strong>Robuustheid</strong><span>Een vaste onderbouwing voor dossier en controle.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features-wrap" id="inhoud">
+  <div class="container">
+    <div class="features-head" data-reveal>
+      <h2>Alles wat u wilt controleren, in beeld.</h2>
+      <p>Van de eerste overzichtspagina tot leidinglengtes: ieder onderdeel van de opname wordt visueel en herleidbaar gemaakt. Klik op een screenshot om deze groter te bekijken.</p>
+    </div>
+    
+<section class="feature" id="feature-01" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>01</span>Overzicht</div>
+    <h3>Het hele pand op één pagina</h3>
+    <p>Bekijk het hele pand in één oogopslag: plattegrond, aanzicht, daken en vloeren als miniaturen. U ziet het verliesoppervlak per onderdeel; gevels, daken, vloeren en openingen. Plus een doorsnede van de schil en de constructietabel met Rc/U en isolatiekwaliteit. Klik op een deel van de balk voor de uitsplitsing per constructie.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Overzicht</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Overzicht">
+      <img class="report-shot" src="01.png" alt="Overzicht-tabblad met het projectadres, miniaturen van plattegrond, aanzicht, daken en vloeren, de verliesoppervlak-balk met gevels 32%, daken 34%, vloeren 25% en openingen 9%, en de constructietabel met Rc-waarden en isolatiekwaliteit." loading="lazy">
+    </button>
+    <figcaption>Overzicht van het pand, het verliesoppervlak en de constructies.</figcaption>
+  </figure>
+</section>
+<section class="feature feature--reverse" id="feature-02" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>02</span>Plattegrond</div>
+    <h3>Klik een geveldeel aan om de opbouw te bekijken</h3>
+    <p>Elk vlak heeft een eigen ‘paspoort’: een kaart met alle maten en regels. Daarin staat het netto verliesoppervlak met de rekenregel eronder (“bruto 37,31 − deelvlakken 8,51 m²”), de maten, de windrichting met azimut, de delen waaruit het geveldeel bestaat en elk deelvlak met kozijn en beglazing. De hoogte-toeslag van 10 cm, hart-op-hart gemeten ten opzichte van de verwarmde verdieping, staat apart vermeld.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Plattegrond</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Plattegrond">
+      <img class="report-shot" src="02.png" alt="Plattegrond-tabblad met de Constructies-overlay. Geveldeel 04 Linkergevel is geselecteerd; rechts het paspoort met 28,80 m² netto verliesoppervlak, de rekenregel bruto 37,31 minus deelvlakken 8,51 m², de maten 13,98 bij 2,76 m, zes delen en zeven deelvlakken met glassoort." loading="lazy">
+    </button>
+    <figcaption>Plattegrond met het geselecteerde geveldeel en het bijbehorende paspoort.</figcaption>
+  </figure>
+</section>
+<section class="feature" id="feature-03" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>03</span>Aanzichten</div>
+    <h3>De gevelopstand zoals opgenomen</h3>
+    <p>Per zijde een echte opstand met dakpannen, kozijnen op hun plek, verdiepingslijnen met hoogte, breedtemaat en nokmaat. De kerngetallen bovenaan geven het bruto geveloppervlak, de windrichting met azimut en het aandeel ramen en deuren.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Aanzichten</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Aanzichten">
+      <img class="report-shot" src="03.png" alt="Aanzichten-tabblad: linker zijaanzicht op noord, 359°, gevel 41,0 m² bruto, ramen en deuren 21%, dak 42,9 m² bruto. De opstand toont dakpannen, kozijnen, verdiepingshoogtes 1,85 en 2,66 m, breedte 13,97 m en nok 5,39 m." loading="lazy">
+    </button>
+    <figcaption>Zijaanzicht met kozijnen, verdiepingslijnen en kerngetallen.</figcaption>
+  </figure>
+</section>
+<section class="feature feature--reverse" id="feature-04" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>04</span>3D</div>
+    <h3>De hele thermische schil in één beeld</h3>
+    <p>Verdiepingen uiteengetrokken, elk vlaktype in zijn eigen kleur: gevelvlak, dakvlak, vloerveld, raam, deur, dakraam en de hoogte-toeslag van 10 cm. Wat niet meetelt is doorzichtig, zodat de schil overblijft. Zo controleert u snel of alle onderdelen aanwezig zijn.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · 3D</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: 3D">
+      <img class="report-shot" src="04.png" alt="3D-tabblad: de thermische schil in 3D met verdiepingen uiteengetrokken, dakvlakken in terracotta, gevelvlakken in zandkleur, ramen en deuren in blauw en de hoogte-toeslag van 10 cm als gele band, met kleurlegenda linksonder." loading="lazy">
+    </button>
+    <figcaption>3D-weergave met vaste standpunten: voor, achter, links, rechts en boven.</figcaption>
+  </figure>
+</section>
+<section class="feature" id="feature-05" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>05</span>Daken</div>
+    <h3>De werkelijke maat en oriëntatie van elk dakvlak</h3>
+    <p>Het dakenplan toont van bovenaf de valrichting per vlak en de buitenmaat. Links staat de oriëntatieroos: dakoppervlak per windrichting, met de totalen eronder. Elk dakvlak heeft een paspoort met de werkelijke maat, in het dakvlak gemeten, een doorsnede op ware verhouding en de bijbehorende dakramen.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Daken</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Daken">
+      <img class="report-shot" src="05.png" alt="Daken-tabblad: dakenplan van bovenaf met zeven dakvlakken, elk met eigen kleur en oppervlak, valrichtingspijlen en de buitenmaat 7,9 bij 14,0 m. Links de oriëntatieroos met dakoppervlak per windrichting en de totalen 124,8 m² bruto, 7 dakvlakken, 26,7 m² plat dak en 1 dakraam." loading="lazy">
+    </button>
+    <figcaption>Dakenplan met valrichtingen, buitenmaat en oriëntatieroos.</figcaption>
+  </figure>
+</section>
+<section class="feature feature--reverse" id="feature-06" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>06</span>Vloeren</div>
+    <h3>Waar elk vloerveld aan grenst</h3>
+    <p>Elk vloerveld staat weergegeven met omtrek, buitenmaat en begrenzing: grond, kruipruimte, onverwarmde kelder of buitenlucht. Links de m² per begrenzing, zodat u in één blik ziet hoe het vloeroppervlak is verdeeld.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Vloeren</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Vloeren">
+      <img class="report-shot" src="06.png" alt="Vloeren-tabblad met de Grenst aan-overlay: vloerveld 1 boven onverwarmde kelder 10,63 m² in roze en vloerveld 2 boven kruipruimte 82,27 m² in paars, met maatlijnen. Links de totalen 94,2 m² en 3 vloervelden, en de uitsplitsing kruipruimte 82,3 m², onverwarmde kelder 10,6 m² en buitenlucht 1,3 m²." loading="lazy">
+    </button>
+    <figcaption>Vloervelden ingekleurd naar de ruimte waaraan ze grenzen.</figcaption>
+  </figure>
+</section>
+<section class="feature" id="feature-07" data-reveal>
+  <div class="feature__copy">
+    <div class="eyebrow"><span>07</span>Leidingen</div>
+    <h3>Uittapleidingen</h3>
+    <p>Van de opwekker naar elk tappunt wordt de horizontale afstand hemelsbreed bepaald en het verticale deel erbij opgeteld; de route loopt dus niet om wanden heen. Klik op een maatlabel voor de uitsplitsing in een horizontaal en verticaal deel. De norm en de herkomst van de lengte staan eronder vermeld.</p>
+  </div>
+  <figure class="product-frame">
+    <div class="product-frame__bar"><span></span><span></span><span></span><b>BENG-detailsrapport · Leidingen</b></div>
+    <button class="image-button" type="button" aria-label="Vergroot afbeelding: Leidingen">
+      <img class="report-shot" src="07.png" alt="Leidingen-tabblad: begane grond en eerste verdieping naast elkaar op een schaal, met de boiler en gestippelde leidingen naar spoelbak 7,48 m, hoekbad 5,38 m en douche 2,62 m. Rechts de lijst met de meetlat per tappunt en de verwijzing naar ISSO 82.1 paragraaf 13.6." loading="lazy">
+    </button>
+    <figcaption>Leidinglengtes naar de keuken-spoelbak en bad/douche.</figcaption>
+  </figure>
+</section>
+  </div>
+</section>
+
+<section class="promises" id="zekerheden">
+  <div class="container">
+    <div class="promises__head" data-reveal>
+      <h2>Waar u op kunt rekenen.</h2>
+      <p>Het rapport is ontworpen om niet alleen snel te lezen, maar ook praktisch bruikbaar te blijven wanneer u later opnieuw moet verifiëren, onderbouwen of aantonen.</p>
+    </div>
+    <div class="promise-grid">
+      <article class="promise" data-reveal><div class="promise__icon">↔</div><h3>Exacte maten binnen handbereik</h3><p>Wanneer u op een vlak, balk of rij klikt, verschijnt de bijbehorende maat, zoals netto m², b × h, windrichting, helling en begrenzing.</p></article>
+      <article class="promise" data-reveal><div class="promise__icon">§</div><h3>Herleidbaar tot de norm</h3><p>De hoogte-toeslag van 10 cm staat als aparte band in de aanzichten en wordt in het paspoort toegelicht. Ook de 11 cm-toeslag bij verwarmde belendingen staat apart vermeld bij gevels en vloeren, met de grondslag volgens ISSO 82.1.</p></article>
+      <article class="promise" data-reveal><div class="promise__icon">↓</div><h3>Blijft offline beschikbaar</h3><p>U kunt het BENG-detailsrapport als één HTML-bestand in uw eigen projectdossier opslaan. Zo blijft de inhoudelijke onderbouwing offline beschikbaar voor het bewijsdossier en een eventuele steekproefcontrole, ook jaren later.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="final-cta__card" data-reveal>
+      <div class="final-cta__content">
+        <div class="section-label" style="color:#f7c9ce">Zelf ervaren</div>
+        <h2>Bekijk het BENG-detailsrapport.</h2>
+        <p>Open het voorbeeld en klik zelf door de opname, constructies, aanzichten, 3D-schil, daken, vloeren en leidingen.</p>
+        <a class="button button--dark" href="https://wescan.b-cdn.net/wescan.io/email/beng_details/beng_details_example.html" target="_blank" rel="noopener">Bekijk een voorbeeldrapport ↗</a>
+      </div>
+    </div>
+    <div class="signoff">
+      <p>Heeft u vragen of mist u iets? Reageer op deze e-mail. We horen graag wat u nodig heeft.<br><br>Met vriendelijke groet,<br><strong>Team we<span style="color:var(--accent)">S</span>can</strong></p>
+      <a href="https://wescan.io/nl/" target="_blank" rel="noopener">wescan.io ↗</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="lightbox" role="dialog" aria-modal="true" aria-label="Vergrote rapportafbeelding">
+  <div class="lightbox__inner"><button class="lightbox__close" type="button" aria-label="Sluiten">×</button><img src="" alt=""></div>
+</div>
+<script>
+(function() {
+  const header = document.querySelector('.site-header');
+  const updateHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 10);
+  updateHeader(); window.addEventListener('scroll', updateHeader, {passive:true});
+
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver((entries) => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold:.12 });
+    revealEls.forEach(el => observer.observe(el));
+  } else { revealEls.forEach(el => el.classList.add('is-visible')); }
+
+  const box = document.querySelector('.lightbox');
+  const boxImg = box.querySelector('img');
+  const close = () => { box.classList.remove('is-open'); boxImg.src=''; document.body.style.overflow=''; };
+  document.querySelectorAll('.image-button').forEach(btn => btn.addEventListener('click', () => {
+    const img = btn.querySelector('img'); boxImg.src = img.src; boxImg.alt = img.alt; box.classList.add('is-open'); document.body.style.overflow='hidden';
+  }));
+  box.querySelector('.lightbox__close').addEventListener('click', close);
+  box.addEventListener('click', e => { if (e.target === box) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && box.classList.contains('is-open')) close(); });
+})();
+</script>
+</body>
+</html>

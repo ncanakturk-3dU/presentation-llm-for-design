@@ -1489,9 +1489,15 @@ q.cards__title { quotes: '\201C' '\201D' '\2018' '\2019'; }
 }
 /* The pane as a control: a button, so it is reachable by keyboard and says so
    under the pointer, but drawn as the pane it already was. */
+/* A short prompt sat in the middle of the pane until this was a column: a
+   `button` centres its own content vertically whatever `display` it is given,
+   and the long prompts filled the pane so nothing showed it. */
 .promptrun__pane--open {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
   text-align: left;
   font: inherit;

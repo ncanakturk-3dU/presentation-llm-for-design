@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3DUniversum — computer vision for the physical world</title>
+<meta name="description" content="3DUniversum builds AI systems that measure, inspect and reconstruct real things. Deep learning and computer vision from Science Park, Amsterdam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..125,400..800;1,75..125,400..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --paper:#E8EBEC;
+  --paper-2:#F5F6F6;
+  --ink:#0B1417;
+  --ink-2:#55656A;
+  --ink-3:#7E8D92;
+  --line:#CBD1D3;
+  --line-soft:#DCE0E1;
+  --signal:#0B757E;
+  --signal-2:#0A5D65;
+  --on-signal:#FFFFFF;
+
+  /* the instrument viewport is constant in both themes */
+  --scope:#04121A;
+  --scope-2:#0A2029;
+  --scope-line:#18404C;
+  --scope-ink:#DCEDEF;
+  --scope-ink-2:#6E939C;
+  --scope-signal:#3FD6CE;
+
+  --maxw:1240px;
+  --gutter:clamp(20px,5vw,72px);
+  --rule:1px solid var(--line);
+
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#080F13;
+    --paper-2:#0F1A20;
+    --ink:#E4ECEE;
+    --ink-2:#93A5AB;
+    --ink-3:#6B7E85;
+    --line:#22333A;
+    --line-soft:#182930;
+    --signal:#45DBD1;
+    --signal-2:#7BEBE2;
+    --on-signal:#04121A;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#080F13;
+  --paper-2:#0F1A20;
+  --ink:#E4ECEE;
+  --ink-2:#93A5AB;
+  --ink-3:#6B7E85;
+  --line:#22333A;
+  --line-soft:#182930;
+  --signal:#45DBD1;
+  --signal-2:#7BEBE2;
+  --on-signal:#04121A;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:17px;
+  line-height:1.55;
+  font-variation-settings:"wdth" 100;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4,p{margin:0}
+button{font:inherit;color:inherit}
+
+::selection{background:var(--signal);color:var(--on-signal)}
+
+:focus-visible{
+  outline:2px solid var(--signal);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+.wrap{
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+
+.u-hide{
+  position:absolute !important;width:1px;height:1px;
+  padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);
+  clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+/* ============================================================
+   TYPE SCALE
+   ============================================================ */
+.display{
+  font-size:clamp(2.55rem,6.4vw,5.1rem);
+  line-height:0.97;
+  letter-spacing:-0.035em;
+  font-weight:600;
+  font-variation-settings:"wdth" 104;
+  text-wrap:balance;
+}
+.h2{
+  font-size:clamp(1.85rem,3.6vw,3rem);
+  line-height:1.05;
+  letter-spacing:-0.028em;
+  font-weight:600;
+  font-variation-settings:"wdth" 102;
+  text-wrap:balance;
+}
+.h3{
+  font-size:clamp(1.18rem,1.9vw,1.5rem);
+  line-height:1.2;
+  letter-spacing:-0.02em;
+  font-weight:600;
+}
+.lead{
+  font-size:clamp(1.06rem,1.45vw,1.28rem);
+  line-height:1.5;
+  color:var(--ink-2);
+  max-width:34em;
+}
+.body-2{color:var(--ink-2);max-width:40em}
+.mono{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.72rem;
+  letter-spacing:.06em;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.head{
+  position:sticky;top:0;z-index:60;
+  background:var(--paper);
+  background:color-mix(in srgb,var(--paper) 86%,transparent);
+  backdrop-filter:blur(14px) saturate(1.3);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid transparent;
+  transition:border-color .25s ease,background .25s ease;
+}
+.head[data-stuck="true"]{border-bottom-color:var(--line)}
+.head__in{
+  display:flex;align-items:center;gap:28px;
+  height:70px;
+}
+.brand{
+  display:flex;align-items:center;gap:11px;
+  text-decoration:none;flex:0 0 auto;
+}
+.brand svg{display:block;overflow:visible}
+.brand__name{
+  font-weight:700;letter-spacing:-.02em;font-size:1.02rem;
+  font-variation-settings:"wdth" 96;
+}
+.brand__name span{font-weight:400;color:var(--ink-2)}
+
+.nav{margin-left:auto;display:flex;align-items:center;gap:30px}
+.nav a{
+  text-decoration:none;font-size:.94rem;color:var(--ink-2);
+  padding:6px 0;position:relative;transition:color .18s ease;
+}
+.nav a::after{
+  content:"";position:absolute;left:0;right:100%;bottom:2px;
+  height:1px;background:var(--signal);transition:right .22s ease;
+}
+.nav a:hover{color:var(--ink)}
+.nav a:hover::after{right:0}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:42px;padding:0 20px;border-radius:3px;
+  text-decoration:none;font-size:.94rem;font-weight:600;
+  border:1px solid transparent;cursor:pointer;
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+  white-space:nowrap;
+}
+.btn--solid{background:var(--ink);color:var(--paper)}
+.btn--solid:hover{background:var(--signal);color:var(--on-signal)}
+.btn--ghost{border-color:var(--line);color:var(--ink);background:transparent}
+.btn--ghost:hover{border-color:var(--ink);background:transparent}
+.btn--lg{height:50px;padding:0 26px;font-size:1rem}
+.btn--scope{background:var(--scope-signal);color:#04121A}
+.btn--scope:hover{background:#7BEBE2}
+.btn--scope-ghost{border-color:var(--scope-line);color:var(--scope-ink)}
+.btn--scope-ghost:hover{border-color:var(--scope-signal);color:var(--scope-signal)}
+
+.burger{
+  margin-left:auto;display:none;width:42px;height:42px;
+  border:1px solid var(--line);border-radius:3px;background:transparent;
+  cursor:pointer;align-items:center;justify-content:center;
+}
+.burger i{
+  display:block;width:17px;height:1.5px;background:var(--ink);
+  position:relative;transition:transform .22s ease,background .22s ease;
+}
+.burger i::before,.burger i::after{
+  content:"";position:absolute;left:0;width:17px;height:1.5px;background:var(--ink);
+  transition:transform .22s ease;
+}
+.burger i::before{top:-5.5px}
+.burger i::after{top:5.5px}
+.burger[aria-expanded="true"] i{background:transparent}
+.burger[aria-expanded="true"] i::before{transform:translateY(5.5px) rotate(45deg)}
+.burger[aria-expanded="true"] i::after{transform:translateY(-5.5px) rotate(-45deg)}
+
+.mobile-nav{
+  display:none;border-top:1px solid var(--line);
+  background:var(--paper);
+}
+.mobile-nav[data-open="true"]{display:block}
+.mobile-nav ul{list-style:none;margin:0;padding:8px 0 22px}
+.mobile-nav a{
+  display:block;padding:13px 0;text-decoration:none;
+  font-size:1.3rem;letter-spacing:-.02em;font-weight:500;
+  border-bottom:1px solid var(--line-soft);
+}
+.mobile-nav .btn{margin-top:20px;width:100%}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding-top:clamp(40px,6vw,74px);padding-bottom:clamp(48px,6vw,86px)}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(to right,var(--line) 1px,transparent 1px),
+    linear-gradient(to bottom,var(--line) 1px,transparent 1px);
+  background-size:104px 104px;
+  opacity:.38;
+  -webkit-mask-image:radial-gradient(120% 80% at 18% 0%,#000 0%,transparent 72%);
+  mask-image:radial-gradient(120% 80% at 18% 0%,#000 0%,transparent 72%);
+}
+.hero__in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(32px,4.5vw,64px);align-items:center}
+.hero__copy{max-width:36ch}
+.hero__sub{margin-top:26px}
+.hero__actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.hero__meta{
+  margin-top:40px;padding-top:16px;border-top:var(--rule);
+  display:flex;flex-wrap:wrap;gap:8px 30px;color:var(--ink-3);
+}
+.hero__meta b{font-weight:500;color:var(--ink-2)}
+
+/* ---- the instrument viewport ---- */
+.scope{
+  position:relative;border-radius:4px;overflow:hidden;
+  background:var(--scope);
+  border:1px solid var(--scope-2);
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 24px 60px -34px rgba(4,18,26,.7);
+  aspect-ratio:1/0.82;
+  touch-action:pan-y;
+  cursor:grab;
+}
+.scope:active{cursor:grabbing}
+.scope canvas{display:block;width:100%;height:100%}
+.scope__hud{
+  position:absolute;inset:0;pointer-events:none;
+  padding:14px 16px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  color:var(--scope-ink-2);
+}
+.scope__row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.scope__tag{
+  display:inline-flex;align-items:center;gap:7px;
+  color:var(--scope-ink);
+}
+.scope__dot{
+  width:6px;height:6px;border-radius:50%;background:var(--scope-signal);
+  box-shadow:0 0 0 3px rgba(63,214,206,.16);
+}
+.scope__readout{text-align:right;line-height:1.7}
+.scope__readout b{color:var(--scope-ink);font-weight:500}
+.scope__hint{color:var(--scope-ink-2)}
+.scope__corner{
+  position:absolute;width:13px;height:13px;
+  border:1px solid var(--scope-line);
+}
+.scope__corner--tl{top:9px;left:9px;border-right:0;border-bottom:0}
+.scope__corner--tr{top:9px;right:9px;border-left:0;border-bottom:0}
+.scope__corner--bl{bottom:9px;left:9px;border-right:0;border-top:0}
+.scope__corner--br{bottom:9px;right:9px;border-left:0;border-top:0}
+
+/* ============================================================
+   CLIENTS
+   ============================================================ */
+.clients{border-top:var(--rule);border-bottom:var(--rule);padding:clamp(26px,3vw,36px) 0}
+.clients__in{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px clamp(22px,3.4vw,48px)}
+.clients__label{color:var(--ink-3);flex:0 0 auto;margin-right:6px}
+.clients__name{
+  font-size:clamp(1.05rem,1.75vw,1.42rem);
+  font-weight:600;letter-spacing:-.022em;
+  font-variation-settings:"wdth" 92;
+  color:var(--ink);opacity:.82;
+}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+.section{padding:clamp(66px,8.5vw,128px) 0}
+.section--tight{padding:clamp(52px,6vw,88px) 0}
+.section__head{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(20px,4vw,56px);align-items:end;
+  margin-bottom:clamp(38px,5vw,64px);
+}
+.section__head p{justify-self:start}
+
+/* ============================================================
+   CAPABILITIES — rules, not cards
+   ============================================================ */
+.cap{border-top:var(--rule)}
+.cap__row{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(14px,3vw,48px);
+  padding:clamp(26px,3vw,40px) 0;
+  border-bottom:var(--rule);
+  align-items:start;
+}
+.cap__title{display:flex;align-items:baseline;gap:14px}
+.cap__swatch{
+  width:10px;height:10px;border-radius:2px;flex:0 0 auto;
+  transform:translateY(-1px);
+}
+.cap__body p{color:var(--ink-2);max-width:46ch}
+.cap__list{
+  list-style:none;margin:18px 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.cap__list li{
+  border:1px solid var(--line);border-radius:2px;
+  padding:4px 10px;font-size:.84rem;color:var(--ink-2);
+}
+
+/* ============================================================
+   PRODUCTS — index list
+   ============================================================ */
+.index{border-top:var(--rule)}
+.index__item{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(10px,3vw,48px);
+  padding:clamp(24px,2.8vw,36px) 0;
+  border-bottom:var(--rule);
+  text-decoration:none;
+  transition:background .2s ease;
+  position:relative;
+}
+.index__item::after{
+  content:"";position:absolute;left:0;bottom:-1px;width:0;height:1px;
+  background:var(--signal);transition:width .35s cubic-bezier(.2,.7,.3,1);
+}
+.index__item:hover::after,.index__item:focus-visible::after{width:100%}
+.index__name{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.index__host{color:var(--ink-3);font-size:.84rem}
+.index__item:hover .index__host{color:var(--signal)}
+.index__desc{color:var(--ink-2);max-width:48ch}
+
+/* ============================================================
+   PROCESS — a real sequence, so numbers earn their place
+   ============================================================ */
+.process{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(20px,3vw,44px);
+}
+.step__num{
+  display:flex;align-items:center;gap:14px;
+  color:var(--ink-3);margin-bottom:18px;
+}
+.step__num b{
+  font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:500;
+  color:var(--signal);
+}
+.step__num i{flex:1;height:1px;background:var(--line);display:block}
+.step p{color:var(--ink-2);margin-top:10px;max-width:34ch}
+
+/* ============================================================
+   PRESS
+   ============================================================ */
+.press{display:flex;flex-wrap:wrap;gap:10px 12px}
+.press a{
+  text-decoration:none;border:1px solid var(--line);border-radius:2px;
+  padding:9px 15px;font-size:.95rem;color:var(--ink-2);
+  transition:border-color .18s ease,color .18s ease;
+}
+.press a:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ============================================================
+   CONTACT — bookends the hero instrument
+   ============================================================ */
+.contact{background:var(--scope);color:var(--scope-ink)}
+.contact__in{
+  padding:clamp(56px,7vw,104px) 0;
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:clamp(36px,5vw,72px);
+}
+.contact .h2{color:var(--scope-ink)}
+.contact__lead{color:var(--scope-ink-2);max-width:32em;margin-top:20px;font-size:1.06rem}
+.contact__actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.details{display:grid;gap:22px;align-content:start}
+.detail{border-top:1px solid var(--scope-line);padding-top:14px}
+.detail__k{color:var(--scope-ink-2);display:block;margin-bottom:6px}
+.detail__v{color:var(--scope-ink);line-height:1.5}
+.detail__v a{text-decoration:none;border-bottom:1px solid var(--scope-line)}
+.detail__v a:hover{border-bottom-color:var(--scope-signal);color:var(--scope-signal)}
+
+.news{margin-top:34px;border-top:1px solid var(--scope-line);padding-top:22px;max-width:30em}
+.news__field{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.news input{
+  flex:1 1 200px;min-width:0;height:46px;padding:0 14px;
+  background:var(--scope-2);border:1px solid var(--scope-line);border-radius:3px;
+  color:var(--scope-ink);font:inherit;font-size:.96rem;
+}
+.news input::placeholder{color:var(--scope-ink-2)}
+.news input:focus{outline:2px solid var(--scope-signal);outline-offset:1px}
+.news__msg{margin-top:12px;color:var(--scope-signal);min-height:1.2em}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{border-top:var(--rule);padding:clamp(36px,4vw,56px) 0 44px}
+.foot__grid{
+  display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));
+  gap:clamp(26px,3vw,44px);
+}
+.foot h4{font-size:.9rem;font-weight:600;margin-bottom:14px}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.foot a{text-decoration:none;color:var(--ink-2);font-size:.94rem;transition:color .16s ease}
+.foot a:hover{color:var(--signal)}
+.foot__note{color:var(--ink-3);max-width:30ch;margin-top:16px;font-size:.94rem}
+.foot__bar{
+  margin-top:clamp(36px,4vw,56px);padding-top:20px;border-top:var(--rule);
+  display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;color:var(--ink-3);
+}
+.foot__bar .spacer{margin-left:auto}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1040px){
+  .hero__in{grid-template-columns:1fr;gap:34px}
+  .hero__copy{max-width:100%;order:1}
+  .scope{order:2;aspect-ratio:1/0.72}
+  .section__head{grid-template-columns:1fr;align-items:start}
+  .foot__grid{grid-template-columns:1fr 1fr;gap:32px}
+  .contact__in{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .nav{display:none}
+  .head__in .btn--solid{display:none}
+  .burger{display:inline-flex}
+  .process{grid-template-columns:1fr;gap:0}
+  .step{padding:22px 0;border-bottom:var(--rule)}
+  .step:first-child{padding-top:0}
+  .step p{max-width:52ch}
+}
+@media (max-width:720px){
+  body{font-size:16px}
+  .cap__row,.index__item{grid-template-columns:1fr;gap:12px}
+  .scope{aspect-ratio:1/0.92}
+  .hero__meta{gap:6px 0;flex-direction:column}
+}
+@media (max-width:480px){
+  .foot__grid{grid-template-columns:1fr}
+  .btn{width:100%}
+  .hero__actions .btn{width:100%}
+  .news__field .btn{width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<header class="head" id="head">
+  <div class="wrap head__in">
+    <a class="brand" href="#top" aria-label="3DUniversum home">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <g fill="currentColor">
+          <circle cx="4" cy="8" r="1.7"/><circle cx="13" cy="3.4" r="1.7"/><circle cx="22" cy="8" r="1.7"/>
+          <circle cx="4" cy="18" r="1.7"/><circle cx="13" cy="22.6" r="1.7"/><circle cx="22" cy="18" r="1.7"/>
+          <circle cx="13" cy="13" r="1.7" opacity=".45"/>
+        </g>
+        <g stroke="currentColor" stroke-width="1" opacity=".35">
+          <path d="M4 8 13 3.4 22 8v10l-9 4.6L4 18Z"/>
+          <path d="M4 8l9 5 9-5M13 13v9.6"/>
+        </g>
+      </svg>
+      <span class="brand__name">3DUniversum</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#work">What we build</a>
+      <a href="#products">Products</a>
+      <a href="#process">How we work</a>
+      <a href="https://3duniversum.com/news-2/">News</a>
+      <a href="https://3duniversum.com/about-us/">Company</a>
+    </nav>
+    <a class="btn btn--solid" href="#contact">Book an intake</a>
+
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu"><i></i></button>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav" data-open="false">
+    <div class="wrap">
+      <ul>
+        <li><a href="#work">What we build</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#process">How we work</a></li>
+        <li><a href="https://3duniversum.com/news-2/">News</a></li>
+        <li><a href="https://3duniversum.com/about-us/">Company</a></li>
+      </ul>
+      <a class="btn btn--solid" href="#contact">Book an intake</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="wrap hero__in">
+
+      <div class="hero__copy">
+        <h1 class="display">Computer vision for the physical world.</h1>
+        <p class="lead hero__sub">
+          We build AI systems that measure, inspect and reconstruct real things —
+          a part on a production line, a room, a face. Research-grade models,
+          delivered as software your team can actually run.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--solid btn--lg" href="#contact">Book an intake</a>
+          <a class="btn btn--ghost btn--lg" href="#work">See what we build</a>
+        </div>
+        <div class="hero__meta mono">
+          <span><b>Deep learning</b> · computer vision · 3D reconstruction</span>
+          <span>Science Park 400, Amsterdam</span>
+        </div>
+      </div>
+
+      <div class="scope" id="scope">
+        <canvas id="scan" aria-label="A three-dimensional point cloud of a scanned room, coloured by depth. Drag to orbit."></canvas>
+        <div class="scope__hud mono">
+          <div class="scope__row">
+            <span class="scope__tag"><span class="scope__dot"></span>Depth capture · living room</span>
+            <span class="scope__readout">
+              <b id="ptCount">0</b> points<br>
+              <b id="rangeOut">0.0–0.0</b> m
+            </span>
+          </div>
+          <div class="scope__row">
+            <span class="scope__hint" id="hint">Drag to orbit</span>
+            <span class="scope__readout">azimuth <b id="azOut">0°</b></span>
+          </div>
+        </div>
+        <span class="scope__corner scope__corner--tl"></span>
+        <span class="scope__corner scope__corner--tr"></span>
+        <span class="scope__corner scope__corner--bl"></span>
+        <span class="scope__corner scope__corner--br"></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== CLIENTS ===================== -->
+  <section class="clients">
+    <div class="wrap clients__in">
+      <span class="clients__label mono">Built with</span>
+      <span class="clients__name">AkzoNobel</span>
+      <span class="clients__name">Nike</span>
+      <span class="clients__name">Samsung</span>
+      <span class="clients__name">Huawei</span>
+      <span class="clients__name">Talpa</span>
+      <span class="clients__name">Netherlands Red Cross</span>
+    </div>
+  </section>
+
+  <!-- ===================== CAPABILITIES ===================== -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2">Three industries where seeing accurately changes the economics.</h2>
+        <p class="body-2">
+          Every project starts from the same place: a camera or a depth sensor, and a
+          decision someone currently makes by hand. We build the model that makes
+          that decision repeatable, then hand over software that runs in your environment.
+        </p>
+      </div>
+
+      <div class="cap">
+        <div class="cap__row">
+          <div class="cap__title">
+            <span class="cap__swatch" style="background:#F0A63C"></span>
+            <h3 class="h3">Industrial inspection</h3>
+          </div>
+          <div class="cap__body">
+            <p>
+              Measure area, volume and colour and catch visual defects as parts come down
+              the line — without removing anything or pausing production. The scan
+              completes, the software flags the deformation, the line keeps moving.
+            </p>
+            <ul class="cap__list">
+              <li>Defect detection</li><li>Dimensional measurement</li><li>Surface &amp; colour analysis</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cap__row">
+          <div class="cap__title">
+            <span class="cap__swatch" style="background:#35C9C4"></span>
+            <h3 class="h3">Retail &amp; sizing</h3>
+          </div>
+          <div class="cap__body">
+            <p>
+              Body measurements accurate enough to manufacture against, taken with a phone.
+              Use them for made-to-measure production, to cut return rates on online orders,
+              or to fit eyewear and apparel virtually in real time.
+            </p>
+            <ul class="cap__list">
+              <li>Body &amp; face measurement</li><li>Virtual try-on</li><li>Eyewear fitting</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cap__row">
+          <div class="cap__title">
+            <span class="cap__swatch" style="background:#4A72E0"></span>
+            <h3 class="h3">Healthcare</h3>
+          </div>
+          <div class="cap__body">
+            <p>
+              Deep-learning work developed alongside clinical and care partners, including
+              Deep Therapy — software that lets practitioners hold a conversation with
+              people ordinary contact can no longer reach.
+            </p>
+            <ul class="cap__list">
+              <li>Clinical imaging</li><li>Therapeutic software</li><li>Synthetic media research</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTS ===================== -->
+  <section class="section section--tight" id="products">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2">Products we built, and now license.</h2>
+        <p class="body-2">
+          Each one started as client work and became a standalone product. All of them
+          are in use today.
+        </p>
+      </div>
+
+      <div class="index">
+        <a class="index__item" href="https://wescan.io">
+          <div class="index__name"><h3 class="h3">weScan</h3><span class="index__host">wescan.io</span></div>
+          <p class="index__desc">
+            Capture, walk through and share a real space in 3D using the LiDAR sensor in an
+            iPhone or iPad. Built for estate agents, architects and anyone who needs a room
+            on record rather than in photographs.
+          </p>
+        </a>
+
+        <a class="index__item" href="https://fairfake.ai">
+          <div class="index__name"><h3 class="h3">FairFake</h3><span class="index__host">fairfake.ai</span></div>
+          <p class="index__desc">
+            Consent-based synthetic video for media, entertainment and government, plus
+            seminars on how deepfakes are produced and how they are detected. Work that has
+            been covered by NRC, NOS and VPRO Tegenlicht.
+          </p>
+        </a>
+
+        <a class="index__item" href="https://deeptherapy.ai">
+          <div class="index__name"><h3 class="h3">Deep Therapy</h3><span class="index__host">deeptherapy.ai</span></div>
+          <p class="index__desc">
+            A platform for practitioners to speak with people they cannot otherwise reach,
+            through self-controlled video animation over a normal video call.
+          </p>
+        </a>
+
+        <a class="index__item" href="https://3duniversum.com/product/visual-inspection/">
+          <div class="index__name"><h3 class="h3">Visual Inspection</h3><span class="index__host">3duniversum.com</span></div>
+          <p class="index__desc">
+            Scanning and analysis software for the production line, deployable on existing
+            camera hardware.
+          </p>
+        </a>
+
+        <a class="index__item" href="https://3duniversum.com/product/mobile-scanner/">
+          <div class="index__name"><h3 class="h3">Mobile Scanner</h3><span class="index__host">3duniversum.com</span></div>
+          <p class="index__desc">
+            Turn a handheld device into a 3D capture rig, with reconstruction handled
+            off-device.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROCESS ===================== -->
+  <section class="section" id="process">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2">From first conversation to something running.</h2>
+        <p class="body-2">
+          Most engagements take this shape. The intake is free, and it ends with a
+          straight answer about whether AI is the right tool for the problem you brought us.
+        </p>
+      </div>
+
+      <div class="process">
+        <div class="step">
+          <div class="step__num mono"><b>01</b><i></i></div>
+          <h3 class="h3">Learn</h3>
+          <p>We sit down with your team, look at the problem and the data you already
+             have, and map out what is actually solvable.</p>
+        </div>
+        <div class="step">
+          <div class="step__num mono"><b>02</b><i></i></div>
+          <h3 class="h3">Plan</h3>
+          <p>A step-by-step plan with scope, timeline and the measure we will hold the
+             result against before anyone writes code.</p>
+        </div>
+        <div class="step">
+          <div class="step__num mono"><b>03</b><i></i></div>
+          <h3 class="h3">Implement</h3>
+          <p>We build, test against that measure, and deliver working software — with
+             your engineers alongside ours if you want to take it over.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRESS ===================== -->
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="h2">Our research gets argued about in public.</h2>
+        <p class="body-2">
+          Work on synthetic media has put us in front of journalists, broadcasters and
+          policymakers across Europe.
+        </p>
+      </div>
+      <div class="press">
+        <a href="https://www.nrc.nl/nieuws/2019/05/23/ai-heeft-aan-een-blik-genoeg-om-mona-lisa-te-laten-praten-a3961335">NRC</a>
+        <a href="https://www.volkskrant.nl/kijkverder/2018/nepvideos/">de Volkskrant</a>
+        <a href="https://www.ad.nl/tech/groeiend-probleem-nepbeelden-niet-meer-van-echt-te-onderscheiden~a14247fe/">Algemeen Dagblad</a>
+        <a href="https://www.bnr.nl/nieuws/technologie/10380664/we-zitten-op-kantelpunt-qua-herkenbaarheid-deepfake">BNR</a>
+        <a href="https://www.vpro.nl/programmas/tegenlicht/kijk/afleveringen/2018-2019/deep-fake-news.html">VPRO Tegenlicht</a>
+        <a href="https://dewerelddraaitdoor.bnnvara.nl/media/492573">De Wereld Draait Door</a>
+        <a href="https://www.lesechos.fr/idees-debats/sciences-prospective/comment-arreter-la-propagation-des-deepfakes-960208">Les Échos</a>
+        <a href="https://www.kijkmagazine.nl/tech/deepfakes/">KIJK</a>
+        <a href="https://www.hetklokhuis.nl/tv-uitzending/4274/Beeldmanipulatie">Het Klokhuis</a>
+        <a href="https://www.fisheyemagazine.fr/rdv/cest-dans-le-mag/deepfakes-peur-sur-lai/">Fisheye</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section class="contact" id="contact">
+    <div class="wrap contact__in">
+      <div>
+        <h2 class="h2">Tell us what you are trying to see.</h2>
+        <p class="contact__lead">
+          Bring us a problem — a line that needs checking, a measurement someone takes by
+          hand, a dataset you are not sure is usable. The intake is a conversation, not a
+          pitch, and you leave it knowing whether this is worth building.
+        </p>
+        <div class="contact__actions">
+          <a class="btn btn--scope btn--lg" href="https://3duniversum.com/contacts/">Book an intake</a>
+          <a class="btn btn--scope-ghost btn--lg" href="tel:+31205257516">Call +31 20 525 7516</a>
+        </div>
+
+        <div class="news">
+          <span class="mono detail__k">Newsletter</span>
+          <p style="color:var(--scope-ink-2);font-size:.98rem">
+            Occasional notes on what we are building and where computer vision is heading.
+          </p>
+          <div class="news__field">
+            <label for="email" class="u-hide">Email address</label>
+            <input id="email" type="email" inputmode="email" placeholder="you@company.com" autocomplete="email">
+            <button class="btn btn--scope" id="subscribe" type="button">Subscribe</button>
+          </div>
+          <p class="news__msg mono" id="newsMsg" role="status"></p>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="detail">
+          <span class="detail__k mono">Find us</span>
+          <span class="detail__v">Science Park 400<br>1098 XH Amsterdam<br>Netherlands</span>
+        </div>
+        <div class="detail">
+          <span class="detail__k mono">Call us</span>
+          <span class="detail__v">
+            <a href="tel:+31205257516">+31 20 525 7516</a><br>
+            <a href="tel:+31202801840">+31 20 280 1840</a><br>
+            Mon–Fri, 9:00–18:00
+          </span>
+        </div>
+        <div class="detail">
+          <span class="detail__k mono">Elsewhere</span>
+          <span class="detail__v">
+            <a href="https://www.linkedin.com/company/3duniversum/">LinkedIn</a> ·
+            <a href="https://twitter.com/3DUniversum">X</a> ·
+            <a href="https://www.facebook.com/3DUniversum/">Facebook</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <a class="brand" href="#top" aria-label="3DUniversum home">
+          <svg width="22" height="22" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+            <g fill="currentColor">
+              <circle cx="4" cy="8" r="1.7"/><circle cx="13" cy="3.4" r="1.7"/><circle cx="22" cy="8" r="1.7"/>
+              <circle cx="4" cy="18" r="1.7"/><circle cx="13" cy="22.6" r="1.7"/><circle cx="22" cy="18" r="1.7"/>
+            </g>
+          </svg>
+          <span class="brand__name">3DUniversum</span>
+        </a>
+        <p class="foot__note">Dream. Develop. Deliver. Building AI in Amsterdam since 2016.</p>
+      </div>
+
+      <div>
+        <h4>Work</h4>
+        <ul>
+          <li><a href="https://3duniversum.com/our-services/">Services</a></li>
+          <li><a href="https://3duniversum.com/product/visual-inspection/">Visual inspection</a></li>
+          <li><a href="https://3duniversum.com/product/retail/">Retail &amp; eyewear</a></li>
+          <li><a href="https://3duniversum.com/product/healthcare/">Healthcare</a></li>
+          <li><a href="https://3duniversum.com/pricing/">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="https://wescan.io">weScan</a></li>
+          <li><a href="https://fairfake.ai">FairFake</a></li>
+          <li><a href="https://deeptherapy.ai">Deep Therapy</a></li>
+          <li><a href="https://3duniversum.com/product/mobile-scanner/">Mobile Scanner</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="https://3duniversum.com/about-us/">About us</a></li>
+          <li><a href="https://3duniversum.com/careers/">Careers</a></li>
+          <li><a href="https://3duniversum.com/news-2/">News</a></li>
+          <li><a href="https://3duniversum.com/contacts/">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot__bar mono">
+      <span>© 2026 3DUniversum</span>
+      <a href="https://3duniversum.com/privacy-policy/" style="color:inherit;text-decoration:none">Privacy policy</a>
+      <a href="https://3duniversum.com/terms-and-conditions/" style="color:inherit;text-decoration:none">Terms and conditions</a>
+      <span class="spacer">Amsterdam, NL</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- header / nav ---------- */
+  var head = document.getElementById('head');
+  var burger = document.getElementById('burger');
+  var mnav = document.getElementById('mobileNav');
+
+  function onScroll(){ head.setAttribute('data-stuck', window.scrollY > 8 ? 'true' : 'false'); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  burger.addEventListener('click', function(){
+    var open = burger.getAttribute('aria-expanded') === 'true';
+    burger.setAttribute('aria-expanded', String(!open));
+    mnav.setAttribute('data-open', String(!open));
+  });
+  mnav.addEventListener('click', function(e){
+    if (e.target.tagName === 'A'){
+      burger.setAttribute('aria-expanded','false');
+      mnav.setAttribute('data-open','false');
+    }
+  });
+
+  /* ---------- newsletter ---------- */
+  var sub = document.getElementById('subscribe');
+  var mail = document.getElementById('email');
+  var msg = document.getElementById('newsMsg');
+  sub.addEventListener('click', function(){
+    var v = mail.value.trim();
+    if (!v || v.indexOf('@') < 1 || v.indexOf('.') < 3){
+      msg.style.color = '#F0A63C';
+      msg.textContent = 'That address is missing something. Check it and try again.';
+      mail.focus();
+      return;
+    }
+    msg.style.color = '';
+    msg.textContent = 'Subscribed. Watch for the next one.';
+    mail.value = '';
+  });
+
+  /* ============================================================
+     DEPTH SCAN — a LiDAR-style point cloud of a scanned room
+     ============================================================ */
+  var cv = document.getElementById('scan');
+  var box = document.getElementById('scope');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d', {alpha:false});
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- generate the cloud ---- */
+  var X = [], Y = [], Z = [];
+  function put(x,y,z){ X.push(x); Y.push(y); Z.push(z); }
+  function R(a,b){ return a + Math.random()*(b-a); }
+  var NOISE = 0.011;                       /* sensor jitter, in metres */
+  var Q = window.innerWidth < 760 ? 0.55 : 1;   /* fewer points on phones */
+
+  function plane(ox,oy,oz, ux,uy,uz, vx,vy,vz, n, nx,ny,nz){
+    n = Math.round(n*Q);
+    for (var i=0;i<n;i++){
+      var s=Math.random(), t=Math.random(), j=(Math.random()-0.5)*NOISE*2;
+      put(ox+ux*s+vx*t+nx*j, oy+uy*s+vy*t+ny*j, oz+uz*s+vz*t+nz*j);
+    }
+  }
+  function boxTopFront(x0,x1,y0,y1,z0,z1,n){
+    var dx=x1-x0, dy=y1-y0, dz=z1-z0;
+    plane(x0,y1,z0, dx,0,0, 0,0,dz, Math.round(n*0.44), 0,1,0);   /* top   */
+    plane(x0,y0,z1, dx,0,0, 0,dy,0, Math.round(n*0.34), 0,0,1);   /* front */
+    plane(x1,y0,z0, 0,0,dz, 0,dy,0, Math.round(n*0.22), 1,0,0);   /* right */
+  }
+  function cyl(cx,cz,r,y0,y1,n){
+    n = Math.round(n*Q);
+    for (var i=0;i<n;i++){
+      var a=R(0,Math.PI*2), rr=r+(Math.random()-0.5)*NOISE*2;
+      put(cx+Math.cos(a)*rr, R(y0,y1), cz+Math.sin(a)*rr);
+    }
+  }
+  function ellip(cx,cy,cz,rx,ry,rz,n){
+    n = Math.round(n*Q);
+    for (var i=0;i<n;i++){
+      var u=R(0,Math.PI*2), v=Math.acos(R(-1,1)), j=1+(Math.random()-0.5)*0.02;
+      put(cx+Math.sin(v)*Math.cos(u)*rx*j, cy+Math.cos(v)*ry*j, cz+Math.sin(v)*Math.sin(u)*rz*j);
+    }
+  }
+
+  /* room shell */
+  plane(-3.4,0,-3.2,  6.8,0,0,  0,0,5.8, 2200, 0,1,0);            /* floor      */
+  plane(-3.4,0,-3.2,  6.8,0,0,  0,2.65,0, 1250, 0,0,1);           /* back wall  */
+  plane(-3.4,0,-3.2,  0,0,5.8,  0,2.65,0, 1050, 1,0,0);           /* left wall  */
+
+  /* couch against the left wall */
+  boxTopFront(-3.1,-1.25, 0,0.44, -0.9,1.5, 620);
+  boxTopFront(-3.1,-2.62, 0.44,1.08, -0.9,1.5, 300);
+
+  /* low table */
+  plane(0.35,0.46,-1.25, 1.75,0,0, 0,0,1.2, 360, 0,1,0);
+  cyl(0.5,-1.1,0.035,0,0.46,55); cyl(2.0,-1.1,0.035,0,0.46,55);
+  cyl(0.5,-0.15,0.035,0,0.46,55); cyl(2.0,-0.15,0.035,0,0.46,55);
+  ellip(1.2,0.55,-0.7,0.10,0.09,0.10,70);   /* something left on the table */
+
+  /* plant in the corner */
+  cyl(2.72,-2.55,0.14,0,0.34,110);
+  cyl(2.72,-2.55,0.025,0.34,0.95,60);
+  ellip(2.72,1.18,-2.55,0.40,0.30,0.40,320);
+
+  /* a person, mid-room — the subject of the scan */
+  var PX=0.15, PZ=0.95;
+  cyl(PX-0.115,PZ,0.088,0,0.83,190);        /* legs  */
+  cyl(PX+0.115,PZ,0.088,0,0.83,190);
+  ellip(PX,1.16,PZ,0.215,0.34,0.135,560);   /* torso */
+  cyl(PX-0.235,PZ,0.058,0.90,1.42,150);     /* arms  */
+  cyl(PX+0.235,PZ,0.058,0.90,1.42,150);
+  ellip(PX,1.62,PZ,0.105,0.135,0.105,230);  /* head  */
+
+  var N = X.length;
+  var px=new Float32Array(X), py=new Float32Array(Y), pz=new Float32Array(Z);
+  var paz=new Float32Array(N);              /* azimuth, for the scan sweep */
+  for (var i=0;i<N;i++){
+    var a = Math.atan2(pz[i]+0.4, px[i]);   /* -PI..PI */
+    paz[i] = (a + Math.PI) / (Math.PI*2);
+  }
+  X=Y=Z=null;
+
+  var sx=new Float32Array(N), sy=new Float32Array(N), sd=new Float32Array(N), ss=new Float32Array(N);
+  var order=new Int32Array(N); for (i=0;i<N;i++) order[i]=i;
+  var orderArr = Array.prototype.slice.call(order);
+
+  /* ---- depth ramp: near (amber) → mid (cyan) → far (indigo) ---- */
+  var STOPS=[[0,[255,206,104]],[0.32,[60,220,212]],[0.64,[72,126,232]],[1,[44,52,132]]];
+  var BUCKETS=26, PAL=[];
+  (function(){
+    for (var b=0;b<BUCKETS;b++){
+      var t=b/(BUCKETS-1), k=0;
+      while (k<STOPS.length-2 && t>STOPS[k+1][0]) k++;
+      var t0=STOPS[k][0], t1=STOPS[k+1][0], f=(t-t0)/(t1-t0||1);
+      f = f<0?0:(f>1?1:f);
+      var c0=STOPS[k][1], c1=STOPS[k+1][1];
+      var r=Math.round(c0[0]+(c1[0]-c0[0])*f),
+          g=Math.round(c0[1]+(c1[1]-c0[1])*f),
+          bl=Math.round(c0[2]+(c1[2]-c0[2])*f);
+      var alpha=(0.95-t*0.62).toFixed(3);
+      PAL.push('rgba('+r+','+g+','+bl+','+alpha+')');
+    }
+  })();
+
+  /* ---- camera ---- */
+  var yaw = -0.62, pitch = 0.20, camDist = 8.6;
+  var W=0,H=0,DPR=1,focal=0;
+
+  function resize(){
+    var r = box.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = Math.max(1, Math.round(r.width));
+    H = Math.max(1, Math.round(r.height));
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    focal = Math.min(W,H)*1.02;
+  }
+  resize();
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(box);
+  else window.addEventListener('resize', resize);
+
+  /* ---- interaction ---- */
+  var dragging=false, lastX=0, lastY=0, idleAt=0, hinted=false;
+  var hint=document.getElementById('hint');
+
+  box.addEventListener('pointerdown', function(e){
+    dragging=true; lastX=e.clientX; lastY=e.clientY;
+    box.setPointerCapture(e.pointerId);
+    if (!hinted){ hinted=true; hint.textContent='Orbiting'; }
+  });
+  box.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    yaw   += (e.clientX-lastX)*0.0062;
+    pitch += (e.clientY-lastY)*0.0038;
+    pitch = Math.max(-0.12, Math.min(0.62, pitch));
+    lastX=e.clientX; lastY=e.clientY;
+  });
+  function release(){ if(dragging){ dragging=false; idleAt=performance.now(); if(hinted) hint.textContent='Drag to orbit'; } }
+  box.addEventListener('pointerup', release);
+  box.addEventListener('pointercancel', release);
+
+  /* ---- readouts ---- */
+  var ptOut=document.getElementById('ptCount'),
+      azOut=document.getElementById('azOut'),
+      rgOut=document.getElementById('rangeOut');
+  var lastHud=0;
+
+  /* ---- the one orchestrated moment: the sweep completes on load ---- */
+  var t0=null, sweep=reduce?1:0, SWEEP_MS=2100;
+
+  function frame(now){
+    if (t0===null) t0=now;
+    if (!reduce){
+      sweep = Math.min(1, (now-t0)/SWEEP_MS);
+      if (!dragging && (idleAt===0 || now-idleAt>2600)) yaw += 0.0011;
+    }
+
+    var cy=Math.cos(yaw), sny=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
+    var cx=W*0.5, cyc=H*0.52;
+    var near=1e9, far=-1e9, shown=0;
+
+    for (var i=0;i<N;i++){
+      if (paz[i] > sweep){ sd[i]=-1; continue; }
+      var x=px[i], y=py[i]-1.12, z=pz[i]+0.45;
+      var x1=x*cy - z*sny, z1=x*sny + z*cy;
+      var y1=y*cp - z1*sp, z2=y*sp + z1*cp + camDist;
+      if (z2 < 0.6){ sd[i]=-1; continue; }
+      sx[i] = cx + x1*focal/z2;
+      sy[i] = cyc - y1*focal/z2;
+      sd[i] = z2;
+      ss[i] = Math.max(0.9, Math.min(3.2, focal*0.018/z2));
+      if (z2<near) near=z2; if (z2>far) far=z2;
+      shown++;
+    }
+
+    orderArr.length = 0;
+    for (i=0;i<N;i++) if (sd[i]>0) orderArr.push(i);
+    orderArr.sort(function(a,b){ return sd[b]-sd[a]; });
+
+    /* backdrop: a faint depth gradient, so the cloud sits in space */
+    ctx.fillStyle = '#04121A';
+    ctx.fillRect(0,0,W,H);
+    var g = ctx.createRadialGradient(W*0.5,H*0.55,0,W*0.5,H*0.55,Math.max(W,H)*0.72);
+    g.addColorStop(0,'rgba(14,52,66,0.55)');
+    g.addColorStop(1,'rgba(4,18,26,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+    var span = Math.max(0.001, far-near);
+    var cur = -1;
+    for (var k=0;k<orderArr.length;k++){
+      var idx = orderArr[k];
+      var t = (sd[idx]-near)/span;
+      var b = (BUCKETS-1) - Math.round(t*(BUCKETS-1));
+      if (b!==cur){ cur=b; ctx.fillStyle = PAL[b]; }
+      var s = ss[idx];
+      ctx.fillRect(sx[idx], sy[idx], s, s);
+    }
+
+    /* leading edge of the sweep, while it is still running */
+    if (sweep < 1){
+      ctx.fillStyle = 'rgba(214,255,252,0.92)';
+      for (k=0;k<N;k++){
+        if (sd[k]>0 && sweep-paz[k] < 0.018) ctx.fillRect(sx[k]-0.4, sy[k]-0.4, ss[k]+0.9, ss[k]+0.9);
+      }
+    }
+
+    if (now-lastHud > 140){
+      lastHud = now;
+      ptOut.textContent = shown.toLocaleString('en-US');
+      var deg = ((yaw*180/Math.PI) % 360 + 360) % 360;
+      azOut.textContent = deg.toFixed(0) + '\u00B0';
+      rgOut.textContent = (near>1e8?0:near-camDist+4).toFixed(1) + '\u2013' + (far<0?0:far-camDist+4).toFixed(1);
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
