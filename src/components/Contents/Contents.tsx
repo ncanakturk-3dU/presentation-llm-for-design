@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { slideOutline, slideTitle, itemTheme } from '../../slides/Slides'
 import { pad, stripMarks } from '../../lib/text'
 import { EASE } from '../../lib/motion'
+import { partTag } from '../../lib/parts'
 import type { PartRef } from '../../lib/parts'
 import type { SlideItem } from '../../../content/types'
 import './Contents.css'
@@ -123,11 +124,10 @@ export default function Contents({ open, items, partAt = [], index, reduced, onS
                     const part = partAt[i] || null
                     const opensPart = (part?.id ?? null) !== shown
                     if (opensPart) shown = part?.id ?? null
-                    const num = part?.number
                     return (
                       <div key={it.id || i} className={`ol ${opensPart ? 'ol--part' : ''} ${i === index ? 'is-current' : ''}`}>
                         {opensPart && part && (
-                          <span className="ol__parttag mono">{num ? `Part ${num}` : part.label}</span>
+                          <span className="ol__parttag mono">{partTag(part)}</span>
                         )}
                         <button className="ol__row" onClick={() => onSelect(i)}>
                           <span className="ol__num mono">{pad(i + 1)}</span>
@@ -145,12 +145,19 @@ export default function Contents({ open, items, partAt = [], index, reduced, onS
                     return (
                       <button key={it.id || i} className={`thumb ${i === index ? 'is-current' : ''}`} onClick={() => onSelect(i)}>
                         <span className="thumb__frame" data-theme={itemTheme(it)}>
-                          <span className="thumb__kicker mono">{('kicker' in it && it.kicker) || it.type}</span>
+                          {/* Where the slide sits in the talk, and nothing else.
+                              Not the slide's own kicker: `THE RED FRAMEWORK` is
+                              artwork for the stage, and a grid whose labels
+                              come from three different fields is a grid you
+                              cannot scan down. */}
+                          <span className="thumb__kicker mono">{partTag(partAt[i]) || it.type}</span>
                           <span className="thumb__title">{slideTitle(it)}</span>
                         </span>
+                        {/* The index alone: the part is on the card itself now,
+                            and printing it twice on one thumbnail is one of
+                            them saying nothing. */}
                         <span className="thumb__foot">
                           <span className="mono thumb__n">{pad(i + 1)}</span>
-                          <span className="mono thumb__type">{it.type}</span>
                         </span>
                       </button>
                     )

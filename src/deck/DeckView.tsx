@@ -5,6 +5,7 @@ import Contents from '../components/Contents/Contents'
 import { useContent } from '../lib/useContent'
 import { useReducedMotion, EASE } from '../lib/motion'
 import { pad } from '../lib/text'
+import { partTag } from '../lib/parts'
 import { indexOfSlide, isLab, pickContents, pickMotion, pickStatus, withLabOverrides } from '../lib/lab'
 import { DEFAULT_DECK } from '../lib/decks'
 import Lightbox, { LightboxProvider } from '../components/Lightbox/Lightbox'
@@ -321,7 +322,10 @@ export default function DeckView({ preset, motion: motionKnob, deck: deckParam, 
           </div>
           {part && (
             <div className="partref">
-              {part.number && <span className="mono partref__tag">Part {part.number}</span>}
+              {/* The tag half only: the name beside it is already the label,
+                  which is what `partTag` falls back to when there is no
+                  number. A part with no number shows its name alone. */}
+              {part.number && <span className="mono partref__tag">{partTag(part)}</span>}
               <span className="partref__name">{part.label}</span>
             </div>
           )}

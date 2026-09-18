@@ -145,7 +145,7 @@
         },
         {
           "id": "final-takeaway",
-          "label": "The RED framework · process"
+          "label": "The RED Framework · process"
         },
         {
           "id": "bonus-tracks",
@@ -547,7 +547,7 @@
     },
     {
       "id": "slide-final-takeaway",
-      "label": "34 · Closing · The RED framework",
+      "label": "34 · Summary · The RED Framework",
       "note": "The process archetype in the deck shell, with the chrome and page reference around it.",
       "params": {
         "slide": "final-takeaway"

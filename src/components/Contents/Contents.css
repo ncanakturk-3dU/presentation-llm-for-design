@@ -193,4 +193,6 @@
 }
 .thumb__foot { flex: none; display: flex; align-items: center; justify-content: space-between; }
 .thumb__n { color: var(--ink); font-size: 10px; }
-.thumb__type { color: var(--ink-faint); font-size: 10px; }
+/* A part label is longer than an archetype was, and the grid's columns are
+   `minmax(0, 1fr)` precisely because one long string once blew a column out. */
+.thumb__type { color: var(--ink-faint); font-size: 10px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

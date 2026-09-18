@@ -43,6 +43,21 @@ export const partRef = (part: Part): PartRef => ({
 })
 
 /**
+ * What the chrome calls a part in one line.
+ *
+ * `Part 01` when the numeral is a numeral, the numeral alone when it is not:
+ * the bonus part opens on `number: "Bonus"`, and `Part Bonus` reads like a
+ * part that mislaid its number. A part with no divider has no number at all,
+ * and its label is what it is known by.
+ */
+export function partTag(ref?: PartRef | null): string | null {
+  if (!ref) return null
+  const num = ref.number?.trim()
+  if (!num) return ref.label || null
+  return /^\d+$/.test(num) ? `Part ${num}` : num
+}
+
+/**
  * The numeral a part is known by, read off the `divider` that opens it.
  *
  * A `Part` deliberately has no `number` of its own. A numbered part opens on a

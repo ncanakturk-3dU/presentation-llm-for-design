@@ -954,13 +954,13 @@ const deck = {
 			],
 		},
 		{
-			id: "closing",
-			label: "Closing",
+			id: "summary",
+			label: "Summary",
 			slides: [
 				{
 					type: "process",
 					id: "final-takeaway",
-					chapter: "The RED framework",
+					chapter: "The RED Framework",
 					kicker: "THE RED FRAMEWORK",
 					mark: "block",
 					title:
