@@ -1095,6 +1095,8 @@ const deck = {
 					prompt: {
 						label: "The prompt",
 						source: "newsletter-simple.md",
+						href: "results/newsletter-email.html",
+						hrefLabel: "the original email",
 					},
 					results: [
 						{
@@ -1125,6 +1127,8 @@ const deck = {
 					prompt: {
 						label: "The prompt",
 						source: "newsletter.md",
+						href: "results/newsletter-email.html",
+						hrefLabel: "the original email",
 					},
 					results: [
 						{
